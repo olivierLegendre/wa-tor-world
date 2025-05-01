@@ -33,6 +33,13 @@ class Water_World():
             x_size (int): widht of the map
             y_size (int): height of the map
         """
+        try:
+            if nb_fish + nb_fish > (x_size * y_size) / 2:
+                print("too many creatures at initialization")
+                raise ValueError('Too many creatures')
+        except ValueError:
+            print(ValueError)
+            exit()
         self.world_size_x = x_size
         self.world_size_y = y_size
         self.nb_fish_init = nb_fish
@@ -42,7 +49,7 @@ class Water_World():
         self.populate_with_shark()
         self.set_rules()
         
-    def set_rules(self, chronos_to_fish_birth=3,chronos_to_shark_birth=5, starting_shark_energy=3, mode=1) -> None:
+    def set_rules(self, chronos_to_fish_birth=3, chronos_to_shark_birth=5, starting_shark_energy=3, mode=1) -> None:
         """Setting some constant
 
         Args:
@@ -81,7 +88,7 @@ class Water_World():
         self.fishes_list.append(fish)
         self.sea_map[x][y] = self.const_fish
                 
-    def populate_with_shark(self)-> None:
+    def populate_with_shark(self) -> None:
         """populate the sea map and sharks_list
         """
         x = random.randrange(0, self.world_size_x)
@@ -116,13 +123,13 @@ class World_History():
         self.sea_map_history = dict()
         self.generations = 0
         
-    def add_sea_map_to_history(self, sea_map: list) -> None:
+    def add_sea_map_to_history(self, sea_world: object) -> None:
         """
         Add a sea_map to the history
         Args:
-            sea_map (sea_word.sea_map): _description_
+            sea_world ( obj water_world) : sea_world to get sea_map
         """
-        self.sea_map_history[self.generations] = sea_map
+        self.sea_map_history[self.generations] = sea_world.sea_map
         
     def get_generation(self, generation: int) -> list:
         """Return the sea_map from the generation
@@ -133,11 +140,17 @@ class World_History():
         Returns:
             list: a sea_map
         """
+        print(self.sea_map_history)
         return self.sea_map_history[generation]
 
 
 def main():
-    pass
+    water_world = Water_World()
+    water_world.init_water_world(2, 1, 4, 4)
+    sea_map_history = World_History()
+    sea_map_history.add_sea_map_to_history(water_world)
+    
+    print(sea_map_history.get_generation(0))
 
 
 if __name__ == "__main__":

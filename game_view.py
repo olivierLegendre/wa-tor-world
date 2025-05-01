@@ -11,10 +11,10 @@ def main():
     window = pygame.display.set_mode(size)
 
     def create_creature_at_position(creature, x: int, y: int) -> None:
-        window_x = x*10
-        window_y = y*10
+        window_x = x*100
+        window_y = y*100
         color = "green" if creature == "fish" else "red"
-        pygame.draw.rect(window, color, [window_x, window_y, 10, 10])
+        pygame.draw.rect(window, color, [window_x, window_y, 100, 100])
 
     def create_sea_visual(sea_tab, generation: int):
         for x in range(len(sea_tab[generation])):
@@ -27,10 +27,14 @@ def main():
                     create_creature_at_position("shark", y, x)
 
     water_world = ww.Water_World()
-    water_world.init_water_world(20, 10, 40, 40)
-    sea_tab = []
-    sea_tab.append(water_world.sea_map)
+    water_world.init_water_world(2, 1, 4, 4)
+    sea_map_history = ww.World_History()
+    sea_map_history.add_sea_map_to_history(water_world)
+    # sea_tab = []
+    # sea_tab.append(water_world.sea_map)
     generation = 0
+    print(sea_map_history)
+    print(sea_map_history.get_generation(0))
 
     pygame.display.update()
     keep_running = True
@@ -38,7 +42,7 @@ def main():
     while keep_running:
 
         window.fill("blue")
-        create_sea_visual(sea_tab, generation)
+        create_sea_visual(sea_map_history, generation)
         
         for event in pygame.event.get():
             # quit event
