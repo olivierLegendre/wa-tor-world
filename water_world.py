@@ -1,5 +1,5 @@
 import random
-import copy
+import copy as cp
 import creatures
 
 
@@ -18,8 +18,6 @@ class Water_World():
         self.const_water = 0
         self.const_fish = 1
         self.const_shark = 2
-        # self.chronos = 0
-        # self.world_iteration = list()
         self.chronos_to_fish_birth = 3
         self.chronos_to_shark_birth = 3
         self.starting_shark_energy = 3
@@ -84,7 +82,7 @@ class Water_World():
             x (int): _description_
             y (int): _description_
         """
-        fish = creatures.Fish(x, y, 0)
+        fish = creatures.Fish(x, y)
         self.fishes_list.append(fish)
         self.sea_map[x][y] = self.const_fish
                 
@@ -110,9 +108,104 @@ class Water_World():
             y (int): _description_
         """
         shark = dict()
-        shark = creatures.Shark(x, y, 0, self.starting_shark_energy)
+        shark = creatures.Shark(x, y, self.starting_shark_energy)
         self.shark_list.append(shark)
         self.sea_map[x][y] = self.const_shark
+        
+    def pass_one_iteration(self):
+        # self.futur_sea_map = self.sea_map.copy()
+        # print(f"avant : {self.sea_map}")
+        self.fishes_move()
+        # print(f"apres : {self.sea_map}")
+        self.sharks_move()
+        self.clean_dead_creatures()
+
+    def fishes_move(self):
+        # my_fishes = copy.copy(self.futur_iteration_sea_map.fishes_list)
+        fishes_list = self.fishes_list
+        for fish in fishes_list:
+            # fish["age"] += fish["age"]
+            fish.age = fish.age + 1
+            # current_position = fish["position"]
+            current_position = tuple()
+            current_position = fish.x, fish.y
+            # print(f"current position {current_position}")
+            futur_position = self.random_move(current_position)
+            # print(f"future position : {futur_position}")
+            move_ok = self.is_move_possible(futur_position, "fish")
+            if move_ok: 
+                #if fish give birth
+                self.move_fish(fish, current_position, futur_position)
+                print(f"age : {fish.age}")
+                if fish.age % self.chronos_to_fish_birth == 0:
+                    if fish.age != 0:
+                        print("reproduction : ")
+                        print(f"age du poisson : {fish.age}")
+                        print(f" time to sex : {fish.age % self.chronos_to_fish_birth == 0}")
+                        self.create_new_fish(current_position[0], current_position[1])
+                        # self.create_new_fish(self.futur_iteration_sea_map, current_position[0], current_position[1])
+            
+                
+    def move_fish(self, fish, current_position, futur_position):
+        
+        # self.futur_iteration_sea_map.sea_world[futur_position[0]][futur_position[1]] = self.futur_iteration_sea_map.const_fish
+        # self.futur_iteration_sea_map.sea_world[current_position[0]][current_position[1]] = self.futur_iteration_sea_map.const_water
+        self.sea_map[futur_position[0]][futur_position[1]] = self.const_fish
+        # print(f"a effacer :{current_position}")
+        # print(self.sea_map[current_position[0]][current_position[1]])
+        self.sea_map[current_position[0]][current_position[1]] = self.const_water
+        # print(self.sea_map[current_position[0]][current_position[1]])
+        fish.x, fish.y = futur_position
+        # print(fish.x, fish.y)
+        
+    def random_move(self, position):
+        # mode = 1 cross : 1 up 2 right 3 down 4 left
+        # mode 2 diagonal : as the numerical keyboard
+        new_position = tuple()
+        x = self.world_size_x
+        y = self.world_size_y
+        # print(f"position initiale :{position}")
+        if self.mode == 1:
+            direction = random.randrange(1, 4)
+            # print(f"direction {direction}")
+        match direction:
+            case 1:
+                if position[0] != 0:
+                    new_position = (position[0] - 1, position[1])
+                else:
+                    new_position = (x - 1, position[1])
+            case 2:
+                if position[1] != y - 1:
+                    new_position = (position[0], position[1] + 1)
+                else:
+                    new_position = (position[0], 0)
+            case 3:
+                if position[0] != x - 1:
+                    new_position = (position[0] + 1, position[1])
+                else:
+                    new_position = (0, position[1])
+            case 4:
+                if position[1] != 0:
+                    new_position = (position[0], position[1] - 1)
+                else:
+                    new_position = (position[0], y - 1)
+        # print(f"position finale :{new_position}")
+        return new_position
+    
+    def is_move_possible(self, position, animal_type) -> bool:
+        legal_destination = list()
+        if animal_type == "fish":
+            legal_destination.append(0)
+        if animal_type == "shark":
+            legal_destination.append(0)
+            legal_destination.append(1)
+        if self.sea_map[position[0]][position[1]] not in legal_destination:
+            return False
+        else:
+            return True
+
+    def clean_dead_creatures(self):
+        pass
         
 
 class World_History():
@@ -129,7 +222,15 @@ class World_History():
         Args:
             sea_world ( obj water_world) : sea_world to get sea_map
         """
-        self.sea_map_history[self.generations] = sea_world.sea_map
+        #copy to avoid rewriting the same list
+        original_map = sea_world.sea_map
+        current_map = original_map.copy()
+        # current_map = sea_world.sea_map.copy()
+        print(f" insertion dans la generation {self.generations} la carte : {current_map}")
+        print(f"juste avant insertion: {self.sea_map_history}")
+        self.sea_map_history[self.generations] = current_map
+        print(f"juste apres insertion: {self.sea_map_history}")
+        self.generations += 1
         
     def get_generation(self, generation: int) -> list:
         """Return the sea_map from the generation
@@ -140,7 +241,6 @@ class World_History():
         Returns:
             list: a sea_map
         """
-        print(self.sea_map_history)
         return self.sea_map_history[generation]
 
 
@@ -149,8 +249,6 @@ def main():
     water_world.init_water_world(2, 1, 4, 4)
     sea_map_history = World_History()
     sea_map_history.add_sea_map_to_history(water_world)
-    
-    print(sea_map_history.get_generation(0))
 
 
 if __name__ == "__main__":
