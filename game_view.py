@@ -9,20 +9,35 @@ class Game_World():
         self.nb_generations = 100
         water_world = ww.Water_World()
         self.water_world = water_world
-        # water_world.set_rules(5, 8, 6)
-        # water_world.init_water_world(150, 20, 120, 120)
         self.set_rules()
         self.init()
         
-    def set_rules(self, chronos_to_fish_birth=3, chronos_to_shark_birth=7, starting_shark_energy=5, mode=1):
-        print("init rules")
+    def set_rules(self, chronos_to_fish_birth=3, chronos_to_shark_birth=7, starting_shark_energy=5, mode=1) -> None:
+        """set the rules for water world
+            default version is used
+            you can call this function before loading
+        Args:
+            chronos_to_fish_birth (int, optional): _description_. Defaults to 3.
+            chronos_to_shark_birth (int, optional): _description_. Defaults to 7.
+            starting_shark_energy (int, optional): _description_. Defaults to 5.
+            mode (int, optional): _description_. Defaults to 1.
+        """
         self.water_world.set_rules(chronos_to_fish_birth, chronos_to_shark_birth, starting_shark_energy, mode)
         
-    def init(self, nb_fish=150, nb_shark=20, x_size=120, y_size=120):
-        print("init world")
+    def init(self, nb_fish=150, nb_shark=20, x_size=120, y_size=120) -> None:
+        """ set the values for the number of sharks and fishes
+            and the width and height of the screen
+        Args:
+            nb_fish (int, optional): _description_. Defaults to 150.
+            nb_shark (int, optional): _description_. Defaults to 20.
+            x_size (int, optional): _description_. Defaults to 120.
+            y_size (int, optional): _description_. Defaults to 120.
+        """
         self.water_world.init_water_world(nb_fish, nb_shark, x_size, y_size)
 
-    def load(self):
+    def load(self) -> None:
+        """play X generation of sea_world and append then in a sea_map_history
+        """
         self.sea_map_history = ww.World_History()
         for _  in range(self.nb_generations):
             self.water_world.pass_one_iteration()
@@ -30,9 +45,12 @@ class Game_World():
         self.water_world = self.water_world
 
     def get_sea_map_history(self)-> object:
+        """return sea map history
+
+        Returns:
+            object: sea_map_history
+        """
         return self.sea_map_history
-    
-    
 
 def main():
 
@@ -76,15 +94,6 @@ def main():
     game_world = Game_World(100)
     game_world.load()
     sea_map_history = game_world.get_sea_map_history()
-
-    # nb_generations = 100
-    # water_world = ww.Water_World()
-    # water_world.set_rules(5, 8, 6)
-    # water_world.init_water_world(150, 20, 120, 120)
-    # sea_map_history = ww.World_History()
-    # for _  in range(nb_generations):
-    #     water_world.pass_one_iteration()
-    #     sea_map_history.add_sea_map_to_history(cp.deepcopy(water_world))
 
     pygame.display.update()
     keep_running = True
