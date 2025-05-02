@@ -40,6 +40,7 @@ class Water_World():
         except ValueError:
             print(ValueError)
             exit()
+        print(f"dans init water world : {nb_fish} {nb_shark} {x_size} {y_size}")
         self.set_rules()
         self.world_size_x = x_size
         self.world_size_y = y_size
