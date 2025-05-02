@@ -10,8 +10,10 @@ class Water_World():
         self.world_size_x = int
         self.world_size_y = int
         self.sea_map = list()
-        self.fishes_list = list()
-        self.sharks_list = list()
+        # self.fishes_list = list()
+        self.fishes_list = creatures.Creature_List()
+        # self.sharks_list = list()
+        self.sharks_list = creatures.Creature_List()
         # 0 for water
         # 1 for fish
         # 2 for shark
@@ -83,7 +85,7 @@ class Water_World():
             y (int): _description_
         """
         fish = creatures.Fish(x, y)
-        self.fishes_list.append(fish)
+        self.fishes_list.add(fish)
         self.sea_map[x][y] = self.const_fish
                 
     def populate_with_shark(self) -> None:
@@ -109,7 +111,7 @@ class Water_World():
         """
         shark = dict()
         shark = creatures.Shark(x, y, energy)
-        self.sharks_list.append(shark)
+        self.sharks_list.list().append(shark)
         self.sea_map[x][y] = self.const_shark
         
     def pass_one_iteration(self) -> None:
@@ -128,7 +130,7 @@ class Water_World():
             every chronos_to_fish_birth chronos, a fish give birth to another fish
         """
         fishes_list = self.fishes_list
-        for fish in fishes_list:
+        for fish in fishes_list.list():
             fish.age = fish.age + 1
             current_position = tuple()
             current_position = fish.x, fish.y
@@ -165,9 +167,9 @@ class Water_World():
             if a shark reach 0 energy, he dies from hunger
         """
         sharks_list = self.sharks_list
-        for shark in sharks_list:
+        for shark in sharks_list.list():
             # shark["age"] += shark["age"]
-            print(f"shark energy {shark.energy}")
+            # print(f"shark energy {shark.energy}")
             shark.age = shark.age + 1
             shark.energy = shark.energy - 1
             # current_position = shark["position"]
@@ -195,21 +197,22 @@ class Water_World():
             
             if move_ok: 
                 #if shark give birth
-                print(f"age : {shark.age}")
+                # print(f"age : {shark.age}")
                 self.move_shark(shark, current_position, futur_position)
                 
                 if shark.age % self.chronos_to_shark_birth == 0:
                     if shark.age != 0:
-                        print("reproduction : ")
-                        print(f"age du requin : {shark.age}")
-                        print(f" time to sex : {shark.age % self.chronos_to_shark_birth == 0}")
+                        # print("reproduction : ")
+                        # print(f"age du requin : {shark.age}")
+                        # print(f" time to sex : {shark.age % self.chronos_to_shark_birth == 0}")
                         self.create_new_shark(current_position[0], current_position[1], self.starting_shark_energy)
                         
             if shark.energy < 1:
                 print("je suis mort")
                 self.kill_shark_from_hunger(shark, futur_position)
             else:
-                print("toujours vivant")
+                # print("toujours vivant")
+                pass
                 
     def move_shark(self, shark: object, current_position: tuple, futur_position: tuple) -> None:
         """we move a single shark
@@ -245,7 +248,7 @@ class Water_World():
             position (tuple): x y
         """
         fishes_list = self.fishes_list
-        dead_fish_list = [fish for fish in fishes_list if fish.x == position[0] and fish.y == position[1]]
+        dead_fish_list = [fish for fish in fishes_list.list() if fish.x == position[0] and fish.y == position[1]]
         dead_fish = dead_fish_list[0]
         dead_fish.alive = False
         
@@ -385,26 +388,29 @@ class Water_World():
         """we browse a creature_list to delete every dead creature
             we start from the bottom to avoid modifying the index while we could delete another creature
         """
-        fishes_list = self.fishes_list
-        indexes_fish_to_delete = list()
+        self.fishes_list.clean()
+        self.sharks_list.clean()
         
-        for index_fish in range(len(fishes_list)):
-            fish = fishes_list[index_fish]
-            if fish.alive is False:
-                indexes_fish_to_delete.append(index_fish)
+        # fishes_list = self.fishes_list
+        # indexes_fish_to_delete = list()
         
-        for index_fish_to_delete in indexes_fish_to_delete[::-1]:
-            del (fishes_list[index_fish_to_delete])
+        # for index_fish in range(len(fishes_list)):
+        #     fish = fishes_list[index_fish]
+        #     if fish.alive is False:
+        #         indexes_fish_to_delete.append(index_fish)
+        
+        # for index_fish_to_delete in indexes_fish_to_delete[::-1]:
+        #     del (fishes_list[index_fish_to_delete])
             
-        sharks_list = self.sharks_list
-        indexes_shark_to_delete = list()
-        for index_shark in range(len(sharks_list)):
-            shark = sharks_list[index_shark]
-            if shark.alive is False:
-                indexes_shark_to_delete.append(index_shark)
+        # sharks_list = self.sharks_list
+        # indexes_shark_to_delete = list()
+        # for index_shark in range(len(sharks_list)):
+        #     shark = sharks_list[index_shark]
+        #     if shark.alive is False:
+        #         indexes_shark_to_delete.append(index_shark)
                 
-        for index_shark_to_delete in indexes_shark_to_delete[::-1]:
-            del (sharks_list[index_shark_to_delete])
+        # for index_shark_to_delete in indexes_shark_to_delete[::-1]:
+        #     del (sharks_list[index_shark_to_delete])
         
 
 class World_History():

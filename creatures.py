@@ -39,6 +39,35 @@ class Shark(Creature):
         self.energy = energy
 
 
+class Creature_List():
+    def __init__(self):
+        self.c_list = list()
+        self.nb_creatures = 0
+        
+    def add(self, creature):
+        self.c_list.append(creature)
+        self.nb_creatures += self.nb_creatures + 1
+        
+    def list(self):
+        return self.c_list
+    
+    def clean(self) -> None:
+        """we browse a creature_list to delete every dead creature
+            we start from the bottom to avoid modifying the index while we could delete another creature
+        """
+        creatures_list = self.c_list
+        indexes_creature_to_delete = list()
+        
+        for index_creature in range(len(creatures_list)):
+            creature = creatures_list[index_creature]
+            if creature.alive is False:
+                indexes_creature_to_delete.append(index_creature)
+        
+        for index_creature_to_delete in indexes_creature_to_delete[::-1]:
+            # print(creatures_list[index_creature_to_delete])
+            del (creatures_list[index_creature_to_delete])
+
+
 def main():
     pass
 

@@ -9,7 +9,7 @@ def main():
 
     pygame.init()
 
-    size = (400, 400)
+    size = (1200, 1200)
     window = pygame.display.set_mode(size)
 
     def create_creature_at_position(creature: str, x: int, y: int) -> None:
@@ -44,9 +44,10 @@ def main():
                     # print(f"shark at position {y}, {x}")
                     create_creature_at_position("shark", y, x)
 
-    nb_generations = 1000
+    nb_generations = 100
     water_world = ww.Water_World()
-    water_world.init_water_world(50, 5, 40, 40)
+    water_world.set_rules(5, 8, 6)
+    water_world.init_water_world(150, 20, 120, 120)
     sea_map_history = ww.World_History()
     for _  in range(nb_generations):
         water_world.pass_one_iteration()
