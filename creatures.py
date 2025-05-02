@@ -26,7 +26,7 @@ class Fish(Creature):
 
 
 class Shark(Creature):
-    def __init__(self, x: int, y: int, energy=3) -> None:
+    def __init__(self, x: int, y: int, energy=5) -> None:
         """
         A fish is a creature
         Args:
