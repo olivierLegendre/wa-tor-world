@@ -47,8 +47,9 @@ class Water_World():
         self.nb_fish_init = nb_fish
         self.nb_shark_init = nb_shark
         self.sea_map = [[0 for i in range(x_size)] for j in range(y_size)]
-        self.populate_with_fish()
-        self.populate_with_shark()
+        self.populate_with_creature("fish")
+        self.populate_with_creature("shark")
+        # self.populate_with_shark()
         
     def set_rules(self, chronos_to_fish_birth=3, chronos_to_shark_birth=7, starting_shark_energy=5, mode=1) -> None:
         """Setting some constant
@@ -63,21 +64,28 @@ class Water_World():
         self.chronos_to_shark_birth = chronos_to_shark_birth
         self.starting_shark_energy = starting_shark_energy
         self.mode = mode
-
-    def populate_with_fish(self) -> None:
-        """populate the sea map and fishes_list
+        
+    def populate_with_creature(self, creature_type: str) -> None:
+        """populate the sea map 
+            populate fishes_list
+            populate sharks_list
         """
         x = random.randrange(0, self.world_size_x)
         y = random.randrange(0, self.world_size_y)
-        nb_fish = 0
-        while nb_fish < self.nb_fish_init:
+        nb_creature = 0
+        match creature_type:
+            case "fish":
+                nb_creature_initial = self.nb_fish_init
+            case "shark":
+                nb_creature_initial = self.nb_shark_init
+        while nb_creature < nb_creature_initial:
             if self.sea_map[x][y] == self.const_water:
-                self.create_new_fish(x, y)
-                nb_fish += 1
+                self.create_new_creature(creature_type, x, y)
+                nb_creature += 1
             x = random.randrange(0, self.world_size_x)
             y = random.randrange(0, self.world_size_y)
             
-    def create_new_fish(self, x: int, y: int) -> None:
+    def create_new_creature(self, creature_type: str, x: int, y: int) -> None:
         """create a fish 
             add it to sea map at postion (x, y)
             add it to fishes_list     
@@ -85,35 +93,16 @@ class Water_World():
             x (int): _description_
             y (int): _description_
         """
-        fish = creatures.Fish(x, y)
-        self.fishes_list.add(fish)
-        self.sea_map[x][y] = self.const_fish
-                
-    def populate_with_shark(self) -> None:
-        """populate the sea map and sharks_list
-        """
-        x = random.randrange(0, self.world_size_x)
-        y = random.randrange(0, self.world_size_y)
-        nb_shark = 0
-        while nb_shark < self.nb_shark_init:
-            if self.sea_map[x][y] == self.const_water:
-                self.create_new_shark(x, y, self.starting_shark_energy)
-                nb_shark += 1
-            x = random.randrange(0, self.world_size_x)
-            y = random.randrange(0, self.world_size_y)
-            
-    def create_new_shark(self, x: int, y: int, energy:int) -> None:
-        """ create a shark 
-            add it to sea map at postion (x, y)
-            add it to sharks_list
-        Args:
-            x (int): _description_
-            y (int): _description_
-        """
-        shark = dict()
-        shark = creatures.Shark(x, y, energy)
-        self.sharks_list.list().append(shark)
-        self.sea_map[x][y] = self.const_shark
+        match creature_type:
+            case "fish":
+                fish = creatures.Fish(x, y)
+                self.fishes_list.add(fish)
+                self.sea_map[x][y] = self.const_fish
+            case "shark":
+                shark = dict()
+                shark = creatures.Shark(x, y, self.starting_shark_energy)
+                self.sharks_list.list().append(shark)
+                self.sea_map[x][y] = self.const_shark
         
     def pass_one_iteration(self) -> None:
         """ method use to make the world evolve one chronos
@@ -146,8 +135,7 @@ class Water_World():
                         # print("reproduction : ")
                         # print(f"age du poisson : {fish.age}")
                         # print(f" time to sex : {fish.age % self.chronos_to_fish_birth == 0}")
-                        self.create_new_fish(current_position[0], current_position[1])
-                        # self.create_new_fish(self.futur_iteration_sea_map, current_position[0], current_position[1])
+                        self.create_new_creature("fish", current_position[0], current_position[1])
 
     def move_fish(self, fish: object, current_position : tuple, futur_position: tuple) -> None:
         """We move a single fish
@@ -206,7 +194,7 @@ class Water_World():
                         # print("reproduction : ")
                         # print(f"age du requin : {shark.age}")
                         # print(f" time to sex : {shark.age % self.chronos_to_shark_birth == 0}")
-                        self.create_new_shark(current_position[0], current_position[1], self.starting_shark_energy)
+                        self.create_new_creature("shark", current_position[0], current_position[1])
                         
             if shark.energy < 1:
                 print("je suis mort")
