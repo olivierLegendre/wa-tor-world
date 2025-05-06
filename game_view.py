@@ -4,25 +4,26 @@ import pygame.locals as locals
 import water_world as ww
 import copy as cp
 
+
 class Game_World():
-    def __init__(self, nb_generations):
-        self.nb_generations = 100
+    def __init__(self, nb_generations=100):
+        self.nb_generations = nb_generations
         water_world = ww.Water_World()
         self.water_world = water_world
         self.set_rules()
         self.init()
         
-    def set_rules(self, chronos_to_fish_birth=3, chronos_to_shark_birth=7, starting_shark_energy=5, mode=1) -> None:
+    def set_rules(self, chronon_to_fish_birth=3, chronon_to_shark_birth=7, starting_shark_energy=5, mode=1) -> None:
         """set the rules for water world
             default version is used
             you can call this function before loading
         Args:
-            chronos_to_fish_birth (int, optional): _description_. Defaults to 3.
-            chronos_to_shark_birth (int, optional): _description_. Defaults to 7.
+            chronon_to_fish_birth (int, optional): _description_. Defaults to 3.
+            chronon_to_shark_birth (int, optional): _description_. Defaults to 7.
             starting_shark_energy (int, optional): _description_. Defaults to 5.
             mode (int, optional): _description_. Defaults to 1.
         """
-        self.water_world.set_rules(chronos_to_fish_birth, chronos_to_shark_birth, starting_shark_energy, mode)
+        self.water_world.set_rules(chronon_to_fish_birth, chronon_to_shark_birth, starting_shark_energy, mode)
         
     def init(self, nb_fish=150, nb_shark=20, x_size=120, y_size=120) -> None:
         """ set the values for the number of sharks and fishes
@@ -42,15 +43,21 @@ class Game_World():
         for _  in range(self.nb_generations):
             self.water_world.pass_one_iteration()
             self.sea_map_history.add_sea_map_to_history(cp.deepcopy(self.water_world))
+        # last_generation = int(self.sea_map_history.generations) - 1
+        # last_map = self.sea_map_history.get_generation(last_generation)
+        # print(f"last map : {last_map}")
+        self.water_world.clean_map()
+        # self.sea_map_history[self.sea_map_history.generations].clean_map()
         self.water_world = self.water_world
 
-    def get_sea_map_history(self)-> object:
+    def get_sea_map_history(self) -> object:
         """return sea map history
 
         Returns:
             object: sea_map_history
         """
         return self.sea_map_history
+
 
 def main():
 

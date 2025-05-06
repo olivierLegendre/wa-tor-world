@@ -10,9 +10,7 @@ class Water_World():
         self.world_size_x = int
         self.world_size_y = int
         self.sea_map = list()
-        # self.fishes_list = list()
         self.fishes_list = creatures.Creature_List()
-        # self.sharks_list = list()
         self.sharks_list = creatures.Creature_List()
         # 0 for water
         # 1 for fish
@@ -20,9 +18,12 @@ class Water_World():
         self.const_water = 0
         self.const_fish = 1
         self.const_shark = 2
-        self.chronos_to_fish_birth = 3
-        self.chronos_to_shark_birth = 7
+        self.chronon_to_fish_birth = 3
+        self.chronon_to_shark_birth = 7
         self.starting_shark_energy = 5
+        self.creatures_to_create = dict()
+        self.creatures_to_create["fish"] = list()
+        self.creatures_to_create["shark"] = list()
     
     def init_water_world(self, nb_fish: int, nb_shark: int, x_size: int, y_size:int) -> None:
         """Populate the world
@@ -40,7 +41,6 @@ class Water_World():
         except ValueError:
             print(ValueError)
             exit()
-        print(f"dans init water world : {nb_fish} {nb_shark} {x_size} {y_size}")
         self.set_rules()
         self.world_size_x = x_size
         self.world_size_y = y_size
@@ -51,17 +51,17 @@ class Water_World():
         self.populate_with_creature("shark")
         # self.populate_with_shark()
         
-    def set_rules(self, chronos_to_fish_birth=3, chronos_to_shark_birth=7, starting_shark_energy=5, mode=1) -> None:
+    def set_rules(self, chronon_to_fish_birth=3, chronon_to_shark_birth=7, starting_shark_energy=5, mode=1) -> None:
         """Setting some constant
 
         Args:
-            chronos_to_fish_birth (int, optional): _description_. Defaults to 3.
-            chronos_to_shark_birth (int, optional): _description_. Defaults to 7.
+            chronon_to_fish_birth (int, optional): _description_. Defaults to 3.
+            chronon_to_shark_birth (int, optional): _description_. Defaults to 7.
             starting_shark_energy (int, optional): _description_. Defaults to 5.
             mode (int, optional): _description_. Defaults to 1.
         """
-        self.chronos_to_fish_birth = chronos_to_fish_birth
-        self.chronos_to_shark_birth = chronos_to_shark_birth
+        self.chronon_to_fish_birth = chronon_to_fish_birth
+        self.chronon_to_shark_birth = chronon_to_shark_birth
         self.starting_shark_energy = starting_shark_energy
         self.mode = mode
         
@@ -80,12 +80,29 @@ class Water_World():
                 nb_creature_initial = self.nb_shark_init
         while nb_creature < nb_creature_initial:
             if self.sea_map[x][y] == self.const_water:
-                self.create_new_creature(creature_type, x, y)
+                self.create_new_creature(creature_type, tuple([x, y]))
                 nb_creature += 1
             x = random.randrange(0, self.world_size_x)
             y = random.randrange(0, self.world_size_y)
-            
-    def create_new_creature(self, creature_type: str, x: int, y: int) -> None:
+    
+    # self.create_new_creature("shark", current_position[0], current_position[1])
+    def add_creature_to_create(self, animal_type: str, position: tuple):
+        self.creatures_to_create[animal_type].append(position)
+        
+    def create_creatures_from_list(self):
+        creature_type_list = self.creatures_to_create.keys()
+        print(f"creature type : {creature_type_list}")
+        for creature_type in creature_type_list:
+            print(f"creature type : {creature_type}")
+            for creature_position in self.creatures_to_create[creature_type]:
+                print(f"state map {self.sea_map[creature_position[0]][creature_position[1]]}")
+                if self.sea_map[creature_position[0]][creature_position[1]] == self.const_water:
+                    self.create_new_creature(creature_type, creature_position)
+                else:
+                    print("problempe de creation sur espace occupé")
+        
+
+    def create_new_creature(self, creature_type: str, position: tuple) -> None:
         """create a fish 
             add it to sea map at postion (x, y)
             add it to fishes_list     
@@ -93,31 +110,36 @@ class Water_World():
             x (int): _description_
             y (int): _description_
         """
+        x, y = position
         match creature_type:
             case "fish":
                 fish = creatures.Fish(x, y)
                 self.fishes_list.add(fish)
                 self.sea_map[x][y] = self.const_fish
             case "shark":
-                shark = dict()
                 shark = creatures.Shark(x, y, self.starting_shark_energy)
-                self.sharks_list.list().append(shark)
+                self.sharks_list.add(shark)
                 self.sea_map[x][y] = self.const_shark
         
     def pass_one_iteration(self) -> None:
-        """ method use to make the world evolve one chronos
+        """ method use to make the world evolve one chronon
             we make all the fishes move
             we make all the sharks move
             we clean the dead creatures from sharks_list and fishes_list
         """
+        self.creatures_to_create["fish"].clear()
+        self.creatures_to_create["shark"].clear()
         self.fishes_move()
         self.sharks_move()
         self.clean_dead_creatures()
+        self.create_creatures_from_list()
+        #only for debugging
+        # self.check_creatures_at_the_right_places()
 
     def fishes_move(self) -> None:
         """ we move every fish on fishes_list
             movement is possible if there is a free space nearby
-            every chronos_to_fish_birth chronos, a fish give birth to another fish
+            every chronon_to_fish_birth chronon, a fish give birth to another fish
         """
         fishes_list = self.fishes_list
         for fish in fishes_list.list():
@@ -126,42 +148,36 @@ class Water_World():
             current_position = fish.x, fish.y
             futur_position = self.random_move(current_position)
             move_ok = self.is_move_possible(futur_position, "fish")
-            if move_ok: 
-                #if fish give birth
-                self.move_fish(fish, current_position, futur_position)
-                # print(f"age : {fish.age}")
-                if fish.age % self.chronos_to_fish_birth == 0:
+            if move_ok:
+                self.creature_move(fish, current_position, futur_position)
+                if fish.age % self.chronon_to_fish_birth == 0:
                     if fish.age != 0:
-                        # print("reproduction : ")
-                        # print(f"age du poisson : {fish.age}")
-                        # print(f" time to sex : {fish.age % self.chronos_to_fish_birth == 0}")
-                        self.create_new_creature("fish", current_position[0], current_position[1])
-
-    def move_fish(self, fish: object, current_position : tuple, futur_position: tuple) -> None:
-        """We move a single fish
+                        self.add_creature_to_create("fish", current_position)
+                        # self.create_new_creature("fish", current_position)
+                        
+    def creature_move(self, creature: object, current_position : tuple, futur_position: tuple) -> None:
+        """We move a single creature
         Args:
-            fish (object): a fish object
+            creature (object): a creature object
             current_position (tuple):   x y
             futur_position (tuple): x y
         """
-        self.sea_map[futur_position[0]][futur_position[1]] = self.const_fish
+        const_animal = self.const_fish if isinstance(creature, creatures.Fish) else self.const_shark
+        self.sea_map[futur_position[0]][futur_position[1]] = const_animal
         self.sea_map[current_position[0]][current_position[1]] = self.const_water
-        fish.x, fish.y = futur_position
+        creature.x, creature.y = futur_position
         
     def sharks_move(self):
         """we move every fish on fishes_list
             movement is possible if there is a free space nearby
             if there is a fish nearby, it is prioritized
-            every chronos_to_shark_birth chronos, a shark give birth to another shark
+            every chronon_to_shark_birth chronon, a shark give birth to another shark
             if a shark reach 0 energy, he dies from hunger
         """
         sharks_list = self.sharks_list
         for shark in sharks_list.list():
-            # shark["age"] += shark["age"]
-            # print(f"shark energy {shark.energy}")
             shark.age = shark.age + 1
             shark.energy = shark.energy - 1
-            # current_position = shark["position"]
             current_position = tuple()
             current_position = shark.x, shark.y
             futur_position = tuple()
@@ -178,42 +194,19 @@ class Water_World():
                 # print(f"current position {current_position}")
                 futur_position = self.random_move(current_position)
                 move_ok = self.is_move_possible(futur_position, "shark")
-                
-            # print(f"future position : {futur_position}")
-            # print(f"future position state: {self.sea_map[futur_position[0]][futur_position[1]]}")
-            
-            # print(f"je suis avant move ok {move_ok}")
             
             if move_ok: 
                 #if shark give birth
                 # print(f"age : {shark.age}")
-                self.move_shark(shark, current_position, futur_position)
+                self.creature_move(shark, current_position, futur_position)
                 
-                if shark.age % self.chronos_to_shark_birth == 0:
+                if shark.age % self.chronon_to_shark_birth == 0:
                     if shark.age != 0:
-                        # print("reproduction : ")
-                        # print(f"age du requin : {shark.age}")
-                        # print(f" time to sex : {shark.age % self.chronos_to_shark_birth == 0}")
-                        self.create_new_creature("shark", current_position[0], current_position[1])
+                        self.add_creature_to_create("shark", current_position)
+                        # self.create_new_creature("shark", current_position)
                         
             if shark.energy < 1:
-                print("je suis mort")
                 self.kill_shark_from_hunger(shark, futur_position)
-            else:
-                # print("toujours vivant")
-                pass
-                
-    def move_shark(self, shark: object, current_position: tuple, futur_position: tuple) -> None:
-        """we move a single shark
-
-        Args:
-            shark (object): shark object
-            current_position (tuple): x y 
-            futur_position (tuple): x y 
-        """
-        self.sea_map[futur_position[0]][futur_position[1]] = self.const_shark
-        self.sea_map[current_position[0]][current_position[1]] = self.const_water
-        shark.x, shark.y = futur_position
         
     def hunt_prey(self, shark: object, current_position: tuple, prey_position: tuple) -> None:
         """a shark move to the space of a fish
@@ -237,6 +230,8 @@ class Water_World():
             position (tuple): x y
         """
         fishes_list = self.fishes_list
+        # print(f"position {position}")
+        # print(f"etat : {self.sea_map[position[0]][position[1]]}")
         dead_fish_list = [fish for fish in fishes_list.list() if fish.x == position[0] and fish.y == position[1]]
         dead_fish = dead_fish_list[0]
         dead_fish.alive = False
@@ -380,27 +375,59 @@ class Water_World():
         self.fishes_list.clean()
         self.sharks_list.clean()
         
-        # fishes_list = self.fishes_list
-        # indexes_fish_to_delete = list()
+    def check_creatures_at_the_right_places(self):
+        print("check data ok ")
+        # self.check_fishes()
+        # check_sharks()
         
-        # for index_fish in range(len(fishes_list)):
-        #     fish = fishes_list[index_fish]
-        #     if fish.alive is False:
-        #         indexes_fish_to_delete.append(index_fish)
+        map = self.sea_map
+        fishes_list = self.fishes_list
+        sharks_list = self.sharks_list
         
-        # for index_fish_to_delete in indexes_fish_to_delete[::-1]:
-        #     del (fishes_list[index_fish_to_delete])
-            
-        # sharks_list = self.sharks_list
-        # indexes_shark_to_delete = list()
-        # for index_shark in range(len(sharks_list)):
-        #     shark = sharks_list[index_shark]
-        #     if shark.alive is False:
-        #         indexes_shark_to_delete.append(index_shark)
+        map_status_ok = True
+        for position_x in range(len(map)):
+            for position_y in range(len(map[position_x])):
+                position = tuple([position_x, position_y])
+                symbole = map[position_x][position_y]
+                if symbole == self.const_fish:
+                    # creature = fishes_list.creature_exist(position)
+                    is_fish = fishes_list.is_fish(position)
+                    if isinstance(is_fish, tuple):
+                        print("effectivment il y a un probleme d'absence")
+                        print(f"a la position {position_x}, {position_y}")
+                        print(f"on y trouve : {self.sea_map[position_x][position_y]}")
+                        presence_fish = False
+                        for fish in self.fishes_list.list():
+                            if fish.x == position_x and fish.y == position_y:
+                                presence_fish = True
+                                print(fish)
+                        print(f"presence fish : {presence_fish}")
+                    if fishes_list.is_fish(position):
+                        pass
+                    else:
+                        print("il y a un probleme avec un poisson")
+                if symbole == self.const_shark:
+                    # sharks_list.creature_exist(position)
+                    if sharks_list.is_shark(position):
+                        pass
+                    else:
+                        print("il y a un probleme avec un requin")
+                    
+                # print(map[position_x][position_y])
                 
-        # for index_shark_to_delete in indexes_shark_to_delete[::-1]:
-        #     del (sharks_list[index_shark_to_delete])
-        
+    def clean_map(self):
+        sea_map = self.sea_map
+        for x in range(len(sea_map)):
+            for y in range(len(sea_map[x])):
+                if sea_map[x][y] == self.const_fish:
+                    creature = self.fishes_list.creature_in_list(([x, y]))
+                    if len(creature) < 1:
+                        print(f"il ne devrait pas y avoir de poisson ici {x}, {y}")
+                if sea_map[x][y] == self.const_shark:
+                    creature = self.sharks_list.creature_in_list(([x, y]))
+                    if len(creature) < 1:
+                        print(f"il ne devrait pas y avoir de requin ici {x}, {y}")
+                    
 
 class World_History():
     def __init__(self):
@@ -420,7 +447,7 @@ class World_History():
         original_map = sea_world.sea_map
         current_map = original_map.copy()
         self.sea_map_history[self.generations] = current_map
-        self.generations += 1
+        self.generations = self.generations + 1
         
     def get_generation(self, generation: int) -> list:
         """Return the sea_map from the generation
@@ -442,4 +469,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    pass

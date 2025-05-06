@@ -66,7 +66,33 @@ class Creature_List():
         for index_creature_to_delete in indexes_creature_to_delete[::-1]:
             # print(creatures_list[index_creature_to_delete])
             del (creatures_list[index_creature_to_delete])
+            
+    def creature_in_list(self, position):
+        return [creature for creature in self.c_list if creature.x == position[0] and creature.y == position[1]]
+        
+    def is_fish(self, position):
+        creatures = self.creature_in_list(position)
+        if len(creatures) == 0:
+            print("creature vide")
+            return position
+        else:
+            creature = creatures[0]
+            if not isinstance(creature, Fish):
+                return False
+            else:
+                return True
 
+    def is_shark(self, position):
+        creatures = self.creature_in_list(position)
+        if len(creatures) == 0:
+            print("creature vide")
+            return position
+        else:
+            creature = creatures[0]
+            if not isinstance(creature, Shark):
+                return False
+            else:
+                return True
 
 def main():
     pass
