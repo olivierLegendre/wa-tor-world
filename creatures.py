@@ -37,7 +37,7 @@ class Shark(Creature):
             coordinate (tuple[int]): coordinate of the creature (x-axis, y-axis)
         """
         super().__init__(coordinate)
-        self.shark_energy = initial_energy
+        self.energy = initial_energy
 
     def __repr__(self) -> str:
         """Return a string that represents this object
