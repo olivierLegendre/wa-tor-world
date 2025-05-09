@@ -1,4 +1,5 @@
 import creatures
+import random
 
 #region Class
 class WatorWorld():
@@ -120,8 +121,8 @@ class WatorWorld():
     def move_sharks(self) -> None:
         """Move all the sharks one by one
         """
-        #loop on each shark object of self.school_of_shark
-        self.move_shark(self, shark)
+        for shark in self.school_of_shark:
+            self.move_shark(self, shark)
 
     def move_shark(self, shark: creatures.Shark) -> bool:
         """Movement of a shark
@@ -139,10 +140,12 @@ class WatorWorld():
             prey_position = self.choice_of_prey(prey_list)
         else:
             #random() move: north, east, west, south
-            random_coordinate = ()
+            coordenate_x = random.randint(0,1)
+            coordenate_y = (0 if coordenate_x == 1 else 1)
+            random_coordinate = (coordenate_x, coordenate_y)
             prey_position = random_coordinate
         #Move to prey
-        #current_position = shark position
+        current_position = shark.coordinate
         self.move_to_prey(shark, current_position, prey_position)
         
         #Verify energy shark
@@ -158,9 +161,9 @@ class WatorWorld():
         Returns:
             bool: _description_
         """
-        return shark.energy >= 0
+        return shark.energy > 0
 
-    def check_presence_prey(self, shark) -> list[tuple]:
+    def check_presence_prey(self, shark: creatures.Shark) -> list[tuple]:
         """Check if there is available prey
 
         Args:
@@ -170,6 +173,22 @@ class WatorWorld():
             list[tuple]: list of each prey coordinate
         """
         prey_list = []
+
+        #Create var to check prey presence
+        check_preysence_north = (shark.coordinate[0], shark.coordinate[1]-1 % len(self.__dim_map_y))
+        check_preysence_south = (shark.coordinate[0], shark.coordinate[1]+1 % len(self.__dim_map_y))
+        check_preysence_east = (shark.coordinate[0]+1 % len(self.__dim_map_x), shark.coordinate[1])
+        check_preysence_west = (shark.coordinate[0]-1 % len(self.__dim_map_x), shark.coordinate[1])
+
+        if self.world_map[check_preysence_north[0]][check_preysence_north[1]] == self.__CONST_FISH:
+            prey_list.append(check_preysence_north)
+        elif self.world_map[check_preysence_south[0]][check_preysence_south[1]] == self.__CONST_FISH:
+            prey_list.append(check_preysence_south)
+        elif self.world_map[check_preysence_east[0]][check_preysence_south[1]] == self.__CONST_FISH:
+            prey_list.append(check_preysence_east)
+        elif self.world_map[check_preysence_west[0]][check_preysence_west[1]] == self.__CONST_FISH:
+            prey_list.append(check_preysence_west)
+        
         return prey_list
     
     def choice_of_prey(self, prey_list: list[tuple]) -> tuple:
@@ -181,8 +200,7 @@ class WatorWorld():
         Returns:
             tuple: coordinate of one prey
         """
-        #random on one prey to hunt
-        pass
+        return prey_list[random.randint(0, len(prey_list)-1)]
 
     def move_to_prey(self, shark: creatures.Shark, current_position: tuple, prey_position: tuple) -> bool:
         """Shark's movement on its prey
@@ -198,16 +216,19 @@ class WatorWorld():
         #Shark movement on the world map
         self.move_shark_to_position(current_position, prey_position)
         #Delete the prey
-        self.kill_fish(prey_position)
+        fish_killed = self.kill_fish(prey_position)
+        if fish_killed:
+            shark.energy = self.__CONST_SHARK_INITIAL_ENERGY
         #Update school_of_shark
-        pass
+        index = [i for i, fish in enumerate(self.school_of_shark) if shark.position == current_position]
+        self.school_of_shark.pop(index)
+        shark.coordinate = prey_position
+        self.school_of_shark.append(shark)
         #Create baby shark if the shark is mature
         if self.is_shark_mature(shark):
             self.make_baby_shark(current_position)
-        #Verify shark energy
-        self.kill_shark(prey_position)
     
-    def kill_fish(self, prey_position: tuple[int]) -> int:
+    def kill_fish(self, prey_position: tuple[int]) -> creatures.Fish:
         """Delete the fish in the fish list
 
         Args:
@@ -217,7 +238,7 @@ class WatorWorld():
             bool: index of the fish to kill
         """
         index = [i for i, fish in enumerate(self.school_of_fish) if fish.position == prey_position]
-        return self.school_of_fish(index)
+        return self.school_of_fish.pop(index)
 
     def kill_shark(self, shark_position: tuple[int]) -> bool:
         """Delete the shark in the shark list if not enough energy
@@ -229,7 +250,10 @@ class WatorWorld():
             bool: condition if the shark is delete
         """
         #update list
+        index = [i for i, shark in enumerate(self.school_of_shark) if shark.position == shark_position]
+        self.school_of_shark.pop(index)
         #update world map
+        self.set_param_to_position(self.__CONST_SHARK, shark_position)
         pass
         
     def move_shark_to_position(self, current_position: tuple[int], prey_position: tuple[int]) -> None:
@@ -240,8 +264,9 @@ class WatorWorld():
             prey_position (tuple[int]): the prey coordinate
         """
         #update shark futur position
+        self.set_param_to_position(self.__CONST_SHARK, prey_position)
         #update shark past position
-        pass
+        self.set_param_to_position(self.__CONST_WATER, current_position)
 
     def set_param_to_position(self, param: int, position: tuple[int]) -> None:
         """Update coordinate of the world map position
@@ -267,7 +292,7 @@ class WatorWorld():
         #Create new shark and add to the list school_of_shark
         self.school_of_shark.append(creatures.Shark(current_position))
         #Update world map coordinate
-        self.set_param_to_position(self.__CONST_CREATURE_TYPE_SHARK, current_position)
+        self.set_param_to_position(self.__CONST_SHARK, current_position)
 
     def is_shark_mature(self, shark: creatures.Shark) -> bool:
         """Verify if the shark is mature to create baby
