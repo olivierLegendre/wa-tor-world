@@ -11,8 +11,6 @@ class Creature():
 
 class Fish(Creature):
 
-    __CONST_FISH_MATURITY = 3
-
     def __init__(self, coordinate: tuple[int]):
         """Initializer of Fish object
 
@@ -40,7 +38,6 @@ class Fish(Creature):
 
 class Shark(Creature):
 
-    __CONST_SHARK_MATURITY = 7
     __CONST_SHARK_INITIAL_ENERGY = 5
 
     def __init__(self, coordinate: tuple[int]):
