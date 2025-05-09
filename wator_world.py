@@ -26,8 +26,8 @@ class WatorWorld():
             number_of_fish (_type_): number of fishes on the world map at the beginning
             number_of_shark (_type_): number of sharks on the world map at the beginning
         """ 
-        self.dim_map_x = dim_map_x
-        self.dim_map_y = dim_map_y
+        self.__dim_map_x = dim_map_x
+        self.__dim_map_y = dim_map_y
 
         self.__initializition(number_of_fish, number_of_shark)
     
@@ -53,8 +53,6 @@ class WatorWorld():
             number_of_fish (int): number of fish on world map at the beginning
             number_of_shark (int): number of shark on world map at the beginning
         """
-        #position = tuple of coordinates (x,y)
-        position = ()
         self.add_fishes(number_of_fish)
         self.add_sharks(number_of_shark)
 
@@ -64,6 +62,7 @@ class WatorWorld():
         Args:
             number_of_fish (int): number of fish to add to the world map
         """
+        #position = tuple of coordinates (x,y)
         position = ()
         if self.is_position_free(position):
             self.add_fish(position)
@@ -78,6 +77,8 @@ class WatorWorld():
         Returns:
             bool: successfully added
         """
+        #update school_of_fish
+        #update world map
         pass
     
     def add_sharks(self, number_of_shark: int) -> None:
@@ -86,6 +87,7 @@ class WatorWorld():
         Args:
             number_of_shark (int): number of shark to add to the world map
         """
+        #position = tuple of coordinates (x,y)
         position = ()
         if self.is_position_free(position):
             self.add_shark(position)
@@ -100,6 +102,8 @@ class WatorWorld():
         Returns:
             bool: successfully added
         """
+        #update school_of_fish
+        #update world map
         pass
     
     def is_position_free(self, position: tuple) -> bool:
@@ -130,11 +134,31 @@ class WatorWorld():
         """
         #Verify prey availability
         prey_list = self.check_presence_prey(shark)
-        #Choice prey
-        prey_position = self.choice_of_prey(prey_list)
+        #Choice prey if prey_list not null else random() move
+        if not prey_list:
+            prey_position = self.choice_of_prey(prey_list)
+        else:
+            #random() move: north, east, west, south
+            random_coordinate = ()
+            prey_position = random_coordinate
         #Move to prey
         #current_position = shark position
         self.move_to_prey(shark, current_position, prey_position)
+        
+        #Verify energy shark
+        if not self.is_shark_still_alive(shark):
+            self.kill_shark
+
+    def is_shark_still_alive(self, shark) -> bool:
+        """Vérify if the shark have enough energy
+
+        Args:
+            shark (_type_): _description_
+
+        Returns:
+            bool: _description_
+        """
+        return shark.energy >= 0
 
     def check_presence_prey(self, shark) -> list[tuple]:
         """Check if there is available prey
@@ -183,14 +207,14 @@ class WatorWorld():
         #Verify shark energy
         self.kill_shark(prey_position)
     
-    def kill_fish(self, prey_position: tuple[int]) -> bool:
+    def kill_fish(self, prey_position: tuple[int]) -> int:
         """Delete the fish in the fish list
 
         Args:
             prey_position (tuple[int]): the fish coordinate
 
         Returns:
-            bool: condition if the fish is delete
+            bool: index of the fish to kill
         """
         index = [i for i, fish in enumerate(self.school_of_fish) if fish.position == prey_position]
         return self.school_of_fish(index)
@@ -204,9 +228,10 @@ class WatorWorld():
         Returns:
             bool: condition if the shark is delete
         """
+        #update list
+        #update world map
         pass
         
-
     def move_shark_to_position(self, current_position: tuple[int], prey_position: tuple[int]) -> None:
         """Shark's movement on a position
 
@@ -259,32 +284,32 @@ class WatorWorld():
     def move_fishes(self):
         """Move all the fishes one by one
         """
-        #loop on each shark object of self.school_of_shark
-        self.hunting_shark(self, fish)
+        #loop on each fish object of self.school_of_fish
+        self.move_fish(self, fish)
 
-    def move_fish(self, shark: creatures.Shark) -> bool:
+    def move_fish(self, fish: creatures.Fish) -> bool:
         """Movement of a fish
 
         Args:
-            fish (creatures.Shark): the fish that will move
+            fish (creatures.Fish): the fish that will move
 
         Returns:
             bool: condition if fish move
         """
         #Verify water availability
-        water_list = self.check_presence_water(shark)
+        water_list = self.check_presence_water(fish)
         #Choice water position
         water_position = self.choice_of_water(water_list)
         #Move to water coordinate
         #current_position = water coordinate position
-        self.move_to_water(shark, current_position, water_position)
+        self.move_to_water(fish, current_position, water_position)
 
-    def move_to_water(self, fish: creatures.Fish, current_position: tuple, water_position: tuple) -> bool:
+    def move_to_water(self, fish: creatures.Fish, current_position: tuple, water_position: tuple) -> None:
         """Fish's movement on its water coordinate
 
         Args:
-            shark (creatures.Shark): the shark that will move
-            current_position (tuple): the shark coordinate
+            fish (creatures.Shark): the fish that will move
+            current_position (tuple): the fish coordinate
             water_position (tuple): the water coordinate
 
         Returns:
