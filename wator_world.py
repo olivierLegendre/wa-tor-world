@@ -7,15 +7,13 @@ class WatorWorld():
     school_of_shark = []
 
     #region Constantes
-    __CONST_WATER_SYMBOL = 0
-    __CONST_FISH_SYMBOL = 1
-    __CONST_SHARK_SYMBOL = 2
-    
+    __CONST_WATER = 0
+    __CONST_FISH = 1
+    __CONST_SHARK = 2
+
     __CONST_FISH_MATURITY = 3
     __CONST_SHARK_MATURITY = 7
-
-    __CONST_CREATURE_TYPE_FISH = "fish"
-    __CONST_CREATURE_TYPE_SHARK = "shark"
+    __CONST_SHARK_INITIAL_ENERGY = 5
 
     def __init__(self, dim_map_x, dim_map_y, number_of_fish, number_of_shark):
         """Initializer of WatorWorld object
@@ -77,6 +75,7 @@ class WatorWorld():
         Returns:
             bool: successfully added
         """
+        self.school_of_fish
         #update school_of_fish
         #update world map
         pass
@@ -102,6 +101,7 @@ class WatorWorld():
         Returns:
             bool: successfully added
         """
+        self.school_of_shark
         #update school_of_fish
         #update world map
         pass
@@ -257,7 +257,6 @@ class WatorWorld():
         """
         self.move_sharks()
         self.move_fishes()
-        self.reproduction_fishes()
     
     def make_baby_shark(self, current_position: tuple[int]):
         """Create a new shark on wator world
