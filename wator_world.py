@@ -48,11 +48,8 @@ class WatorWorld():
     def initialize_world_map(self) -> None:
         """Initialize world map at the dimension x-axis & y-axis with water
         """
-        self.world_map = [[self.__CONST_WATER for _ in range(self.__dim_map_x)]for _ in range(self.__dim_map_y)]
-        # for i in self.world_map :
-        #     for j in i :
-        #         print(f"{j}", end =" ")
-        #     print()
+        self.world_map = [[self.__CONST_WATER for _ in range(self.__dim_map_x)] for _ in range(self.__dim_map_y)]
+
 
     def add_creatures_to_world_map(self, number_of_fish: int, number_of_shark: int) -> None:
         """Populate world map of creatures
@@ -76,12 +73,12 @@ class WatorWorld():
         for index_x, list in enumerate(self.world_map):
             for index_y, _ in enumerate(list):
                 if self.world_map[index_x][index_y] == self.__CONST_WATER:
-                    list_temp.append((index_x,index_y))
+                    list_temp.append((index_x, index_y))
 
         # coordonnée aléatoire qui part de 0 jusqu'à la fin de la list_temp.
         # retire à l'index le contenu
         for _ in range(number_of_fish):
-            self.add_fish(list_temp.pop(random.randint(0,len(list_temp)-1)))
+            self.add_fish(list_temp.pop(random.randint(0, len(list_temp)-1)))
             
     def add_fish(self, position: tuple) -> bool:
         """Adding one fish
@@ -94,7 +91,7 @@ class WatorWorld():
         """
         fish = creatures.Fish(position)
         if self.world_map[position[0]][position[1]] == self.__CONST_WATER:
-            self.set_param_to_position(self.__CONST_FISH,position)
+            self.set_param_to_position(self.__CONST_FISH, position)
             self.school_of_fish.append(fish)
             return True
         return False
@@ -160,7 +157,8 @@ class WatorWorld():
         """
         #loop on each shark object of self.school_of_shark
         self.move_shark(self, shark)
-    pass
+        pass
+    
     def move_shark(self, shark: creatures.Shark) -> bool:
         """Movement of a shark
 
@@ -332,13 +330,16 @@ class WatorWorld():
         check_preysence_south = (fish.coordinate[0], fish.coordinate[1]+1 % self.__dim_map_y-1)
         check_preysence_east = (fish.coordinate[0]+1 % self.__dim_map_x-1, fish.coordinate[1])
         check_preysence_west = (fish.coordinate[0]-1 % self.__dim_map_x-1, fish.coordinate[1])
-
-        print(f"fish.position: {fish.coordinate}")
-        print(f"check_preysence_north= {check_preysence_north}")
-        print(f"check_preysence_south= {check_preysence_south}")
-        print(f"check_preysence_east= {check_preysence_east}")
-        print(f"check_preysence_west= {check_preysence_west}")
-
+        # list_allowed_fish = list(self.__CONST_WATER)
+        # list_allowed_shark = list(self.__CONST_WATER, self.__CONST_FISH)
+        if self.world_map[check_preysence_north[0]][check_preysence_north[1]] in ([self.__CONST_WATER]):
+            
+        # print(f"fish.position: {fish.coordinate}")
+        # print(f"check_preysence_north= {check_preysence_north}")
+        # print(f"check_preysence_south= {check_preysence_south}")
+        # print(f"check_preysence_east= {check_preysence_east}")
+        # print(f"check_preysence_west= {check_preysence_west}")
+        
         if self.world_map[check_preysence_north[0]][check_preysence_north[1]] == self.__CONST_WATER:
             water_list.append(check_preysence_north)
         if self.world_map[check_preysence_south[0]][check_preysence_south[1]] == self.__CONST_WATER:
@@ -350,7 +351,7 @@ class WatorWorld():
 
         return water_list
 
-    def choice_of_water(self, water_list:list[tuple]) -> tuple:
+    def choice_of_destination(self, water_list:list[tuple]) -> tuple:
         return water_list[random.randint(0, len(water_list)-1)]
 
     def move_fish(self, fish: creatures.Fish) -> bool:
@@ -363,15 +364,16 @@ class WatorWorld():
             bool: condition if fish move
         """
         #Verify water availability
+        water_list = []
         water_list = self.check_presence_water(fish)
-        if not water_list == []:
+        if water_list:
             #Choice water position
-            water_position = self.choice_of_water(water_list)
+            water_position = self.choice_of_destination(water_list)
             #Move to water coordinate
             current_position = fish.coordinate
-            self.move_to_water(fish, current_position, water_position)
+            self.move_to_destination(fish, current_position, water_position)
 
-    def move_to_water(self, fish: creatures.Fish, current_position: tuple, water_position: tuple) -> None:
+    def move_to_destination(self, fish: creatures.Fish, current_position: tuple, water_position: tuple) -> None:
         """Fish's movement on its water coordinate
 
         Args:
@@ -385,7 +387,7 @@ class WatorWorld():
         #Fish movement on the world map
         self.move_fish_to_position(current_position, water_position)
         #Update school_of_fish
-     
+
         #Create baby fish if the fish is mature
         if self.is_fish_mature(fish):
             self.make_baby_fish(current_position)
@@ -402,7 +404,7 @@ class WatorWorld():
         #update fish past position
         self.set_param_to_position(self.__CONST_WATER, current_position)  
 
-    def make_baby_fish(self, current_position: tuple[int]):
+    def make_baby_fish(self, current_position: tuple[int])-> None:
         """Create a new fish on wator world
 
         Args:
@@ -412,7 +414,7 @@ class WatorWorld():
         self.school_of_fish.append(creatures.Fish(current_position))
         #Update world map coordinate
         self.set_param_to_position(self.__CONST_FISH, current_position)
-   
+
 
     def is_fish_mature(self, fish: creatures.Fish) -> bool:
         """Verify if the fish is mature to create baby
@@ -424,7 +426,7 @@ class WatorWorld():
             bool: condition if the fish is mature
         """
         return fish.age % self.__CONST_FISH_MATURITY == 0 if not fish.age == 0 else False
-   
+
     #Display Waterworld_map
 
 wator_world = WatorWorld(10, 10, 10, 5)
