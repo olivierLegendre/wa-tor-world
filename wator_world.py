@@ -16,6 +16,9 @@ class WatorWorld():
     __CONST_SHARK_MATURITY = 7
     __CONST_SHARK_INITIAL_ENERGY = 5
 
+    #marge de déplacement pour les créatures
+    __RANGE_MOVEMENT = 3
+
     def __init__(self, dim_map_x, dim_map_y, number_of_fish, number_of_shark):
         """Initializer of WatorWorld object
 
@@ -37,7 +40,10 @@ class WatorWorld():
             number_of_shark (int): number of shark on world map at the beginning
         """
         self.initialize_world_map()
-        self.add_creatures_to_world_map(number_of_fish, number_of_shark)
+        if number_of_fish + number_of_shark <= self.__dim_map_x * self.__dim_map_y - self.__RANGE_MOVEMENT:
+            self.add_creatures_to_world_map(number_of_fish, number_of_shark)
+        else:
+            print("Trop de créature pour la world map")
 
     def initialize_world_map(self) -> None:
         """Initialize world map at the dimension x-axis & y-axis with water
@@ -64,21 +70,22 @@ class WatorWorld():
         Args:
             number_of_fish (int): number of fish to add to the world map
         """
-       
-        #position = tuple of coordinates (x,y)
+        #contiendra toutes les coordonnées dispo de la map
+        #contient tuple index x et index y
+        for index_x, list in enumerate(self.world_map):
+            for index_y, _ in enumerate(list):
+                if self.world_map[index_x][index_y] == self.__CONST_WATER:
+                    list_temp.append((index_x,index_y))
+
+        # coordonnée aléatoire qui part de 0 jusqu'à la fin de la list_temp.
+        # retire à l'index le contenu
         for _ in range(number_of_fish):
-            x = random.randint(0, self.__dim_map_x -1)
-            y = random.randint(0, self.__dim_map_y -1)
-            position = (x,y)
-            if self.is_position_free(position):
-                self.add_fish(position)
-        
-        for x in self.world_map :
-            for y in x :
-                print(f"{y}", end =" ")
-            print()
-
-
+            print(f"list_temp= {list_temp}")
+            print(f"(list_temp.pop(random.randint(0,len(list_temp)-1)))= {(list_temp.pop(random.randint(0,len(list_temp)-1)))}")
+            toto= list_temp.pop(random.randint(0,len(list_temp)-1))
+            print(toto)
+            self.add_fish(list_temp.pop(random.randint(0,len(list_temp)-1)))
+            
     def add_fish(self, position: tuple) -> bool:
         """Adding one fish
 
@@ -88,15 +95,12 @@ class WatorWorld():
         Returns:
             bool: successfully added
         """
-        x, y = position
-        if self.world_map[y][x] == self.__CONST_WATER:
-            self.world_map[y][x] = self.__CONST_FISH
-            self.school_of_fish.append(position)
+        fish = creatures.Fish(position)
+        if self.world_map[position[0]][position[1]] == self.__CONST_WATER:
+            self.set_param_to_position(self.__CONST_FISH,position)
+            self.school_of_fish.append(fish)
             return True
         return False
-        
-        #update school_of_fish
-        #update world map
 
     def add_sharks(self, number_of_shark: int) -> None:
         """Adding all the shark
@@ -105,10 +109,30 @@ class WatorWorld():
             number_of_shark (int): number of shark to add to the world map
         """
         #position = tuple of coordinates (x,y)
-        position = ()
-        if self.is_position_free(position):
-            self.add_shark(position)
-        pass
+        # for _ in range(number_of_shark):
+        #     x = random.randint(0, self.__dim_map_x -1)
+        #     y = random.randint(0, self.__dim_map_y -1)
+        #     position = (x,y)
+        #     if self.is_position_free(position):
+        #         self.add_shark(position)
+        
+        list_temp = []
+        #contiendra toutes les coordonnées dispo de la map
+        #contient tuple index x et index y
+        for index_x, list in enumerate(self.world_map):
+            for index_y, _ in enumerate(list):
+                if self.world_map[index_x][index_y] == self.__CONST_WATER:
+                    list_temp.append((index_x,index_y))
+
+        # coordonnée aléatoire qui part de 0 jusqu'à la fin de la list_temp.
+        # retire à l'index le contenu
+        for _ in range(number_of_shark):
+            self.add_shark(list_temp.pop(random.randint(0,len(list_temp)-1)))
+
+        for x in self.world_map :
+            for y in x :
+                print(f"{y}", end =" ")
+            print()
 
     def add_shark(self, position: tuple) -> bool:
         """Adding one shark
@@ -119,10 +143,12 @@ class WatorWorld():
         Returns:
             bool: successfully added
         """
-        self.school_of_shark
-        #update school_of_fish
-        #update world map
-        pass
+        shark = creatures.Shark(position,self.__CONST_SHARK_INITIAL_ENERGY)
+        if self.world_map[position[0]][position[1]] == self.__CONST_WATER:
+            self.set_param_to_position(self.__CONST_SHARK,position)
+            self.school_of_shark.append(shark)
+            return True
+        return False
     
     def is_position_free(self, position: tuple) -> bool:
         """Check whether the position is free
@@ -304,8 +330,10 @@ class WatorWorld():
         """Move all the fishes one by one
         """
         #loop on each fish object of self.school_of_fish
-        self.move_fish(self, fish)
-    pass
+
+        for fish in self.school_of_fish:
+            self.move_fish(fish)
+    
     def move_fish(self, fish: creatures.Fish) -> bool:
         """Movement of a fish
 
@@ -322,7 +350,7 @@ class WatorWorld():
         #Move to water coordinate
         #current_position = water coordinate position
         self.move_to_water(fish, current_position, water_position)
-    pass
+    
     def move_to_water(self, fish: creatures.Fish, current_position: tuple, water_position: tuple) -> None:
         """Fish's movement on its water coordinate
 
@@ -378,7 +406,7 @@ class WatorWorld():
     pass
     #Display Waterworld_map
 
-wator_world = WatorWorld(10, 10, 10,0)
+wator_world = WatorWorld(5, 5, 18, 9)
 print(wator_world)
 
 
