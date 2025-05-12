@@ -183,10 +183,16 @@ class WatorWorld():
         prey_list = []
 
         #Create var to check prey presence
-        check_preysence_north = (shark.coordinate[0], shark.coordinate[1]-1 % self.__dim_map_y)
-        check_preysence_south = (shark.coordinate[0], shark.coordinate[1]+1 % self.__dim_map_y)
-        check_preysence_east = (shark.coordinate[0]+1 % self.__dim_map_x, shark.coordinate[1])
-        check_preysence_west = (shark.coordinate[0]-1 % self.__dim_map_x, shark.coordinate[1])
+        check_preysence_north = (shark.coordinate[0], shark.coordinate[1]-1 % self.__dim_map_y-1)
+        check_preysence_south = (shark.coordinate[0], shark.coordinate[1]+1 % self.__dim_map_y-1)
+        check_preysence_east = (shark.coordinate[0]+1 % self.__dim_map_x-1, shark.coordinate[1])
+        check_preysence_west = (shark.coordinate[0]-1 % self.__dim_map_x-1, shark.coordinate[1])
+
+        print(f"Shark.position: {shark.coordinate}")
+        print(f"check_preysence_north= {check_preysence_north}")
+        print(f"check_preysence_south= {check_preysence_south}")
+        print(f"check_preysence_east= {check_preysence_east}")
+        print(f"check_preysence_west= {check_preysence_west}")
 
         if self.world_map[check_preysence_north[0]][check_preysence_north[1]] == self.__CONST_FISH:
             prey_list.append(check_preysence_north)
@@ -196,7 +202,7 @@ class WatorWorld():
             prey_list.append(check_preysence_east)
         if self.world_map[check_preysence_west[0]][check_preysence_west[1]] == self.__CONST_FISH:
             prey_list.append(check_preysence_west)
-        
+
         return prey_list
     
     def choice_of_prey(self, prey_list: list[tuple]) -> tuple:
@@ -394,53 +400,57 @@ class WatorWorld():
         """
         return fish.age % self.__CONST_SHARK_MATURITY == 0
 
-# test_map = [
-#     [
-#         0,
-#         0,
-#         0,
-#         0,
-#     ],
-#     [
-#         0,
-#         1,
-#         1,
-#         0,
-#     ],
-#     [
-#         0,
-#         1,
-#         2,
-#         0,
-#     ],
-#     [
-#         0,
-#         0,
-#         0,
-#         0,
-#     ],
-# ]
+test_map = [
+    [
+        0,
+        1,
+        1,
+        0,
+    ],
+    [
+        1,
+        0,
+        0,
+        0,
+    ],
+    [
+        1,
+        0,
+        0,
+        2,
+    ],
+    [
+        0,
+        2,
+        0,
+        0,
+    ],
+]
 
-# test_world_map = WatorWorld(4,4,3,1)
-# test_world_map.world_map = test_map
-# test_world_map.school_of_shark.append(creatures.Shark((2,2),5))
-# test_world_map.school_of_fish.append(creatures.Fish((1,1)))
-# test_world_map.school_of_fish.append(creatures.Fish((1,2)))
-# test_world_map.school_of_fish.append(creatures.Fish((2,1)))
+test_world_map = WatorWorld(4,4,3,1)
+test_world_map.world_map = test_map
+test_world_map.school_of_shark.append(creatures.Shark((2,3),5))
+test_world_map.school_of_shark.append(creatures.Shark((3,1),5))
+test_world_map.school_of_fish.append(creatures.Fish((0,1)))
+test_world_map.school_of_fish.append(creatures.Fish((0,2)))
+test_world_map.school_of_fish.append(creatures.Fish((1,0)))
+test_world_map.school_of_fish.append(creatures.Fish((2,0)))
 
-# for i in test_world_map.school_of_fish:
-#     print(i)
-# print()
+print(test_world_map.world_map[2][3])
 
-# for i in test_world_map.world_map :
-#     for j in i :
-#         print(f"{j}", end =" ")
-#     print()
+for i in test_world_map.school_of_fish:
+    print(i)
+print()
 
-# print()
-# test_world_map.move_sharks()    
+for i in test_world_map.world_map :
+    for j in i :
+        print(f"{j}", end =" ")
+    print()
 
-# for i in test_world_map.world_map :
-#     for j in i :
-#         print(f"{j}", end =" ")
-#     print()
+print()
+test_world_map.move_sharks()    
+
+for i in test_world_map.world_map :
+    for j in i :
+        print(f"{j}", end =" ")
+    print()
