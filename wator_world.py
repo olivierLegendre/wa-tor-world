@@ -371,16 +371,7 @@ class WatorWorld():
         check_preysence_south = (creature.coordinate[0], creature.coordinate[1]+1 % self.__dim_map_y-1)
         check_preysence_east = (creature.coordinate[0]+1 % self.__dim_map_x-1, creature.coordinate[1])
         check_preysence_west = (creature.coordinate[0]-1 % self.__dim_map_x-1, creature.coordinate[1])
-        # list_allowed_creature = list(self.__CONST_WATER)
-        # list_allowed_shark = list(self.__CONST_WATER, self.__CONST_creature)
-        if self.world_map[check_preysence_north[0]][check_preysence_north[1]] in ([self.__CONST_WATER]):
-            
-        # print(f"creature.position: {creature.coordinate}")
-        # print(f"check_preysence_north= {check_preysence_north}")
-        # print(f"check_preysence_south= {check_preysence_south}")
-        # print(f"check_preysence_east= {check_preysence_east}")
-        # print(f"check_preysence_west= {check_preysence_west}")
-        
+
         if self.world_map[check_preysence_north[0]][check_preysence_north[1]] == self.__CONST_WATER:
             water_list.append(check_preysence_north)
         if self.world_map[check_preysence_south[0]][check_preysence_south[1]] == self.__CONST_WATER:
@@ -468,43 +459,9 @@ class WatorWorld():
         """
         return fish.age % self.__CONST_FISH_MATURITY == 0 if not fish.age == 0 else False
 
-test_map = [
-    [
-        0,
-        1,
-        1,
-        0,
-    ],
-    [
-        1,
-        0,
-        0,
-        0,
-    ],
-    [
-        1,
-        0,
-        0,
-        2,
-    ],
-    [
-        0,
-        2,
-        0,
-        0,
-    ],
-]
+
 
 test_world_map = WatorWorld(4,4,3,1)
-test_world_map.world_map = test_map
-test_world_map.school_of_shark.append(creatures.Shark((2,3),5))
-test_world_map.school_of_shark.append(creatures.Shark((3,1),5))
-test_world_map.school_of_fish.append(creatures.Fish((0,1)))
-test_world_map.school_of_fish.append(creatures.Fish((0,2)))
-test_world_map.school_of_fish.append(creatures.Fish((1,0)))
-test_world_map.school_of_fish.append(creatures.Fish((2,0)))
-
-print(test_world_map.world_map[2][3])
 
 for i in test_world_map.school_of_fish:
     print(i)
@@ -522,3 +479,5 @@ for i in test_world_map.world_map :
     for j in i :
         print(f"{j}", end =" ")
     print()
+
+test_world_map.iterate()
