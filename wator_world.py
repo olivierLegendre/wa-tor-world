@@ -356,7 +356,7 @@ class WatorWorld():
         return water_list
 
     def choice_of_water(self, water_list:list[tuple]) -> tuple:
-        
+        return water_list[random.randint(0, len(water_list)-1)]
 
     def move_fish(self, fish: creatures.Fish) -> bool:
         """Movement of a fish
@@ -375,10 +375,6 @@ class WatorWorld():
         current_position = fish.coordinate
         self.move_to_water(fish, current_position, water_position)
 
-      
-
-
-    
     def move_to_water(self, fish: creatures.Fish, current_position: tuple, water_position: tuple) -> None:
         """Fish's movement on its water coordinate
 
@@ -418,7 +414,7 @@ class WatorWorld():
         #Create new fish and add to the list school_of_fish
         self.school_of_fish.append(creatures.Fish(current_position))
         #Update world map coordinate
-        self.set_param_to_position(self.__CONST_CREATURE_TYPE_FISH, current_position)
+        self.set_param_to_position(self.__CONST_FISH, current_position)
    
 
     def is_fish_mature(self, fish: creatures.Fish) -> bool:
@@ -430,7 +426,7 @@ class WatorWorld():
         Returns:
             bool: condition if the fish is mature
         """
-        return fish.age % self.__CONST_SHARK_MATURITY == 0
+        return fish.age % self.__CONST_FISH_MATURITY == 0 if not fish.age == 0 else False
    
     #Display Waterworld_map
 
