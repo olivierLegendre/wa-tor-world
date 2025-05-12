@@ -8,7 +8,9 @@ def main():
     # water_world_game.run_water_world_window()
     # game_app = pyv.App()
     # game_app.run()
-    wateeeerr = ww.WaterWorld()
+
+    prototype = pyv.Proto()
+    prototype.run()
 
 
 if __name__ == "__main__":
