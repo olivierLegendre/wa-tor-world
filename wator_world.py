@@ -7,11 +7,14 @@ class WatorWorld():
     school_of_fish = []
     school_of_shark = []
 
-    birth_fish = []
-    birth_shark = []
+    nb_fish = 0
+    nb_shark = 0
 
-    dead_fish = []
-    dead_shark = []
+    birth_fish = 0
+    birth_shark = 0
+
+    dead_fish = 0
+    dead_shark = 0
 
     #region Constantes
     __CONST_WATER = 0
@@ -36,6 +39,8 @@ class WatorWorld():
         """ 
         self.__dim_map_x = dim_map_x
         self.__dim_map_y = dim_map_y
+        self.nb_fish = number_of_fish
+        self.nb_shark = number_of_shark
         self.__initialization(number_of_fish, number_of_shark)
     
     def __initialization(self, number_of_fish: int, number_of_shark: int) -> None:
@@ -180,10 +185,10 @@ class WatorWorld():
             prey_position = self.choice_of_prey(prey_list)
         else:
             #random() move: north, east, west, south
-            coordenate_x = random.randint(0,1)
-            coordenate_y = (0 if coordenate_x == 1 else 1)
-            random_coordinate = (coordenate_x, coordenate_y)
-            prey_position = random_coordinate
+            # coordenate_x = random.randint(0,1)
+            # coordenate_y = (0 if coordenate_x == 1 else 1)
+            # random_coordinate = (coordenate_x, coordenate_y)
+            prey_position = self.check_presence_water(shark)
         #Move to prey
         current_position = shark.coordinate
         self.move_to_prey(shark, current_position, prey_position)
@@ -192,7 +197,7 @@ class WatorWorld():
         
         if not self.is_shark_still_alive(shark):
             self.kill_shark
-    pass
+    
     def is_shark_still_alive(self, shark) -> bool:
         """Vérify if the shark have enough energy
 
@@ -221,12 +226,6 @@ class WatorWorld():
         check_preysence_east = (shark.coordinate[0]+1 % self.__dim_map_x-1, shark.coordinate[1])
         check_preysence_west = (shark.coordinate[0]-1 % self.__dim_map_x-1, shark.coordinate[1])
 
-        print(f"Shark.position: {shark.coordinate}")
-        print(f"check_preysence_north= {check_preysence_north}")
-        print(f"check_preysence_south= {check_preysence_south}")
-        print(f"check_preysence_east= {check_preysence_east}")
-        print(f"check_preysence_west= {check_preysence_west}")
-
         if self.world_map[check_preysence_north[0]][check_preysence_north[1]] == self.__CONST_FISH:
             prey_list.append(check_preysence_north)
         if self.world_map[check_preysence_south[0]][check_preysence_south[1]] == self.__CONST_FISH:
@@ -237,7 +236,7 @@ class WatorWorld():
             prey_list.append(check_preysence_west)
 
         return prey_list
-    pass
+    
     def choice_of_prey(self, prey_list: list[tuple]) -> tuple:
         """Choose one prey to hunt
 
@@ -264,22 +263,16 @@ class WatorWorld():
         print(f"prey_position: move_shark= {prey_position}")
         #Shark movement on the world map
         self.move_shark_to_position(current_position, prey_position)
-        self.set_param_to_position(self.__CONST_WATER, current_position)
         #Delete the prey
-        fish_killed = self.kill_fish(prey_position)
-        if fish_killed:
-            shark.energy = self.__CONST_SHARK_INITIAL_ENERGY
-            self.dead_fish.append(fish_killed)
+        self.kill_fish(prey_position,shark)
         #Update school_of_shark
-        for i, shark in enumerate(self.school_of_shark):
-            if shark.coordinate == current_position:
-                shark.coordinate = prey_position
-                shark.energy -= 1
+        shark.coordinate = prey_position
+        shark.energy -= 1
         #Create baby shark if the shark is mature
         if self.is_shark_mature(shark):
             self.make_baby_shark(current_position)
     
-    def kill_fish(self, prey_position: tuple[int]) -> creatures.Fish:
+    def kill_fish(self, prey_position: tuple[int], shark: creatures.Shark) -> creatures.Fish:
         """Delete the fish in the fish list
 
         Args:
@@ -291,7 +284,12 @@ class WatorWorld():
         for i, fish in enumerate(self.school_of_fish):
             if fish.coordinate == prey_position:
                 index = i
-        return self.school_of_fish.pop(index)
+        fish_killed = self.school_of_fish.pop(index)   
+        if fish_killed:
+            shark.energy = self.__CONST_SHARK_INITIAL_ENERGY
+            self.dead_fish += 1
+            
+        return fish_killed
 
     def kill_shark(self, shark_position: tuple[int]) -> bool:
         """Delete the shark in the shark list if not enough energy
@@ -367,17 +365,17 @@ class WatorWorld():
         for fish in self.school_of_fish:
             self.move_fish(fish)
     
-    def check_presence_water(self, fish:creatures.Fish) -> list[tuple]:
+    def check_presence_water(self, creature:creatures.Creature) -> list[tuple]:
         water_list = []
-        check_preysence_north = (fish.coordinate[0], fish.coordinate[1]-1 % self.__dim_map_y-1)
-        check_preysence_south = (fish.coordinate[0], fish.coordinate[1]+1 % self.__dim_map_y-1)
-        check_preysence_east = (fish.coordinate[0]+1 % self.__dim_map_x-1, fish.coordinate[1])
-        check_preysence_west = (fish.coordinate[0]-1 % self.__dim_map_x-1, fish.coordinate[1])
-        # list_allowed_fish = list(self.__CONST_WATER)
-        # list_allowed_shark = list(self.__CONST_WATER, self.__CONST_FISH)
+        check_preysence_north = (creature.coordinate[0], creature.coordinate[1]-1 % self.__dim_map_y-1)
+        check_preysence_south = (creature.coordinate[0], creature.coordinate[1]+1 % self.__dim_map_y-1)
+        check_preysence_east = (creature.coordinate[0]+1 % self.__dim_map_x-1, creature.coordinate[1])
+        check_preysence_west = (creature.coordinate[0]-1 % self.__dim_map_x-1, creature.coordinate[1])
+        # list_allowed_creature = list(self.__CONST_WATER)
+        # list_allowed_shark = list(self.__CONST_WATER, self.__CONST_creature)
         if self.world_map[check_preysence_north[0]][check_preysence_north[1]] in ([self.__CONST_WATER]):
             
-        # print(f"fish.position: {fish.coordinate}")
+        # print(f"creature.position: {creature.coordinate}")
         # print(f"check_preysence_north= {check_preysence_north}")
         # print(f"check_preysence_south= {check_preysence_south}")
         # print(f"check_preysence_east= {check_preysence_east}")
@@ -468,7 +466,7 @@ class WatorWorld():
         Returns:
             bool: condition if the fish is mature
         """
-        return fish.age % self.__CONST_SHARK_MATURITY == 0
+        return fish.age % self.__CONST_FISH_MATURITY == 0 if not fish.age == 0 else False
 
 test_map = [
     [
