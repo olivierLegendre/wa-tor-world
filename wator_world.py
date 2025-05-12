@@ -331,6 +331,33 @@ class WatorWorld():
         for fish in self.school_of_fish:
             self.move_fish(fish)
     
+    def check_presence_water(self, fish:creatures.Fish) -> list[tuple]:
+        water_list = []
+        check_preysence_north = (fish.coordinate[0], fish.coordinate[1]-1 % self.__dim_map_y-1)
+        check_preysence_south = (fish.coordinate[0], fish.coordinate[1]+1 % self.__dim_map_y-1)
+        check_preysence_east = (fish.coordinate[0]+1 % self.__dim_map_x-1, fish.coordinate[1])
+        check_preysence_west = (fish.coordinate[0]-1 % self.__dim_map_x-1, fish.coordinate[1])
+
+        print(f"fish.position: {fish.coordinate}")
+        print(f"check_preysence_north= {check_preysence_north}")
+        print(f"check_preysence_south= {check_preysence_south}")
+        print(f"check_preysence_east= {check_preysence_east}")
+        print(f"check_preysence_west= {check_preysence_west}")
+
+        if self.world_map[check_preysence_north[0]][check_preysence_north[1]] == self.__CONST_WATER:
+            water_list.append(check_preysence_north)
+        if self.world_map[check_preysence_south[0]][check_preysence_south[1]] == self.__CONST_WATER:
+            water_list.append(check_preysence_south)
+        if self.world_map[check_preysence_east[0]][check_preysence_south[1]] == self.__CONST_WATER:
+            water_list.append(check_preysence_east)
+        if self.world_map[check_preysence_west[0]][check_preysence_west[1]] == self.__CONST_WATER:
+            water_list.append(check_preysence_west)
+
+        return water_list
+
+    def choice_of_water(self, water_list:list[tuple]) -> tuple:
+        
+
     def move_fish(self, fish: creatures.Fish) -> bool:
         """Movement of a fish
 
@@ -348,24 +375,6 @@ class WatorWorld():
         current_position = fish.coordinate
         self.move_to_water(fish, current_position, water_position)
 
-        check_preysence_north = (fish.coordinate[0], fish.coordinate[1]-1 % self.__dim_map_y)
-        check_preysence_south = (fish.coordinate[0], fish.coordinate[1]+1 % self.__dim_map_y)
-        check_preysence_east = (fish.coordinate[0]+1 % self.__dim_map_x, fish.coordinate[1])
-        check_preysence_west = (fish.coordinate[0]-1 % self.__dim_map_x, fish.coordinate[1])
-
-        if self.world_map[check_preysence_north[0]][check_preysence_north[1]] == self.__CONST_WATER:
-            water_list.append(check_preysence_north)
-        if self.world_map[check_preysence_south[0]][check_preysence_south[1]] == self.__CONST_WATER:
-            water_list.append(check_preysence_south)
-        if self.world_map[check_preysence_east[0]][check_preysence_south[1]] == self.__CONST_WATER:
-            water_list.append(check_preysence_east)
-        if self.world_map[check_preysence_west[0]][check_preysence_west[1]] == self.__CONST_WATER:
-            water_list.append(check_preysence_west)
-
-        #random() move: north, east, west, south
-        coordenate_x = random.randint(0,1)
-        coordenate_y = (0 if coordenate_x == 1 else 1)
-        random_coordinate = (coordenate_x, coordenate_y)
       
 
 
