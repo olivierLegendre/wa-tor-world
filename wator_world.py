@@ -72,6 +72,7 @@ class WatorWorld():
         """
         #contiendra toutes les coordonnées dispo de la map
         #contient tuple index x et index y
+        list_temp = []
         for index_x, list in enumerate(self.world_map):
             for index_y, _ in enumerate(list):
                 if self.world_map[index_x][index_y] == self.__CONST_WATER:
