@@ -157,6 +157,7 @@ class WatorWorld():
         self.move_to_prey(shark, current_position, prey_position)
         
         #Verify energy shark
+        
         if not self.is_shark_still_alive(shark):
             self.kill_shark
 
@@ -241,6 +242,7 @@ class WatorWorld():
         for i, shark in enumerate(self.school_of_shark):
             if shark.coordinate == current_position:
                 shark.coordinate = prey_position
+                shark.energy -= 1
         #Create baby shark if the shark is mature
         if self.is_shark_mature(shark):
             self.make_baby_shark(current_position)
