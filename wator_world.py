@@ -126,11 +126,6 @@ class WatorWorld():
         for _ in range(number_of_shark):
             self.add_shark(list_temp.pop(random.randint(0,len(list_temp)-1)))
 
-        for x in self.world_map :
-            for y in x :
-                print(f"{y}", end =" ")
-            print()
-
     def add_shark(self, position: tuple) -> bool:
         """Adding one shark
 
@@ -295,7 +290,7 @@ class WatorWorld():
         """
         self.world_map[position[0]][position[1]] = param
 
-    def __iterate(self):
+    def iterate(self):
         """Execute one cycle of the world
         """
         self.move_sharks()
@@ -369,11 +364,12 @@ class WatorWorld():
         """
         #Verify water availability
         water_list = self.check_presence_water(fish)
-        #Choice water position
-        water_position = self.choice_of_water(water_list)
-        #Move to water coordinate
-        current_position = fish.coordinate
-        self.move_to_water(fish, current_position, water_position)
+        if not water_list == []:
+            #Choice water position
+            water_position = self.choice_of_water(water_list)
+            #Move to water coordinate
+            current_position = fish.coordinate
+            self.move_to_water(fish, current_position, water_position)
 
     def move_to_water(self, fish: creatures.Fish, current_position: tuple, water_position: tuple) -> None:
         """Fish's movement on its water coordinate
@@ -401,9 +397,10 @@ class WatorWorld():
             current_position (tuple[int]): the fish coordinate
             water_position (tuple[int]): the water coordinate
         """
-        #update fish futur position
+        #update fish futur position        
+        self.set_param_to_position(self.__CONST_FISH, water_position)
         #update fish past position
-     
+        self.set_param_to_position(self.__CONST_WATER, current_position)  
 
     def make_baby_fish(self, current_position: tuple[int]):
         """Create a new fish on wator world
@@ -431,7 +428,19 @@ class WatorWorld():
     #Display Waterworld_map
 
 wator_world = WatorWorld(10, 10, 10, 5)
-print(wator_world)
+
+for x in wator_world.world_map :
+    for y in x :
+        print(f"{y}", end =" ")
+    print()
+
+wator_world.iterate()
+
+for x in wator_world.world_map :
+    for y in x :
+        print(f"{y}", end =" ")
+    print()
+
 
 
 
