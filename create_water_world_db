@@ -1,7 +1,7 @@
 -- SQLite
-CREATE TABLE water_world (
+CREATE TABLE IF NOT EXISTS water_world (
     water_world_id INTEGER PRIMARY KEY,
-    water_world_name STRING NOT NULL
+    UNIQUE(water_world_name)STRING NOT NULL,
     nb_fishes INTEGER NOT NULL,
     nb_sharks INTEGER NOT NULL,
     fish_maturity INTEGER NOT NULL,
@@ -9,14 +9,16 @@ CREATE TABLE water_world (
     shark_initial_energy INTEGER NOT NULL
 )
 
-CREATE TABLE water_world_map (
+CREATE TABLE IF NOT EXISTS Water_world_map (
     water_world_map_id INTEGER PRIMARY KEY, 
     chronon INTEGER NOT NULL,
-    map TEXT NOT NULL, 
-    FOREIGN KEY(water_world_id) REFERENCES water_world(water_world_id)
+    map TEXT NOT NULL,
+    water_world_id INTEGER NOT NULL,
+    FOREIGN KEY(water_world_id) REFERENCES Water_world(water_world_id),
+    UNIQUE(water_world_id, chronon),
 )
 
-CREATE TABLE water_world_statistics(
+CREATE TABLE IF NOT EXISTS Water_world_statistics(
     water_world_statistics_id INTEGER PRIMARY KEY,
     chronon INTEGER NOT NULL,
     nb_fish INTEGER NOT NULL,
@@ -25,8 +27,10 @@ CREATE TABLE water_world_statistics(
     birth_shark INTEGER NOT NULL,
     dead_fish INTEGER NOT NULL,
     dead_shark INTEGER NOT NULL,
-    FOREIGN KEY(water_world_id) REFERENCES water_world(water_world_id)
+    water_world_id INTEGER NOT NULL,
+    FOREIGN KEY(water_world_id) REFERENCES Water_world(water_world_id),
+    UNIQUE(water_world_id, chronon),
 )
 
-INSERT INTO Xater_world (nb_fishes, nb_sharks, fish_maturity, shark_maturity, shark_initial_energy)
+INSERT INTO Water_world (nb_fishes, nb_sharks, fish_maturity, shark_maturity, shark_initial_energy)
 VALUES()
