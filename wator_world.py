@@ -274,7 +274,7 @@ class WatorWorld():
         shark.energy -= 1
         #Create baby shark if the shark is mature
         if self.is_creature_mature(shark):
-            self.make_baby_shark(current_position)
+            self.make_baby_creature(current_position,shark)
     
     def kill_fish(self, prey_position: tuple[int], shark: creatures.Shark) -> creatures.Fish:
         """Delete the fish in the fish list
@@ -341,28 +341,26 @@ class WatorWorld():
         self.move_sharks()
         self.move_fishes()
     
-    def make_baby_shark(self, current_position: tuple[int]):
-        """Create a new shark on wator world
+    def make_baby_creature(self, current_position: tuple[int], creature_dad: creatures.Creature) -> None:
+        """Create a new creature on wator world
 
         Args:
-            current_position (tuple[int]): position of the new shark
+            current_position (tuple[int]): position of the new creature
+            creature_dad (creatures.Creature): creature to check type
         """
-        #Create new shark and add to the list school_of_shark
-        self.school_of_shark.append(creatures.Shark(current_position, self.__CONST_SHARK_INITIAL_ENERGY))
-        #Update world map coordinate
-        self.set_param_to_position(self.__CONST_SHARK, current_position)
+        #if creature is Fish
+        if isinstance(creature_dad, creatures.Fish):
+            #Create new fish and add to the list school_of_fish
+            self.school_of_fish.append(creatures.Fish(current_position))
+            #Update world map coordinate
+            self.set_param_to_position(self.__CONST_FISH, current_position)
+        #if creature is Shark
+        elif isinstance(creature_dad, creatures.Shark):
+            #Create new shark and add to the list school_of_shark
+            self.school_of_shark.append(creatures.Shark(current_position, self.__CONST_SHARK_INITIAL_ENERGY))
+            #Update world map coordinate
+            self.set_param_to_position(self.__CONST_SHARK, current_position)
 
-    def make_baby_fish(self, current_position: tuple[int])-> None:
-        """Create a new fish on wator world
-
-        Args:
-            current_position (tuple[int]): position of the new fish
-        """
-        #Create new fish and add to the list school_of_fish
-        self.school_of_fish.append(creatures.Fish(current_position))
-        #Update world map coordinate
-        self.set_param_to_position(self.__CONST_FISH, current_position)
-    
     def is_creature_mature(self, creature: creatures.Creature) -> bool:
         """Verify if the creature is mature
 
@@ -448,7 +446,7 @@ class WatorWorld():
 
         #Create baby fish if the fish is mature
         if self.is_creature_mature(fish):
-            self.make_baby_fish(current_position)
+            self.make_baby_creature(current_position, fish)
 
     def move_fish_to_position(self, current_position: tuple[int], water_position: tuple[int]) -> None:
         """Fish's movement on a position
