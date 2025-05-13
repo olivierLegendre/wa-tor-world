@@ -463,18 +463,22 @@ class WatorWorld():
         """
         return fish.age % self.__CONST_FISH_MATURITY == 0 if not fish.age == 0 else False
 
-my_world_map = WatorWorld(5,5,6,3)
+def main():
+    my_world_map = WatorWorld(5,5,6,3)
 
-for i in my_world_map.world_map :
-    for j in i :
-        print(f"{j}", end =" ")
+    for i in my_world_map.world_map :
+        for j in i :
+            print(f"{j}", end =" ")
+        print()
+
     print()
-
-print()
-print()
-my_world_map.iterate()  
-
-for i in my_world_map.world_map :
-    for j in i :
-        print(f"{j}", end =" ")
     print()
+    my_world_map.iterate()  
+
+    for i in my_world_map.world_map :
+        for j in i :
+            print(f"{j}", end =" ")
+        print()
+
+if __name__ == "__main__":
+    main()
