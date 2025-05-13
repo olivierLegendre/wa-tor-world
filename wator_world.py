@@ -185,7 +185,7 @@ class WatorWorld():
         #Verify prey availability
         prey_list = self.check_presence_prey(shark)
         #Choice prey if prey_list not null else random() move
-        if not prey_list == []:
+        if prey_list:
             prey_position = self.choice_of_prey(prey_list)
             current_position = shark.coordinate
             self.move_to_prey(shark, current_position, prey_position)
@@ -196,7 +196,7 @@ class WatorWorld():
             # random_coordinate = (coordenate_x, coordenate_y)
             list_prey_position = self.check_presence_water(shark)
             
-            if len(list_prey_position) != 0:
+            if list_prey_position:
                 prey_position = list_prey_position[random.randint(0,len(list_prey_position)-1)]
                 #print(f"shark:coordinate={shark.coordinate} : decision_position= {prey_position}")
                 #Move to prey
@@ -489,14 +489,16 @@ class WatorWorld():
 
             
 def main():
-    my_world_map = WatorWorld(50,50,50,10)
-    my_world_map.display_affichage()
+    my_world_map = WatorWorld(20,20,30,10)
+    #my_world_map.display_affichage()
     
-
+    iteration = 0
     while True :
         my_world_map.iterate()
         my_world_map.display_affichage()
-        #input("")
+        print(iteration)
+        iteration +=1
+        input("")
     
     # nb d'iteration
     # for _ in range(10):  
