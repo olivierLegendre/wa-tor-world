@@ -19,13 +19,10 @@ class WatorWorld():
     dead_shark = 0
 
     #region Constantes
-    __CONST_WATER = termcolor.colored("~","blue")
+    __CONST_WATER = 0
     __CONST_FISH = 1
-    __CONST_SHARK = termcolor.colored("2","red")
+    __CONST_SHARK = 2
 
-    __CONST_FISH_MATURITY = 3
-    __CONST_SHARK_MATURITY = 7
-    __CONST_SHARK_INITIAL_ENERGY = 5
 
     #marge de déplacement pour les créatures
     __RANGE_MOVEMENT = 3
@@ -45,7 +42,7 @@ class WatorWorld():
         self.nb_shark = number_of_shark
         self.__CONST_FISH_MATURITY = CONST_FISH_MATURITY
         self.__CONST_SHARK_MATURITY = CONST_SHARK_MATURITY
-        self.__CONST_INITIAL_ENERGY = CONST_SHARK_INITIAL_ENERGY
+        self.__CONST_SHARK_INITIAL_ENERGY = CONST_SHARK_INITIAL_ENERGY
 
         self.__initialization(number_of_fish, number_of_shark)
     
