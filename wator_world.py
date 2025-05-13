@@ -171,6 +171,7 @@ class WatorWorld():
         """
         for shark in self.school_of_shark:
             self.move_shark(shark)
+            shark.age = shark.age + 1
 
     def move_shark(self, shark: creatures.Shark) -> bool:
         """Movement of a shark
@@ -186,22 +187,28 @@ class WatorWorld():
         #Choice prey if prey_list not null else random() move
         if not prey_list == []:
             prey_position = self.choice_of_prey(prey_list)
+            current_position = shark.coordinate
+            self.move_to_prey(shark, current_position, prey_position)
         else:
             #random() move: north, east, west, south
             # coordenate_x = random.randint(0,1)
             # coordenate_y = (0 if coordenate_x == 1 else 1)
             # random_coordinate = (coordenate_x, coordenate_y)
             list_prey_position = self.check_presence_water(shark)
-            prey_position = list_prey_position[random.randint(0,len(list_prey_position)-1)]
-        #print(f"shark:coordinate={shark.coordinate} : decision_position= {prey_position}")
-        #Move to prey
-        current_position = shark.coordinate
-        self.move_to_prey(shark, current_position, prey_position)
+            
+            if len(list_prey_position) != 0:
+                prey_position = list_prey_position[random.randint(0,len(list_prey_position)-1)]
+                #print(f"shark:coordinate={shark.coordinate} : decision_position= {prey_position}")
+                #Move to prey
+                current_position = shark.coordinate
+                self.move_to_prey(shark, current_position, prey_position)
+            else : 
+                shark.energy = shark.energy -1
         
         #Verify energy shark
         
         if not self.is_shark_still_alive(shark):
-            self.kill_shark
+            self.kill_shark(shark.coordinate)
     
     def is_shark_still_alive(self, shark) -> bool:
         """Vérify if the shark have enough energy
@@ -271,7 +278,7 @@ class WatorWorld():
         self.kill_fish(prey_position,shark)
         #Update school_of_shark
         shark.coordinate = prey_position
-        shark.energy -= 1
+        shark.energy = shark.energy - 1
         #Create baby shark if the shark is mature
         if self.is_shark_mature(shark):
             self.make_baby_shark(current_position)
@@ -293,7 +300,7 @@ class WatorWorld():
             fish_killed = self.school_of_fish.pop(index)   
             if fish_killed:
                 shark.energy = self.CONST_SHARK_INITIAL_ENERGY
-                self.dead_fish += 1
+                self.dead_fish = self.dead_fish + 1
                 
             return fish_killed
 
@@ -370,6 +377,7 @@ class WatorWorld():
 
         for fish in self.school_of_fish:
             self.move_fish(fish)
+            fish.age = fish.age +1
     
     def check_presence_water(self, creature:creatures.Creature) -> list[tuple]:
         water_list = []
@@ -407,7 +415,6 @@ class WatorWorld():
             #Choice water position
             water_position = self.choice_of_destination(water_list)
             #print(f"fish:coordinate={fish.coordinate} : water_position= {water_position}")
-
             #Move to water coordinate
             current_position = fish.coordinate
             self.move_to_destination(fish, current_position, water_position)
@@ -427,7 +434,7 @@ class WatorWorld():
         self.move_fish_to_position(current_position, water_position)
         #Update school_of_fish
         fish.coordinate = water_position
-
+    
         #Create baby fish if the fish is mature
         if self.is_fish_mature(fish):
             self.make_baby_fish(current_position)
@@ -465,6 +472,7 @@ class WatorWorld():
         Returns:
             bool: condition if the fish is mature
         """
+        #print(fish.age)
         return fish.age % self.CONST_FISH_MATURITY == 0 if not fish.age == 0 else False
 
     def display_affichage(self):
@@ -481,12 +489,17 @@ class WatorWorld():
 
             
 def main():
-    my_world_map = WatorWorld(20,20,20, 3)
+    my_world_map = WatorWorld(50,50,50,10)
     my_world_map.display_affichage()
-
     
-    # #nb d'iteration
-    # for _ in range(5):  
+
+    while True :
+        my_world_map.iterate()
+        my_world_map.display_affichage()
+        #input("")
+    
+    # nb d'iteration
+    # for _ in range(10):  
     #     my_world_map.iterate()
     #     for i in my_world_map.world_map:
     #         for j in i:
