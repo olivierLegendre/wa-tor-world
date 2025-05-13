@@ -273,7 +273,7 @@ class WatorWorld():
         shark.coordinate = prey_position
         shark.energy -= 1
         #Create baby shark if the shark is mature
-        if self.is_shark_mature(shark):
+        if self.is_creature_mature(shark):
             self.make_baby_shark(current_position)
     
     def kill_fish(self, prey_position: tuple[int], shark: creatures.Shark) -> creatures.Fish:
@@ -352,16 +352,34 @@ class WatorWorld():
         #Update world map coordinate
         self.set_param_to_position(self.__CONST_SHARK, current_position)
 
-    def is_shark_mature(self, shark: creatures.Shark) -> bool:
-        """Verify if the shark is mature to create baby
+    def make_baby_fish(self, current_position: tuple[int])-> None:
+        """Create a new fish on wator world
 
         Args:
-            shark (creatures.Shark): the shark to check
+            current_position (tuple[int]): position of the new fish
+        """
+        #Create new fish and add to the list school_of_fish
+        self.school_of_fish.append(creatures.Fish(current_position))
+        #Update world map coordinate
+        self.set_param_to_position(self.__CONST_FISH, current_position)
+    
+    def is_creature_mature(self, creature: creatures.Creature) -> bool:
+        """Verify if the creature is mature
+
+        Args:
+            creature (creatures.Creature): the creature to check
 
         Returns:
-            bool: condition if the shark is mature
+            bool: condition if the creature is mature
         """
-        return shark.age % self.__CONST_SHARK_MATURITY == 0 if not shark.age == 0 else False
+        #if creature is Fish
+        if isinstance(creature, creatures.Fish):
+            fish_age = creature.age
+            return fish_age % self.__CONST_FISH_MATURITY == 0 if not fish_age == 0 else False
+        #if creature is Shark
+        elif isinstance(creature, creatures.Shark):
+            shark_age = creature.age
+            return shark_age % self.__CONST_SHARK_MATURITY == 0 if not shark_age == 0 else False
 
     def move_fishes(self):
         """Move all the fishes one by one
@@ -429,7 +447,7 @@ class WatorWorld():
         fish.coordinate = water_position
 
         #Create baby fish if the fish is mature
-        if self.is_fish_mature(fish):
+        if self.is_creature_mature(fish):
             self.make_baby_fish(current_position)
 
     def move_fish_to_position(self, current_position: tuple[int], water_position: tuple[int]) -> None:
@@ -444,36 +462,13 @@ class WatorWorld():
         #update fish past position
         self.set_param_to_position(self.__CONST_WATER, current_position)  
 
-    def make_baby_fish(self, current_position: tuple[int])-> None:
-        """Create a new fish on wator world
-
-        Args:
-            current_position (tuple[int]): position of the new fish
-        """
-        #Create new fish and add to the list school_of_fish
-        self.school_of_fish.append(creatures.Fish(current_position))
-        #Update world map coordinate
-        self.set_param_to_position(self.__CONST_FISH, current_position)
-
-
-    def is_fish_mature(self, fish: creatures.Fish) -> bool:
-        """Verify if the fish is mature to create baby
-
-        Args:
-            fish (creatures.Fish): the fish to check
-
-        Returns:
-            bool: condition if the fish is mature
-        """
-        return fish.age % self.__CONST_FISH_MATURITY == 0 if not fish.age == 0 else False
-
     def display_affichage(self, __CONST_WATER, __CONST_FISH, __CONST_SHARK):
         __CONST_WATER = termcolor.colored("~", "blue")
         __CONST_FISH = termcolor.colored("1", "white")
         __CONST_SHARK = termcolor.colored("2", "red")
 
 def main():
-    my_world_map = WatorWorld(20,20,20, 3)
+    my_world_map = WatorWorld(3, 3, 3, 1)
     for i in my_world_map.world_map :
         for j in i :
             print(f"{j}", end =" ")
