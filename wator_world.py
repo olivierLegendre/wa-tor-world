@@ -473,8 +473,7 @@ class WatorWorld():
         __CONST_SHARK = termcolor.colored("2", "red")
 
 def main():
-my_world_map = WatorWorld(20,20,20, 3)
-
+    my_world_map = WatorWorld(20,20,20, 3)
     for i in my_world_map.world_map :
         for j in i :
             print(f"{j}", end =" ")
