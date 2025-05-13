@@ -468,14 +468,15 @@ class WatorWorld():
         return fish.age % self.CONST_FISH_MATURITY == 0 if not fish.age == 0 else False
 
     def display_affichage(self):
-        for y in self.world_map:
-            for const in y:
-                if const == self.__CONST_WATER:
-                    print(termcolor.colored("~", "blue"), end=" ")
-                elif const == self.__CONST_FISH:
-                    print(termcolor.colored("1", "white"), end=" ")
-                elif const == self.__CONST_SHARK:
-                    print(termcolor.colored("2", "red"), end=" ")
+        for i in self.world_map:
+            for j in i:
+                if j == self.__CONST_WATER:
+                    print(termcolor.colored("~", "blue"),end=" ")
+                elif j == self.__CONST_FISH:
+                    print("🐠",end=" ")
+                elif j == self.__CONST_SHARK:
+                    print("🦈",end=" ")
+            print()
         print()
 
             
@@ -483,11 +484,6 @@ def main():
     my_world_map = WatorWorld(20,20,20, 3)
     my_world_map.display_affichage()
 
-    for i in my_world_map.world_map :
-        for j in i :         
-            print(f"{j}", end =" ") 
-        print()   
-    print()
     
     # #nb d'iteration
     # for _ in range(5):  
