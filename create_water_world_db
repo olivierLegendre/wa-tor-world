@@ -1,0 +1,32 @@
+-- SQLite
+CREATE TABLE water_world (
+    water_world_id INTEGER PRIMARY KEY,
+    water_world_name STRING NOT NULL
+    nb_fishes INTEGER NOT NULL,
+    nb_sharks INTEGER NOT NULL,
+    fish_maturity INTEGER NOT NULL,
+    shark_maturity INTEGER NOT NULL,
+    shark_initial_energy INTEGER NOT NULL
+)
+
+CREATE TABLE water_world_map (
+    water_world_map_id INTEGER PRIMARY KEY, 
+    chronon INTEGER NOT NULL,
+    map TEXT NOT NULL, 
+    FOREIGN KEY(water_world_id) REFERENCES water_world(water_world_id)
+)
+
+CREATE TABLE water_world_statistics(
+    water_world_statistics_id INTEGER PRIMARY KEY,
+    chronon INTEGER NOT NULL,
+    nb_fish INTEGER NOT NULL,
+    nb_shark INTEGER NOT NULL,
+    birth_fish INTEGER NOT NULL,
+    birth_shark INTEGER NOT NULL,
+    dead_fish INTEGER NOT NULL,
+    dead_shark INTEGER NOT NULL,
+    FOREIGN KEY(water_world_id) REFERENCES water_world(water_world_id)
+)
+
+INSERT INTO Xater_world (nb_fishes, nb_sharks, fish_maturity, shark_maturity, shark_initial_energy)
+VALUES()
