@@ -15,9 +15,9 @@ La simulation affichera une représentation visuelle de l'état du monde, où :
 - Affichage visuel de l'état du monde.
 
 ## Déroulement du projet
-Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Stéphane Muller.\
-- Phase 1 : 2 jours de réflexion sur l'architecture du code\
-- Phase 2 : Répartition des méthodes à faire par chacun\ 
+Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Stéphane Muller.
+- Phase 1 : 2 jours de réflexion sur l'architecture du code
+- Phase 2 : Répartition des méthodes à faire par chacun
 Augustin sur les Sharks
 Stéphane sur les Fishs
 - Phase 3 : 
