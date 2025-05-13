@@ -23,7 +23,6 @@ class WatorWorld():
     __CONST_FISH = 1
     __CONST_SHARK = 2
 
-
     #marge de déplacement pour les créatures
     __RANGE_MOVEMENT = 3
 
@@ -63,7 +62,6 @@ class WatorWorld():
         """Initialize world map at the dimension x-axis & y-axis with water
         """
         self.world_map = [[self.__CONST_WATER for _ in range(self.__dim_map_x)] for _ in range(self.__dim_map_y)]
-
 
     def add_creatures_to_world_map(self, number_of_fish: int, number_of_shark: int) -> None:
         """Populate world map of creatures
@@ -489,16 +487,17 @@ class WatorWorld():
 
             
 def main():
-    my_world_map = WatorWorld(80,80,150,40)
+    my_world_map = WatorWorld(40,40,75,20,3,10,5)
     #my_world_map.display_affichage()
     
     iteration = 0
     while True :
         my_world_map.iterate()
         my_world_map.display_affichage()
-        # print(iteration)
-        # iteration +=1
-        # input("")
+        print("=======================================================================================================================")
+    #     # print(iteration)
+    #     # iteration +=1
+    #     # input("")
     
     # nb d'iteration
     # for _ in range(10):  
