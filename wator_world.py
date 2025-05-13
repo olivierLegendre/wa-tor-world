@@ -27,7 +27,7 @@ class WatorWorld():
     #marge de déplacement pour les créatures
     __RANGE_MOVEMENT = 3
 
-    def __init__(self, dim_map_x, dim_map_y, number_of_fish, number_of_shark, CONST_FISH_MATURITY=3, CONST_SHARK_MATURITY=7,  CONST_SHARK_INITIAL_ENERGY=5):
+    def __init__(self, dim_map_x, dim_map_y, number_of_fish, number_of_shark, CONST_FISH_MATURITY=3, CONST_SHARK_MATURITY=10,  CONST_SHARK_INITIAL_ENERGY=5):
         """Initializer of WatorWorld object
 
         Args:
@@ -489,16 +489,16 @@ class WatorWorld():
 
             
 def main():
-    my_world_map = WatorWorld(20,20,30,10)
+    my_world_map = WatorWorld(80,80,150,40)
     #my_world_map.display_affichage()
     
     iteration = 0
     while True :
         my_world_map.iterate()
         my_world_map.display_affichage()
-        print(iteration)
-        iteration +=1
-        input("")
+        # print(iteration)
+        # iteration +=1
+        # input("")
     
     # nb d'iteration
     # for _ in range(10):  
