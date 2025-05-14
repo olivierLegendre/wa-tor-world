@@ -72,6 +72,7 @@ class Water_world_Statistics():
         self.ww_statistics_rect = pygame.Rect(1100, 200, self.size_x, self.size_y)
         self.water_world_history = water_world_history
         self.set_surface()
+        self.get_graph(0)
     
     def set_surface(self):
         self.water_world_statistics_surface = pygame.Surface((self.size_x, self.size_y))
@@ -175,7 +176,7 @@ class App:
         clock = pygame.time.Clock()
         time_pass = False
         while App.running:
-            
+            print(f"generation {generation}")
             for event in pygame.event.get():
                 if event.type == QUIT:
                     App.running = False
@@ -197,7 +198,7 @@ class App:
             if time_pass:
                 if generation < (self.www.water_world_history.generations) - 1:
                     generation += 1
-            clock.tick(100)    
+            clock.tick(10)    
             self.www.create_sea_visual(generation)
             self.wws.get_graph(generation)
             # self.wws.draw()
@@ -266,55 +267,6 @@ class App:
         self.flags ^= NOFRAME
         pygame.display.set_mode(self.rect.size, self.flags)
 
-
-class Proto(App):
-    def __init__(self):
-        super().__init__()
-        
-        scene_intro = Scene(caption='Intro')
-        scene_intro.nodes.append(Text('Scene 0', pos=(20, 20)))
-        scene_intro.nodes.append(Text('Introduction screen the app', pos=(20, 50)))
-
-        scene_option = Scene(bg=pygame.Color('yellow'), caption='Options')
-        scene_option.nodes.append(Text('Scene 1', pos=(20, 20)))
-        scene_option.nodes.append(Text('Option screen of the app', pos=(20, 50)))
-        
-        scene_main_screen = Scene(bg=pygame.Color(153, 153, 0), caption='Main')
-        self.start_text = Text('Restart', pos=(100, 1050))
-        self.play_text = Text('Play', pos=(300, 1050))
-        self.stop_text = Text('Stop', pos=(500, 1050))
-        scene_main_screen.nodes.append(Text('Scene 2', pos=(20, 20)))
-        scene_main_screen.nodes.append(Text('Wa-tor simulation', pos=(100, 80)))
-        scene_main_screen.nodes.append(Text('Wa-tor statistics', pos=(1100, 80)))
-
-        scene_main_screen.nodes.append(self.start_text)
-        scene_main_screen.nodes.append(self.play_text)
-        scene_main_screen.nodes.append(self.stop_text)
-        
-        # water_world_history = ww.MockWorldHistory()
-        water_world = ww.WatorWorld(80, 80, 150, 40)
-        water_world_history = history.History("simulation_stephane", water_world)
-        # print("water world history generations : ")
-        # print(water_world_history.generations)
-        water_world_window = WaterWorldWindow(water_world_history)
-        scene_main_screen.nodes.append(water_world_window)
-        App.www = water_world_window
-        water_world_statistics = Water_world_Statistics(water_world_history)
-        scene_main_screen.nodes.append(water_world_statistics)
-        App.wws = water_world_statistics
-        
-        App.scenes.append(scene_intro)
-        App.scenes.append(scene_option)
-        App.scenes.append(scene_main_screen)
-        # Text('Scene 2', pos=(20, 20))
-        # Text('Main screen of the app', pos=(20, 50))
-        
-        # water_world_history = ww.MockWorldHistory()
-        # water_world_game = pyv.WaterWorldGame(water_world_history)
-        # water_world_game.run_water_world_window()
-        
-        App.scene = App.scenes[2]
-        
 class wator_display(App):
     def __init__(self, history):
         super().__init__()
