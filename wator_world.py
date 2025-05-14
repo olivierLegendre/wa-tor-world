@@ -448,14 +448,15 @@ class WatorWorld():
         print()
             
 def main():
-    my_world_map = WatorWorld(40,40,75,20,2,7,5)
+    
+    my_world_map = WatorWorld(40, 40, 100, 50, 2, 15, 7)
     #my_world_map.display_affichage()
 
 
     while True :
         my_world_map.iterate()
         my_world_map.display_affichage()
-        print("=======================================================================================================================")
+        print("=" * 120)
     #     # print(iteration)
     #     # iteration +=1
     #     # input("")
