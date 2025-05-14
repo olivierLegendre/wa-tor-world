@@ -32,11 +32,11 @@ Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Sté
 
 # Wator_world.py
 ## Description des classes
-- **WatorWorld**
+### WatorWorld
 
 Classe principale qui gère la simulation. Elle initialise le monde, ajoute des poissons et des requins, et gère leurs mouvements et interactions.  
 
-### Attributs  
+#### Attributs  
 
 - world_map : Une liste 2D représentant la carte du monde.
 - school_of_fish : Une liste de tous les poissons dans le monde.
@@ -48,7 +48,7 @@ Classe principale qui gère la simulation. Elle initialise le monde, ajoute des 
 - dead_fish : Le nombre de poissons morts.
 - dead_shark : Le nombre de requins morts.
 
-### Méthodes
+#### Méthodes
 
 - __init__(self, dim_map_x, dim_map_y, number_of_fish, number_of_shark,CONST_FISH_MATURITY=3, CONST_SHARK_MATURITY=10, CONST_SHARK_INITIAL_ENERGY=5) :  
     - Initialise le monde avec les dimensions, le nombre de poissons et de requins spécifiés.
@@ -62,39 +62,41 @@ Classe principale qui gère la simulation. Elle initialise le monde, ajoute des 
 
 # creatures.py
 ## Description des classes
-- **Creature**
+### Creature**
 
 La classe de base pour toutes les créatures. Elle contient les attributs communs à toutes les créatures.
 
-### Attributs
+#### Attributs
 
 - coordinate : Un tuple représentant les coordonnées (x, y) de la créature.
 - age : L'âge de la créature, initialisé à 0.
 
-### Méthodes
+#### Méthodes
 
 - __init__(self, coordinate: tuple[int]) : Initialise une nouvelle créature avec les coordonnées spécifiées.
 
-- **Fish**
+### Fish
 
 Une sous-classe de Creature représentant un poisson.
 
-### Méthodes
+#### Méthodes
 
-__init__(self, coordinate: tuple[int]) : Initialise un nouveau poisson avec les coordonnées spécifiées.
+__init__(self, coordinate: tuple[int]) : 
+Initialise un nouveau poisson avec les coordonnées spécifiées.  
 __repr__(self) -> str : Retourne une représentation textuelle de l'objet Fish.
 
-- **Shark**
+### Shark
 
 Une sous-classe de Creature représentant un requin.  
 
-### Attributs
+#### Attributs
 
 energy : L'énergie initiale du requin.
 
-### Méthodes
+#### Méthodes
 
-__init__(self, coordinate: tuple[int], initial_energy) : Initialise un nouveau requin avec les coordonnées et l'énergie initiale spécifiées.
+__init__(self, coordinate: tuple[int], initial_energy) : 
+Initialise un nouveau requin avec les coordonnées et l'énergie initiale spécifiées.  
 __repr__(self) -> str : Retourne une représentation textuelle de l'objet Shark.
 
 
