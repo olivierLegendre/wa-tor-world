@@ -18,14 +18,30 @@ La simulation affichera une représentation visuelle de l'état du monde, où :
 Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Stéphane Muller.
 - Phase 1 : 2 jours de réflexion sur l'architecture du code
 - Phase 2 : Répartition des méthodes à faire par chacun
-Augustin sur les Sharks
-Stéphane sur les Fishs
 - Phase 3 : 
 
 ## Prérequis
 
 - Python 3.12.3
 - Bibliothèque `termcolor` pour l'affichage en couleur.
+
+## Guide d'utilisation :
+
+- fichier : main.py
+    lancer le programme avec ce fichier.
+
+- fichier : wator_wolrd.py
+
+
+- fichier : creatures.py
+    Initialise les Objets avec leurs coordonnées
+        Class Creatures 
+        Class Fish(Creatures)
+        Class Shark(Creatures)
+
+
+
+
 
 ## Installation
 
