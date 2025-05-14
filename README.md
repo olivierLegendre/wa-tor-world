@@ -33,10 +33,10 @@ Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Sté
 * fichier : wator_wolrd.py  
 
 * fichier : creatures.py  
-    '* Initialise les Objets avec leurs coordonnées'  
-        '* Class Creatures ' 
-        '* Class Fish(Creatures)'
-        '* Class Shark(Creatures)'
+    Initialise les Objets avec leurs coordonnées  
+        Class Creatures
+        Class Fish(Creatures)
+        Class Shark(Creatures)
 
 
 ## Installation
