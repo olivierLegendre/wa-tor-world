@@ -161,7 +161,7 @@ class WatorWorld():
     def move_sharks(self) -> None:
         """Move all the sharks one by one
         """
-        for shark in self.school_of_shark:
+        for shark in self.school_of_shark[::-1]:
             self.move_shark(shark)
 
     def move_shark(self, shark: creatures.Shark) -> bool:
@@ -227,7 +227,7 @@ class WatorWorld():
         """
         #loop on each fish object of self.school_of_fish
 
-        for fish in self.school_of_fish:
+        for fish in self.school_of_fish[::-1]:
             self.move_fish(fish)
     
     def move_fish(self, fish: creatures.Fish) -> bool:
@@ -447,10 +447,8 @@ class WatorWorld():
         print()
             
 def main():
-    
     my_world_map = WatorWorld(40, 40, 100, 50, 2, 15, 7)
     #my_world_map.display_affichage()
-
 
     while True :
         my_world_map.iterate()
