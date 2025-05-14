@@ -103,6 +103,7 @@ class water_world_db():
         
         # print(values_to_insert)
         self.cursor.execute(request_insert, values_to_insert)
+        self.cursor.fetchall()
         self.connection.commit()
 
         # get the id of the last inserted row
@@ -115,7 +116,7 @@ class water_world_db():
         result = self.cursor.execute(request)
         print(result.fetchall())
         
-    def get_water_world_id_from_name(self, name):
+    def get_water_world_id_by_name(self, name):
         request = """
             SELECT water_world_id FROM Water_world
             WHERE water_world_name = ?
@@ -123,10 +124,8 @@ class water_world_db():
         result = self.cursor.execute(request, (name,))
         fetch = result.fetchall()
     
-        print(f"fetch {fetch}")
         if len(fetch) == 0:
-            
-            return None, fetch
+            return None
         else:
             return fetch[0][0]
         
@@ -196,7 +195,7 @@ class water_world_db():
     
     def get_statistics(self, water_world_id, generation):
         request = """
-            SELECT nb_fish, nb_shark, birth_fish, birth_shark, dead_fish, dead_shark
+            SELECT chronon, nb_fish, nb_shark, birth_fish, birth_shark, dead_fish, dead_shark
             FROM Water_world_statistics
             WHERE water_world_id = ?
                 AND chronon = ?
@@ -204,14 +203,26 @@ class water_world_db():
         result = self.cursor.execute(request, (water_world_id, generation))
         statistics = dict()
         result = result.fetchone()
-        statistics["nb_fish"] = result[0]
-        statistics["nb_shark"] = result[1]
-        statistics["birth_fish"] = result[2]
-        statistics["birth_shark"] = result[3]
-        statistics["dead_fish"] = result[4]
-        statistics["dead_shark"] = result[5]
+        statistics["chronon"] = result[0]
+        statistics["nb_fish"] = result[1]
+        statistics["nb_shark"] = result[2]
+        statistics["birth_fish"] = result[3]
+        statistics["birth_shark"] = result[4]
+        statistics["dead_fish"] = result[5]
+        statistics["dead_shark"] = result[6]
         # print(statistics)
         return statistics
+    
+    def count_generation(self,water_world_id):
+        request = """
+            SELECT count(chronon)
+            FROM Water_world_statistics
+            WHERE water_world_id = ?
+        """
+        result = self.cursor.execute(request, (water_world_id, ))
+        result = result.fetchone()
+        nb_generations = result[0]
+        return nb_generations
 
 def main():
     ww_db = water_world_db()

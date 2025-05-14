@@ -6,96 +6,6 @@ import wator_world as ww
 # import pygame_view as pyv
 
 
-class WaterWorldGame():
-    
-    const_water_world_game_size = tuple([400, 400])
-    
-    def __init__(self, water_world_history: object) -> None:
-        self.water_world_history = water_world_history
-        self.water_world_window = self.init_water_world_window(self.const_water_world_game_size)
-        
-    def init_water_world_window(self, size: tuple) -> object:
-        """initialize a window with sixe x, size y pixels
-        Args:
-            size (tuple): x, y 
-
-        Returns:
-            object: py.window
-        """
-        # size = (400, 400)
-        # return pygame.display.set_mode(size)
-        pygame.display.set_mode(size)
-        return pygame.Rect(100, 100, size[0], size[1])
-    
-    def create_creature_at_position(self, creature: str, x: int, y: int, creature_size=10) -> None:
-        """create a rectangle on the specifified position
-            "shark" is red
-            "fish" is green
-        Args:
-            creature (str): "shark" or "fish"
-            x (int): 
-            y (int): 
-            creature_size : the number of pixels the "creature" will take
-        """
-        window_x = x * creature_size
-        window_y = y * creature_size
-        color = "green" if creature == "fish" else "red"
-        pygame.draw.rect(self.water_world_window, color, [window_x, window_y, creature_size, creature_size])
-        
-    def create_sea_visual(self, generation: int) -> None:
-        """create the visual for one iteration of sea map history
-            generation is the number of iterations we want to be able to display
-        Args:
-            water_world_history (dict): a World_History object
-            generation (int): 
-        """
-        water_world_history = self.water_world_history
-        for x in range(len(water_world_history.get_generation(generation))):
-            for y in range(len(water_world_history.get_generation(generation)[x])):
-                if water_world_history.get_generation(generation)[x][y] == 1:
-                    # print(f"fish at position {y}, {x}")
-                    self.create_creature_at_position("fish", y, x, 100)
-                if water_world_history.get_generation(generation)[x][y] == 2:
-                    # print(f"shark at position {y}, {x}")
-                    self.create_creature_at_position("shark", y, x, 100)
-                    
-    def run_water_world_window(self):
-        pygame.init()
-        
-        generation = 0
-        # size = (400, 400)
-        # window = pygame.display.set_mode(size)
-        water_world_history = self.water_world_history
-        window = self.water_world_window
-        
-        pygame.display.update()
-        running = True
-
-        while running:
-
-            window.fill("blue")
-            
-            self.create_sea_visual(generation)
-            
-            for event in pygame.event.get():
-                # quit event
-                if event.type == locals.QUIT:
-                    running = False
-                if event.type == locals.KEYDOWN:
-                    if event.key in [locals.K_SPACE, locals.K_RIGHT]:
-                        if generation < (water_world_history.generations) - 1:
-                            generation += 1
-                        self.create_sea_visual(generation)
-                    if event.key == locals.K_LEFT:
-                        if generation > 0:
-                            generation -= 1
-                        self.create_sea_visual(generation)
-
-            pygame.display.update()
-
-        pygame.quit()
-
-
 class WaterWorldWindow():
     const_water_world_window_size = tuple([800, 800])
     size_x = const_water_world_window_size[0]
@@ -134,15 +44,15 @@ class WaterWorldWindow():
             water_world_history (dict): a World_History object
             generation (int): 
         """
-        creature_size = 200
+        creature_size = 10
         self.water_world_surface.fill("blue")
         water_world_history = self.water_world_history
-        for x in range(len(water_world_history.get_generation_map(generation))):
-            for y in range(len(water_world_history.get_generation_map(generation)[x])):
-                if water_world_history.get_generation_map(generation)[x][y] == 1:
+        for x in range(len(water_world_history.get_map(generation))):
+            for y in range(len(water_world_history.get_map(generation)[x])):
+                if water_world_history.get_map(generation)[x][y] == 1:
                     # print(f"fish at position {y}, {x}")
                     self.create_creature_at_position("fish", y, x, creature_size)
-                if water_world_history.get_generation_map(generation)[x][y] == 2:
+                if water_world_history.get_map(generation)[x][y] == 2:
                     # print(f"shark at position {y}, {x}")
                     self.create_creature_at_position("shark", y, x, creature_size)
     
@@ -165,53 +75,10 @@ class Water_world_Statistics():
     def set_surface(self):
         self.water_world_statistics_surface = pygame.Surface((self.size_x, self.size_y))
         App.screen.blit(self.water_world_statistics_surface, (1100, 200))
-        
-    # def create_creature_at_position(self, creature: str, x: int, y: int, creature_size=10) -> None:
-    #     """create a rectangle on the specifified position
-    #         "shark" is red
-    #         "fish" is green
-    #     Args:
-    #         creature (str): "shark" or "fish"
-    #         x (int): 
-    #         y (int): 
-    #         creature_size : the number of pixels the "creature" will take
-    #     """
-    #     window_x = x * creature_size
-    #     window_y = y * creature_size
-    #     color = "green" if creature == "fish" else "red"
-    #     pygame.draw.rect(self.water_world_statistics_surface, color, [window_x, window_y, creature_size, creature_size])
-        
-    # def create_sea_visual(self, generation: int) -> None:
-    #     """create the visual for one iteration of sea map history
-    #         generation is the number of iterations we want to be able to display
-    #     Args:
-    #         water_world_history (dict): a World_History object
-    #         generation (int): 
-    #     """
-    #     creature_size = 200
-    #     self.water_world_statistics_surface.fill("blue")
-    #     water_world_history = self.water_world_history
-    #     for x in range(len(water_world_history.get_generation_map(generation))):
-    #         for y in range(len(water_world_history.get_generation_map(generation)[x])):
-    #             if water_world_history.get_generation_map(generation)[x][y] == 1:
-    #                 # print(f"fish at position {y}, {x}")
-    #                 self.create_creature_at_position("fish", y, x, creature_size)
-    #             if water_world_history.get_generation_map(generation)[x][y] == 2:
-    #                 # print(f"shark at position {y}, {x}")
-    #                 self.create_creature_at_position("shark", y, x, creature_size)
-    
-    
-    
-    def get_graph_by_generation(self, generation):
+
+    def get_graph(self, generation):
         print(f"generation a dessiner {generation}")
-        self.water_world_history.get_graph_by_generation(generation)
-        
-    # def display_statistics(self, generation):
-    #     self.water_world_statistics_surface.fill("white")
-    #     self.water_world_history.get_graph_by_generation(generation)
-    #     img_stat = pygame.image.load("water_world_graph.png").convert()
-    #     self.water_world_statistics_surface.blit(img_stat, (0, 0))
-    #     App.screen.blit(self.water_world_statistics_surface, self.ww_statistics_rect)
+        self.water_world_history.get_graph(generation)
     
     def draw(self):
         print("je dois dessiner mon graph")
@@ -321,7 +188,7 @@ class App:
                     if self.start_text.rect.collidepoint(event.pos):
                         generation = 0
                         self.www.create_sea_visual(generation)
-                        self.wws.get_graph_by_generation(generation)
+                        self.wws.get_graph(generation)
                     if self.play_text.rect.collidepoint(event.pos):
                         time_pass = True
                     if self.stop_text.rect.collidepoint(event.pos):
@@ -329,9 +196,9 @@ class App:
             if time_pass:
                 if generation < (self.www.water_world_history.generations) - 1:
                     generation += 1
-            clock.tick(1)    
+            clock.tick(10)    
             self.www.create_sea_visual(generation)
-            self.wws.get_graph_by_generation(generation)
+            self.wws.get_graph(generation)
             # self.wws.draw()
                     
             # App.screen.fill(pygame.Color('gray'))
@@ -399,51 +266,6 @@ class App:
         pygame.display.set_mode(self.rect.size, self.flags)
 
 
-class Demo(App):
-    def __init__(self):
-        super().__init__()
-        
-        scene_intro = Scene(caption='Intro')
-        scene_intro.nodes.append(Text('Scene 0', pos=(20, 20)))
-        scene_intro.nodes.append(Text('Introduction screen the app', pos=(20, 50)))
-        # Text('Scene 0', pos=(20, 20))
-        # Text('Introduction screen the app', pos=(20, 50))
-
-        scene_option = Scene(bg=pygame.Color('yellow'), caption='Options')
-        scene_option.nodes.append(Text('Scene 1', pos=(20, 20)))
-        scene_option.nodes.append(Text('Option screen of the app', pos=(20, 50)))
-        
-        scene_main_screen = Scene(bg=pygame.Color(153, 153, 0), caption='Main')
-        self.start_text = Text('Restart', pos=(100, 650))
-        self.play_text = Text('Play', pos=(280, 650))
-        self.stop_text = Text('Stop', pos=(400, 650))
-        scene_main_screen.nodes.append(Text('Scene 2', pos=(20, 20)))
-        scene_main_screen.nodes.append(Text('Main screen of the app', pos=(20, 80)))
-        scene_main_screen.nodes.append(self.start_text)
-        scene_main_screen.nodes.append(self.play_text)
-        scene_main_screen.nodes.append(self.stop_text)
-        
-        water_world_history = ww.MockWorldHistory()
-        # water_world_game = pyv.WaterWorldGame(water_world_history)
-        water_world_window = WaterWorldWindow(water_world_history)
-        # www.draw_rectangle(App.screen)
-        scene_main_screen.nodes.append(water_world_window)
-        App.www = water_world_window
-        # scene_main_screen.nodes.append(www.ww_rect)
-        
-        App.scenes.append(scene_intro)
-        App.scenes.append(scene_option)
-        App.scenes.append(scene_main_screen)
-        # Text('Scene 2', pos=(20, 20))
-        # Text('Main screen of the app', pos=(20, 50))
-        
-        # water_world_history = ww.MockWorldHistory()
-        # water_world_game = pyv.WaterWorldGame(water_world_history)
-        # water_world_game.run_water_world_window()
-        
-        App.scene = App.scenes[2]
-        
-        
 class Proto(App):
     def __init__(self):
         super().__init__()
@@ -474,14 +296,15 @@ class Proto(App):
         
         # water_world_history = ww.MockWorldHistory()
         water_world = ww.WatorWorld(80, 80, 150, 40)
-        water_world_history = history.History("simulation_2", water_world)
+        water_world_history = history.History("simulation_3", water_world)
+        print("water world history generations : ")
+        print(water_world_history.generations)
         water_world_window = WaterWorldWindow(water_world_history)
         scene_main_screen.nodes.append(water_world_window)
         App.www = water_world_window
         water_world_statistics = Water_world_Statistics(water_world_history)
         scene_main_screen.nodes.append(water_world_statistics)
-        App.wws = water_world_statistics
-        # scene_main_screen.nodes.append(www.ww_rect)
+        App.wws = water_world_statistics    
         
         App.scenes.append(scene_intro)
         App.scenes.append(scene_option)

@@ -237,13 +237,11 @@ class History():
         #do nothing if tables already exists
         self.entity.create_tables()
         
-        world_id = self.entity.get_water_world_id_from_name(self.name)
-        fetch = world_id[1]
-        world_id = world_id[0]
-        
+        world_id = self.entity.get_water_world_id_by_name(self.name)
         if world_id is not None:
             print("word already exists")
             self.world_id = world_id
+            self.generations = self.get_number_of_generations()
         else:
             print("world to create")
             self.world_id = self.entity.insert_water_world(self.name, self.world)
@@ -256,6 +254,9 @@ class History():
         self.world.iterate()
         self.generations = self.generations + 1
         self.save_generation()
+        
+    def get_number_of_generations(self):
+        return self.entity.count_generation(self.world_id)
         
     def save_generation(self):
         self.entity.insert_map(self.world, self.world_id, self.generations)
@@ -271,12 +272,15 @@ class History():
         statistics = self.entity.get_statistics(self.world_id, generation)
         return statistics
     
-    def get_all_statistics(self,generation=None):
+    def get_all_statistics(self, generation=None):
         generation = generation if generation is not None else self.generations
         all_statistics = dict()
-        for generation in range(self.generations):
+        print("dans get all statistics")
+        print(generation)
+        for generation in range(generation+1):
             all_statistics[generation] = self.get_statistics(generation)
         return all_statistics
+
     
     # def get_all_statistics_to_generation(self, generation):
     #     stats = dict()
@@ -307,9 +311,11 @@ class History():
         
         print(sharks_and_fishes)
         
-    def get_graph_by_generation(self, generation):
+    def get_graph(self, generation):
         sns.set_theme()
         sharks_and_fishes = self.get_all_statistics(generation)
+        print(f" dans history , sharks and fishes : {sharks_and_fishes}")
+        print(f"generation {generation}")
         self.get_line_plot(sharks_and_fishes)
         # statistcs_df = pd.DataFrame(sharks_and_fishes)
         # statistcs_df = statistcs_df.transpose()
@@ -330,6 +336,22 @@ class History():
         water_world_fig = water_world_plot.get_figure()
         water_world_fig.savefig("water_world_graph.jpg")
         water_world_fig.clf()
+        
+    def get_graph_live(self, generation):
+        sns.set_theme()
+        sharks_and_fishes = self.get_statistics(generation)
+        self.get_line_plot_live(sharks_and_fishes)
+        
+    def get_line_plot_live(self, data):
+        statistcs_df = pd.DataFrame(data)
+        statistcs_df = statistcs_df.transpose()
+        print("dans get plot line")
+        print(f"{statistcs_df}")
+        # print(statistcs_df)
+        water_world_plot = sns.lineplot(x='chronon', y='nb_fish', data=statistcs_df)
+        water_world_plot = sns.lineplot(x='chronon', y='nb_shark', data=statistcs_df)
+        water_world_fig = water_world_plot.get_figure()
+        water_world_fig.savefig("water_world_graph.jpg")
 
 
 def main():
