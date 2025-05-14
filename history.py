@@ -1,9 +1,10 @@
-from abstract_classes.waterworld_abstract import WaterworldAbstract
+import wator_world as ww
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-import json
+import history_entity as he
 from os import path
+import pygame_view as pyv
 
 class MockWorldHistory():
     def __init__(self):
@@ -220,65 +221,145 @@ class MockWorldHistory():
         self.sea_map_history[self.generations]["statistic"] = statistic
         self.sea_map_history[self.generations]["map"] = map
         self.generations = self.generations + 1
-        
-    def load_from_json(self, object):
-        pass
-    
-    def save_to_json(self, dict_to_save):
-        if path.isfile(self.file_name) is False:
-            raise Exception("File not found")
-        
-        json_file = json.dumps([{key: dict_to_save[key]} for key in dict_to_save], indent=4)
-        with open(self.file_name, "w") as output_file:
-            output_file.write(json_file)
-        
-    def append_to_json(self, dict_to_append):
-        listObj = dict()
-        if path.isfile(self.file_name) is False:
-            raise Exception("File not found")
-        
-        # Read JSON file
-        with open(self.file_name) as fp:
-            listObj = json.load(fp)
-        
-        # Verify existing dict
-            print(listObj)
 
-            print(type(listObj))
-            
-            listObj.append(dict_to_append)
+
+class History():
+    def __init__(self, simulation_name, world, entity=he.water_world_db()):
+        self.sea_map_history = dict()
+        self.sea_map_statistics = dict()
+        self.generations = 0
+        self.world = world
+        self.name = simulation_name
+        self.entity = entity
+        self.init()
         
-        # Verify updated dict
-        print(listObj)
+    def init(self):
+        #do nothing if tables already exists
+        self.entity.create_tables()
         
-        with open(self.file_name, 'w') as json_file:
-            json_to_update = json.dump(listObj, json_file, 
-                        indent=4,  
-                        separators=(',', ': '))
-            json_file.write(json_to_update)
-        print(json_to_update)
-        print('Successfully written to the JSON file')
+        world_id = self.entity.get_water_world_id_from_name(self.name)
+        fetch = world_id[1]
+        world_id = world_id[0]
         
-    def test_save_to_json(self):
-        dict_to_save = self.sea_map_history[0]
-        self.save_to_json(dict_to_save)
+        if world_id is not None:
+            print("word already exists")
+            self.world_id = world_id
+        else:
+            print("world to create")
+            self.world_id = self.entity.insert_water_world(self.name, self.world)
+        self.save_generation()
         
-    def test_append_to_json(self):
-        dict_to_append = self.sea_map_history[1]
-        self.append_to_json(dict_to_append)
+    def print_world(self):
+        self.world.display_affichage(self.name, self.world)
         
-class WaterWorld(WaterworldAbstract):
+    def iterate(self):
+        self.world.iterate()
+        self.generations = self.generations + 1
+        self.save_generation()
+        
+    def save_generation(self):
+        self.entity.insert_map(self.world, self.world_id, self.generations)
+        self.entity.insert_statistics(self.world, self.world_id, self.generations)
+        
+    def get_map(self, generation=None):
+        generation = generation if generation is not None else self.generations
+        map = self.entity.get_map(self.world_id, generation)
+        return map
     
-    def is_shark_mature(self) -> bool :
-        pass
+    def get_statistics(self, generation=None):
+        generation = generation if generation is not None else self.generations
+        statistics = self.entity.get_statistics(self.world_id, generation)
+        return statistics
     
+    def get_all_statistics(self,generation=None):
+        generation = generation if generation is not None else self.generations
+        all_statistics = dict()
+        for generation in range(self.generations):
+            all_statistics[generation] = self.get_statistics(generation)
+        return all_statistics
+    
+    # def get_all_statistics_to_generation(self, generation):
+    #     stats = dict()
+    #     for index in range(generation+1):
+    #         stats[index] = self.sea_map_history[index]["statistic"]
+    #     print("dans get all statistics t generation : ")
+    #     print(f"{stats}")
+    #     return stats
+
+    def get_pandas_statistics(self):
+        # columns_name = ['chronon', 'nb_fish', 'nb_shark', 'nb_fish_born', 'nb_shark_born', 'nb_fish_dead', 'nb_shark_dead']
+        statistcs_df = pd.DataFrame(self.get_all_statistics())
+        statistcs_df = statistcs_df.transpose()
+        # statistcs_df.columns = columns_name
+        return statistcs_df
+    
+        
+    def display_graph(self):
+        sns.set_theme()
+        sharks_and_fishes = self.get_pandas_statistics()
+        self.get_line_plot(sharks_and_fishes)
+        # sns.lineplot(x='chronon', y='nb_fish', data=sharks_and_fishes)
+        # water_world_plot = sns.lineplot(x='chronon', y='nb_shark', data=sharks_and_fishes)
+        # water_world_fig = water_world_plot.get_figure()
+        # water_world_fig.savefig("water_world_graph.png")
+        # sns.lineplot(x='chronon', y='nb_fish', data=sharks_and_fishes)
+        # sns.relplot(x='chronon', y='nb_fish', data=sharks_and_fishes, kind='line')
+        
+        print(sharks_and_fishes)
+        
+    def get_graph_by_generation(self, generation):
+        sns.set_theme()
+        sharks_and_fishes = self.get_all_statistics(generation)
+        self.get_line_plot(sharks_and_fishes)
+        # statistcs_df = pd.DataFrame(sharks_and_fishes)
+        # statistcs_df = statistcs_df.transpose()
+        # # print(statistcs_df)
+        # sns.lineplot(x='chronon', y='nb_fish', data=statistcs_df)
+        # water_world_plot = sns.lineplot(x='chronon', y='nb_shark', data=statistcs_df)
+        # water_world_fig = water_world_plot.get_figure()
+        # water_world_fig.savefig("water_world_graph.png")
+        
+    def get_line_plot(self, data):
+        statistcs_df = pd.DataFrame(data)
+        statistcs_df = statistcs_df.transpose()
+        print("dans get plot line")
+        print(f"{statistcs_df}")
+        # print(statistcs_df)
+        water_world_plot = sns.lineplot(x='chronon', y='nb_fish', data=statistcs_df)
+        water_world_plot = sns.lineplot(x='chronon', y='nb_shark', data=statistcs_df)
+        water_world_fig = water_world_plot.get_figure()
+        water_world_fig.savefig("water_world_graph.jpg")
+        water_world_fig.clf()
+
+
 def main():
-    mon_histoire = MockWorldHistory()
-    # mon_histoire.get_pandas_statistics()
-    # mon_histoire.display_graph()
-    # mon_histoire.get_graph_by_generation(0)
-    mon_histoire.test_save_to_json()
-    mon_histoire.test_append_to_json()
+    # mon_histoire = MockWorldHistory()
+    # # mon_histoire.get_pandas_statistics()
+    # # mon_histoire.display_graph()
+    # # mon_histoire.get_graph_by_generation(0)
+    # game = pyv.Proto()
+    # game.run()
+    
+    simulation = ww.WatorWorld(80, 80, 40, 10)
+    water_world_entity = he.water_world_db()
+    water_world_history = History("simulation_1", simulation, water_world_entity)
+    
+    # request = """
+    # DROP TABLE water_world_statistics"""
+    # water_world_entity.play_request(request)
+    # request = """
+    # DROP TABLE water_world_map"""
+    # water_world_entity.play_request(request)
+    
+    # water_world_history.print_world()
+    water_world_history.iterate()
+    # water_world_history.print_world()
+    water_world_history.iterate()
+    # water_world_history.print_world()
+    water_world_history.iterate()
+    print(water_world_history.get_map())
+    print(water_world_history.get_statistics())
+    print(water_world_history.get_all_statistics())
 
 if __name__ == "__main__":
     main()

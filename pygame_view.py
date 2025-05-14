@@ -1,8 +1,9 @@
 import pygame
 # import pygame.locals as locals
 from pygame.locals import *
-import water_world as ww
-import pygame_view as pyv
+import history
+import wator_world as ww
+# import pygame_view as pyv
 
 
 class WaterWorldGame():
@@ -471,7 +472,9 @@ class Proto(App):
         scene_main_screen.nodes.append(self.play_text)
         scene_main_screen.nodes.append(self.stop_text)
         
-        water_world_history = ww.MockWorldHistory()
+        # water_world_history = ww.MockWorldHistory()
+        water_world = ww.WatorWorld(80, 80, 150, 40)
+        water_world_history = history.History("simulation_2", water_world)
         water_world_window = WaterWorldWindow(water_world_history)
         scene_main_screen.nodes.append(water_world_window)
         App.www = water_world_window

@@ -8,10 +8,20 @@ class water_world_db():
         self.connection_db()
 
     def connection_db(self):
-        self.connection = sqlite3.connect("water_world.db")
-        self.cursor = self.connection.cursor()
+        with sqlite3.connect("wator_world.db") as connection:
+            self.connection = connection
+            self.cursor = connection.cursor()
         
     def create_tables(self):
+        #create file wator_world.db s'il n'existe pas
+        file_path = "wator_world.db"
+
+        try:
+            with open(file_path, 'x') as file:
+                file.write("")
+        except FileExistsError:
+            print(f"The file '{file_path}' already exists")
+            
         self.create_water_world_table()
         self.create_water_world_statistics_table()
         self.create_water_world_map_table()
@@ -57,12 +67,30 @@ class water_world_db():
                                 UNIQUE(water_world_id, chronon)
                             )
                             """)
+    
+    
+    def get_water_world_id(self, name):
+        request_select = """
+            SELECT water_world_id FROM Water_world
+            WHERE water_world_name = ?
+        """
+        result = self.cursor.execute(request_select, (name, ))
+        fetch = result.fetchone()
+
+        if fetch is not None: 
+            world_id = fetch[0]
+            result.fetchall()
+            return world_id
+        else:
+            result.fetchall()
+            return None
         
-    def insert_water_world(self, water_world, name):
+    def insert_water_world(self, name, water_world):
         ww = water_world
-        request = """
-            INSERT INTO Water_world (water_world_name, nb_fishes, nb_sharks, fish_maturity, shark_maturity, shark_initial_energy)
+        request_insert = """
+            INSERT OR IGNORE INTO Water_world (water_world_name, nb_fishes, nb_sharks, fish_maturity, shark_maturity, shark_initial_energy)
             VALUES(?, ?, ?, ?, ?, ?)
+            RETURNING water_world_id
         """
         
         values_to_insert = (name, 
@@ -73,8 +101,8 @@ class water_world_db():
                             ww.CONST_SHARK_INITIAL_ENERGY,
                             )
         
-        print(values_to_insert)
-        self.cursor.execute(request, values_to_insert)
+        # print(values_to_insert)
+        self.cursor.execute(request_insert, values_to_insert)
         self.connection.commit()
 
         # get the id of the last inserted row
@@ -93,14 +121,21 @@ class water_world_db():
             WHERE water_world_name = ?
         """
         result = self.cursor.execute(request, (name,))
-        return result.fetchone()[0]
+        fetch = result.fetchall()
+    
+        print(f"fetch {fetch}")
+        if len(fetch) == 0:
+            
+            return None, fetch
+        else:
+            return fetch[0][0]
         
     def play_request(self, request):
         self.cursor.execute(request)
         
     def insert_map(self, water_world, water_world_id, generation):
         request = """
-            INSERT INTO Water_world_map(chronon, map, water_world_id)
+            INSERT OR IGNORE INTO Water_world_map(chronon, map, water_world_id)
             VALUES (?, ?, ?)
         """
         
@@ -118,7 +153,7 @@ class water_world_db():
     
     def insert_statistics(self, water_world, water_world_id, generation):
         request = """
-            INSERT INTO Water_world_statistics(chronon,
+            INSERT OR IGNORE INTO Water_world_statistics(chronon,
                                         nb_fish,
                                         nb_shark,
                                         birth_fish,
@@ -156,7 +191,7 @@ class water_world_db():
         result = self.cursor.execute(request, (water_world_id, generation))
         json_map = result.fetchone()[0]
         map = json.loads(json_map)
-        print(map)
+        # print(map)
         return map
     
     def get_statistics(self, water_world_id, generation):
@@ -175,7 +210,7 @@ class water_world_db():
         statistics["birth_shark"] = result[3]
         statistics["dead_fish"] = result[4]
         statistics["dead_shark"] = result[5]
-        print(statistics)
+        # print(statistics)
         return statistics
 
 def main():
@@ -192,7 +227,7 @@ def main():
     # DROP TABLE water_world_map"""
     # ww_db.play_request(request)
 
-    # last_row = ww_db.insert_water_world(mon_monde, 'simulation_1')
+    # last_row = ww_db.insert_water_world('simulation_1', mon_monde)
     # print(f"row modifié : {last_row}")
     # ww_db.show_water_worlds()
     # id_water_world = ww_db.get_water_world_id_from_name('simulation_1')
@@ -201,7 +236,7 @@ def main():
     # ww_db.insert_map(mon_monde, 1, 0)
     # print( ww_db.insert_statistics(mon_monde, 1, 0))
     # ww_db.get_map(1, 0)
-    ww_db.get_statistics(1, 0)
+    # ww_db.get_statistics(1, 0)
 
 if __name__ == '__main__':
     main()
