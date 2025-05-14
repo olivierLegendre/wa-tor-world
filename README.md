@@ -62,37 +62,37 @@ Classe principale qui gère la simulation. Elle initialise le monde, ajoute des 
 
 # creatures.py
 ## Description des classes
-### Creature ###
+- **Creature**
 
 La classe de base pour toutes les créatures. Elle contient les attributs communs à toutes les créatures.
 
-**Attributs**
+### Attributs
 
 - coordinate : Un tuple représentant les coordonnées (x, y) de la créature.
 - age : L'âge de la créature, initialisé à 0.
 
-**Méthodes**
+### Méthodes
 
 - __init__(self, coordinate: tuple[int]) : Initialise une nouvelle créature avec les coordonnées spécifiées.
 
-### Fish ###
+- **Fish**
 
 Une sous-classe de Creature représentant un poisson.
 
-**Méthodes**
+### Méthodes
 
 __init__(self, coordinate: tuple[int]) : Initialise un nouveau poisson avec les coordonnées spécifiées.
 __repr__(self) -> str : Retourne une représentation textuelle de l'objet Fish.
 
-### Shark ###
+- **Shark**
 
 Une sous-classe de Creature représentant un requin.  
 
-**Attributs**
+### Attributs
 
 energy : L'énergie initiale du requin.
 
-**Méthodes**
+### Méthodes
 
 __init__(self, coordinate: tuple[int], initial_energy) : Initialise un nouveau requin avec les coordonnées et l'énergie initiale spécifiées.
 __repr__(self) -> str : Retourne une représentation textuelle de l'objet Shark.
