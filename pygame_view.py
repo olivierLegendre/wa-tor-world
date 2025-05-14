@@ -47,12 +47,13 @@ class WaterWorldWindow():
         creature_size = 10
         self.water_world_surface.fill("blue")
         water_world_history = self.water_world_history
-        for x in range(len(water_world_history.get_map(generation))):
-            for y in range(len(water_world_history.get_map(generation)[x])):
-                if water_world_history.get_map(generation)[x][y] == 1:
+        map = water_world_history.get_map(generation)
+        for x in range(len(map)):
+            for y in range(len(map[x])):
+                if map[x][y] == 1:
                     # print(f"fish at position {y}, {x}")
                     self.create_creature_at_position("fish", y, x, creature_size)
-                if water_world_history.get_map(generation)[x][y] == 2:
+                if map[x][y] == 2:
                     # print(f"shark at position {y}, {x}")
                     self.create_creature_at_position("shark", y, x, creature_size)
     
@@ -81,7 +82,7 @@ class Water_world_Statistics():
         self.water_world_history.get_graph(generation)
     
     def draw(self):
-        print("je dois dessiner mon graph")
+        # print("je dois dessiner mon graph")
         # pygame.draw.rect(App.screen, "blue", self.ww_statistics_rect)
         self.water_world_statistics_surface.fill("white")
         img_stat = pygame.image.load("water_world_graph.jpg")
@@ -196,7 +197,7 @@ class App:
             if time_pass:
                 if generation < (self.www.water_world_history.generations) - 1:
                     generation += 1
-            clock.tick(10)    
+            clock.tick(100)    
             self.www.create_sea_visual(generation)
             self.wws.get_graph(generation)
             # self.wws.draw()
@@ -273,8 +274,6 @@ class Proto(App):
         scene_intro = Scene(caption='Intro')
         scene_intro.nodes.append(Text('Scene 0', pos=(20, 20)))
         scene_intro.nodes.append(Text('Introduction screen the app', pos=(20, 50)))
-        # Text('Scene 0', pos=(20, 20))
-        # Text('Introduction screen the app', pos=(20, 50))
 
         scene_option = Scene(bg=pygame.Color('yellow'), caption='Options')
         scene_option.nodes.append(Text('Scene 1', pos=(20, 20)))
@@ -287,24 +286,72 @@ class Proto(App):
         scene_main_screen.nodes.append(Text('Scene 2', pos=(20, 20)))
         scene_main_screen.nodes.append(Text('Wa-tor simulation', pos=(100, 80)))
         scene_main_screen.nodes.append(Text('Wa-tor statistics', pos=(1100, 80)))
-        # App.stat_nb_fishes_text = Text('', pos=(1200, 200), fontsize=50)
-        # scene_main_screen.nodes.append(Text('Number of fishes : ', pos=(1100, 200), fontsize=50))
-        # scene_main_screen.nodes.append(App.stat_nb_fishes_text)
+
         scene_main_screen.nodes.append(self.start_text)
         scene_main_screen.nodes.append(self.play_text)
         scene_main_screen.nodes.append(self.stop_text)
         
         # water_world_history = ww.MockWorldHistory()
         water_world = ww.WatorWorld(80, 80, 150, 40)
-        water_world_history = history.History("simulation_3", water_world)
-        print("water world history generations : ")
-        print(water_world_history.generations)
+        water_world_history = history.History("simulation_stephane", water_world)
+        # print("water world history generations : ")
+        # print(water_world_history.generations)
         water_world_window = WaterWorldWindow(water_world_history)
         scene_main_screen.nodes.append(water_world_window)
         App.www = water_world_window
         water_world_statistics = Water_world_Statistics(water_world_history)
         scene_main_screen.nodes.append(water_world_statistics)
-        App.wws = water_world_statistics    
+        App.wws = water_world_statistics
+        
+        App.scenes.append(scene_intro)
+        App.scenes.append(scene_option)
+        App.scenes.append(scene_main_screen)
+        # Text('Scene 2', pos=(20, 20))
+        # Text('Main screen of the app', pos=(20, 50))
+        
+        # water_world_history = ww.MockWorldHistory()
+        # water_world_game = pyv.WaterWorldGame(water_world_history)
+        # water_world_game.run_water_world_window()
+        
+        App.scene = App.scenes[2]
+        
+class wator_display(App):
+    def __init__(self, history):
+        super().__init__()
+        self.history = history
+        self.water_world_window = WaterWorldWindow(history)
+        self.water_world_statistics = Water_world_Statistics(history)
+        App.www = self.water_world_window
+        App.wws = self.water_world_statistics
+        self.load()
+        
+    def load(self):
+        scene_intro = Scene(caption='Intro')
+        scene_intro.nodes.append(Text('Scene 0', pos=(20, 20)))
+        scene_intro.nodes.append(Text('Introduction screen the app', pos=(20, 50)))
+
+        scene_option = Scene(bg=pygame.Color('yellow'), caption='Options')
+        scene_option.nodes.append(Text('Scene 1', pos=(20, 20)))
+        scene_option.nodes.append(Text('Option screen of the app', pos=(20, 50)))
+        
+        scene_main_screen = Scene(bg=pygame.Color(153, 153, 0), caption='Main')
+        self.start_text = Text('Restart', pos=(100, 1050))
+        self.play_text = Text('Play', pos=(300, 1050))
+        self.stop_text = Text('Stop', pos=(500, 1050))
+        scene_main_screen.nodes.append(Text('Scene 2', pos=(20, 20)))
+        scene_main_screen.nodes.append(Text('Wa-tor simulation', pos=(100, 80)))
+        scene_main_screen.nodes.append(Text('Wa-tor statistics', pos=(1100, 80)))
+
+        scene_main_screen.nodes.append(self.start_text)
+        scene_main_screen.nodes.append(self.play_text)
+        scene_main_screen.nodes.append(self.stop_text)
+        
+
+        # print("water world history generations : ")
+        # print(water_world_history.generations)
+        scene_main_screen.nodes.append(self.water_world_window)
+        scene_main_screen.nodes.append(self.water_world_statistics)
+        
         
         App.scenes.append(scene_intro)
         App.scenes.append(scene_option)
