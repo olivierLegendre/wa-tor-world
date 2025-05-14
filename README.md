@@ -73,6 +73,7 @@ Classe principale qui gère la simulation. Elle initialise le monde, ajoute des 
 #### Méthodes
 
 - __init__(self, coordinate: tuple[int]) : Initialise une nouvelle créature avec les coordonnées spécifiées.
+------------------------------------------------------------------------------------------------
 
 ### <ins>Fish
 - Une sous-classe de Creature représentant un poisson.
@@ -82,6 +83,8 @@ Classe principale qui gère la simulation. Elle initialise le monde, ajoute des 
 - __init__(self, coordinate: tuple[int]) : 
 Initialise un nouveau poisson avec les coordonnées spécifiées.  
 - __repr__(self) -> str : Retourne une représentation textuelle de l'objet Fish.
+
+------------------------------------------------------------------------------------------------
 
 ### <ins>Shark
 - Une sous-classe de Creature représentant un requin.  
