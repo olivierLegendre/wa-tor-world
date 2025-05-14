@@ -40,9 +40,9 @@ class WatorWorld():
         self.__dim_map_y = dim_map_y
         self.nb_fish = number_of_fish
         self.nb_shark = number_of_shark
-        self.__CONST_FISH_MATURITY = CONST_FISH_MATURITY
-        self.__CONST_SHARK_MATURITY = CONST_SHARK_MATURITY
-        self.__CONST_SHARK_INITIAL_ENERGY = CONST_SHARK_INITIAL_ENERGY
+        self.CONST_FISH_MATURITY = CONST_FISH_MATURITY
+        self.CONST_SHARK_MATURITY = CONST_SHARK_MATURITY
+        self.CONST_SHARK_INITIAL_ENERGY = CONST_SHARK_INITIAL_ENERGY
 
         self.__initialization(number_of_fish, number_of_shark)
 
@@ -140,7 +140,7 @@ class WatorWorld():
         Returns:
             bool: successfully added
         """
-        shark = creatures.Shark(position,self.__CONST_SHARK_INITIAL_ENERGY)
+        shark = creatures.Shark(position,self.CONST_SHARK_INITIAL_ENERGY)
         if self.world_map[position[0]][position[1]] == self.__CONST_WATER:
             self.set_param_to_position(self.__CONST_SHARK,position)
             self.school_of_shark.append(shark)
@@ -466,28 +466,38 @@ class WatorWorld():
         self.move_sharks()
         self.move_fishes()
 
-    def display_affichage(self, __CONST_WATER, __CONST_FISH, __CONST_SHARK):
-        __CONST_WATER = termcolor.colored("~", "blue")
-        __CONST_FISH = termcolor.colored("1", "white")
-        __CONST_SHARK = termcolor.colored("2", "red")
-
+    def display_affichage(self):
+        for y in self.world_map:
+            for const in y:
+                if const == self.__CONST_WATER:
+                    print(termcolor.colored("~", "blue"), end=" ")
+                elif const == self.__CONST_FISH:
+                    print(termcolor.colored("1", "white"), end=" ")
+                elif const == self.__CONST_SHARK:
+                    print(termcolor.colored("2", "red"), end=" ")
+        print()
+            
 def main():
     my_world_map = WatorWorld(3, 3, 3, 1)
     for i in my_world_map.world_map :
-        for j in i :
-            print(f"{j}", end =" ")
-        print()
-
+        for j in i :         
+            print(f"{j}", end =" ") 
+        print()   
     print()
-
+    
     #nb d'iteration
-    for _ in range(4):  
+    for _ in range(5):  
         my_world_map.iterate()
         for i in my_world_map.world_map:
             for j in i:
                 print(f"{j}", end=" ")
             print()
         print()
+
+    # for _ in range(3): 
+    #     my_world_map.iterate()
+    #     print()
+    #     my_world_map.display_affichage()
 
 if __name__ == "__main__":
     main()
