@@ -62,7 +62,7 @@ Classe principale qui gère la simulation. Elle initialise le monde, ajoute des 
 
 # creatures.py
 ## Description des classes
-### Creature
+### <ins>Creature</>
 - La classe de base pour toutes les créatures. Elle contient les attributs communs à toutes les créatures.
 
 #### Attributs
