@@ -30,7 +30,7 @@ Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Sté
 - fichier : main.py  
     - lancer le programme avec ce fichier.  
 
-## Description des classes
+# Description des classes
 - WatorWorld
 
 Classe principale qui gère la simulation. Elle initialise le monde, ajoute des poissons et des requins, et gère leurs mouvements et interactions.  
@@ -50,7 +50,7 @@ Classe principale qui gère la simulation. Elle initialise le monde, ajoute des 
 ## Méthodes
 
 - __init__(self, dim_map_x, dim_map_y, number_of_fish, number_of_shark,CONST_FISH_MATURITY=3, CONST_SHARK_MATURITY=10, CONST_SHARK_INITIAL_ENERGY=5) :  
-    - Initialise le monde avec les dimensions et le nombre de poissons et de requins spécifiés.
+    - Initialise le monde avec les dimensions, le nombre de poissons et de requins spécifiés.
 - initialize_world_map(self) : Initialise la carte du monde avec de l'eau.
 - add_creatures_to_world_map(self, number_of_fish, number_of_shark) : 
     - Ajoute des poissons et des requins à la carte du monde.
