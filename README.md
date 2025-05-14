@@ -18,7 +18,7 @@ La simulation affichera une représentation visuelle de l'état du monde, où :
 Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Stéphane Muller.
 - Phase 1 : 2 jours de réflexion sur l'architecture du code
 - Phase 2 : Répartition des méthodes à faire par chacun
-- Phase 3 : 
+- Phase 3 : Elaboration du code en vérification sur GitHub
 
 ## Prérequis
 
@@ -27,16 +27,37 @@ Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Sté
 
 ## Guide d'utilisation :
 
-* fichier : main.py  
-    lancer le programme avec ce fichier.  
+- fichier : main.py  
+    - lancer le programme avec ce fichier.  
 
-* fichier : wator_world.py  
+## Description des classes
+- WatorWorld
 
-* fichier : creatures.py  
-- Initialise les Objets avec leurs coordonnées
-    - Class Creatures
-    - Class Fish(Creatures)
-    - Class Shark(Creatures)
+Classe principale qui gère la simulation. Elle initialise le monde, ajoute des poissons et des requins, et gère leurs mouvements et interactions.  
+
+    ## Attributs
+
+    - world_map : Une liste 2D représentant la carte du monde.
+    - school_of_fish : Une liste de tous les poissons dans le monde.
+    - school_of_shark : Une liste de tous les requins dans le monde.
+    - nb_fish : Le nombre de poissons.
+    - nb_shark : Le nombre de requins.
+    - birth_fish : Le nombre de naissances de poissons.
+    - birth_shark : Le nombre de naissances de requins.
+    - dead_fish : Le nombre de poissons morts.
+    - dead_shark : Le nombre de requins morts.
+
+    ## Méthodes
+
+    - __init__(self, dim_map_x, dim_map_y, number_of_fish, number_of_shark,CONST_FISH_MATURITY=3, CONST_SHARK_MATURITY=10, CONST_SHARK_INITIAL_ENERGY=5) :  
+        - Initialise le monde avec les dimensions et le nombre de poissons et de requins spécifiés.
+    - initialize_world_map(self) : Initialise la carte du monde avec de l'eau.
+    - add_creatures_to_world_map(self, number_of_fish, number_of_shark) : 
+        - Ajoute des poissons et des requins à la carte du monde.
+    - move_sharks(self) : Déplace tous les requins.
+    - move_fishes(self) : Déplace tous les poissons.
+    - iterate(self) : Exécute un cycle de la simulation.
+    - display_affichage(self) : Affiche l'état actuel du monde.
 
 
 ## Installation
