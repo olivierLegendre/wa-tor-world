@@ -161,17 +161,15 @@ class WatorWorld():
     def move_sharks(self) -> None:
         """Move all the sharks one by one
         """
+        #loop on each shark object of self.school_of_shark
         for shark in self.school_of_shark[::-1]:
             self.move_shark(shark)
 
-    def move_shark(self, shark: creatures.Shark) -> bool:
+    def move_shark(self, shark: creatures.Shark) -> None:
         """Movement of a shark
 
         Args:
             shark (creatures.Shark): the shark that will move
-
-        Returns:
-            bool: condition if shark move
         """
         #Verify destinations availability
         destinations_available_list = self.check_destinations_available(shark)
@@ -191,25 +189,22 @@ class WatorWorld():
             if not self.is_shark_still_alive(shark):
                 self.kill_shark(shark.coordinate)
 
-    def is_shark_still_alive(self, shark) -> bool:
+    def is_shark_still_alive(self, shark: creatures.Shark) -> bool:
         """Vérify if the shark have enough energy
 
         Args:
             shark (_type_): _description_
 
         Returns:
-            bool: _description_
+            bool: condition if the shark have more than 0 energy
         """
         return shark.energy > 0
 
-    def kill_shark(self, shark_position: tuple[int,int]) -> bool:
-        """Delete the shark in the shark list if not enough energy
+    def kill_shark(self, shark_position: tuple[int,int]) -> None:
+        """Kill the shark in the shark list if not enough energy
 
         Args:
             shark_position (tuple[int,int]): the shark coordinate
-
-        Returns:
-            bool: condition if the shark is delete
         """
         #update list
         index = None
@@ -227,7 +222,6 @@ class WatorWorld():
         """Move all the fishes one by one
         """
         #loop on each fish object of self.school_of_fish
-
         for fish in self.school_of_fish[::-1]:
             self.move_fish(fish)
     
@@ -236,9 +230,6 @@ class WatorWorld():
 
         Args:
             fish (creatures.Fish): the fish that will move
-
-        Returns:
-            bool: condition if fish move
         """
         #Verify water availability
         water_list = []
@@ -253,11 +244,11 @@ class WatorWorld():
             fish.age = fish.age + 1
 
     def kill_fish(self, prey_position: tuple[int,int], shark: creatures.Shark) -> None:
-        """Delete the fish in the fish list
+        """Kill the fish in the fish list
 
         Args:
             prey_position (tuple[int,int]): the fish coordinate
-            shark (creatures.Shark): update shark energy
+            shark (creatures.Shark): use for update shark energy
         """
         index = None
         for i, fish in enumerate(self.school_of_fish):
@@ -408,7 +399,7 @@ class WatorWorld():
         """Verify if the creature is mature
 
         Args:
-            creature (creatures.Creature): the creature to check
+            creature (creatures.Creature): the creature to check type
 
         Returns:
             bool: condition if the creature is mature
@@ -435,7 +426,9 @@ class WatorWorld():
         self.move_sharks()
         self.move_fishes()
 
-    def display_affichage(self):
+    def display_world(self):
+        """Display the world map
+        """
         for i in self.world_map:
             for j in i:
                 if j == self.__CONST_WATER:
@@ -449,11 +442,11 @@ class WatorWorld():
             
 def main():
     my_world_map = WatorWorld(40, 40, 100, 50, 2, 15, 7)
-    #my_world_map.display_affichage()
+    #my_world_map.display_world()
 
     while True :
         my_world_map.iterate()
-        my_world_map.display_affichage()
+        my_world_map.display_world()
         print("=" * 120)
     #     # print(iteration)
     #     # iteration +=1
@@ -471,7 +464,7 @@ def main():
     # for _ in range(3): 
     #     my_world_map.iterate()
     #     print()
-    #     my_world_map.display_affichage()
+    #     my_world_map.display_world()
 
 if __name__ == "__main__":
         main()
