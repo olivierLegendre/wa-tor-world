@@ -30,13 +30,13 @@ Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Sté
 * fichier : main.py  
     lancer le programme avec ce fichier.  
 
-* fichier : wator_wolrd.py  
+* fichier : wator_world.py  
 
 * fichier : creatures.py  
-    Initialise les Objets avec leurs coordonnées  
-        Class Creatures
-        Class Fish(Creatures)
-        Class Shark(Creatures)
+- Initialise les Objets avec leurs coordonnées
+    - Class Creatures
+    - Class Fish(Creatures)
+    - Class Shark(Creatures)
 
 
 ## Installation
