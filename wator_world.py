@@ -163,7 +163,7 @@ class WatorWorld():
     def move_sharks(self) -> None:
         """Move all the sharks one by one
         """
-        for shark in self.school_of_shark:
+        for shark in self.school_of_shark[::-1]:
             self.move_shark(shark)
 
     def move_shark(self, shark: creatures.Shark) -> bool:
@@ -189,6 +189,7 @@ class WatorWorld():
         else:
             shark.energy = shark.energy - 1
             shark.age = shark.age + 1
+            print("requin ne bouge pas")
             if not self.is_shark_still_alive(shark):
                 self.kill_shark(shark.coordinate)
 
@@ -229,7 +230,7 @@ class WatorWorld():
         """
         #loop on each fish object of self.school_of_fish
 
-        for fish in self.school_of_fish:
+        for fish in self.school_of_fish[::-1]:
             self.move_fish(fish)
     
     def move_fish(self, fish: creatures.Fish) -> bool:
@@ -453,13 +454,14 @@ def main():
             print(f"{j}", end =" ") 
         print()   
     print()
+
     #nb d'iteration
-    for _ in range(8):  
+    for i in range(20):  
         my_world_map.iterate()
-        for i in my_world_map.world_map:
-            for j in i:
-                print(f"{j}", end=" ")
-            print()
+        for i in my_world_map.world_map :
+            for j in i :         
+                print(f"{j}", end =" ") 
+            print()   
         print()
 
     # for _ in range(3): 
