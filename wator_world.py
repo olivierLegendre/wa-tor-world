@@ -155,7 +155,7 @@ class WatorWorld():
             bool: condition if position is free or not
         """
         x, y = position
-        return self.world_map[y][x] == self.__CONSœT_WATER
+        return self.world_map[y][x] == self.__CONST_WATER
 
 #region shark
     def move_sharks(self) -> None:
