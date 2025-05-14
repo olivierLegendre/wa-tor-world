@@ -277,6 +277,10 @@ class wator_display(App):
         App.wws = self.water_world_statistics
         self.load()
         
+        
+    def display_parameter_on_main_scene(self):
+        pass
+    
     def load(self):
         scene_intro = Scene(caption='Intro')
         scene_intro.nodes.append(Text('Scene 0', pos=(20, 20)))
@@ -290,17 +294,14 @@ class wator_display(App):
         self.start_text = Text('Restart', pos=(100, 1050))
         self.play_text = Text('Play', pos=(300, 1050))
         self.stop_text = Text('Stop', pos=(500, 1050))
-        scene_main_screen.nodes.append(Text('Scene 2', pos=(20, 20)))
-        scene_main_screen.nodes.append(Text('Wa-tor simulation', pos=(100, 80)))
-        scene_main_screen.nodes.append(Text('Wa-tor statistics', pos=(1100, 80)))
+        scene_main_screen.nodes.append(Text('Parametres de la simulation : ', pos=(20, 20)))
+        scene_main_screen.nodes.append(Text('Wa-tor simulation', pos=(100, 100)))
+        scene_main_screen.nodes.append(Text('Wa-tor statistics', pos=(1100, 100)))
 
         scene_main_screen.nodes.append(self.start_text)
         scene_main_screen.nodes.append(self.play_text)
         scene_main_screen.nodes.append(self.stop_text)
         
-
-        # print("water world history generations : ")
-        # print(water_world_history.generations)
         scene_main_screen.nodes.append(self.water_world_window)
         scene_main_screen.nodes.append(self.water_world_statistics)
         
@@ -308,12 +309,7 @@ class wator_display(App):
         App.scenes.append(scene_intro)
         App.scenes.append(scene_option)
         App.scenes.append(scene_main_screen)
-        # Text('Scene 2', pos=(20, 20))
-        # Text('Main screen of the app', pos=(20, 50))
-        
-        # water_world_history = ww.MockWorldHistory()
-        # water_world_game = pyv.WaterWorldGame(water_world_history)
-        # water_world_game.run_water_world_window()
+
         
         App.scene = App.scenes[2]
 
