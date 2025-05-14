@@ -187,7 +187,6 @@ class WatorWorld():
         else:
             shark.energy = shark.energy - 1
             shark.age = shark.age + 1
-            print("requin ne bouge pas")
             if not self.is_shark_still_alive(shark):
                 self.kill_shark(shark.coordinate)
 
