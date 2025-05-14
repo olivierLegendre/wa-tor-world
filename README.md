@@ -32,7 +32,7 @@ Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Sté
 
 # Wator_world.py
 ## Description des classes
-### WatorWorld
+### <ins>WatorWorld
 
 Classe principale qui gère la simulation. Elle initialise le monde, ajoute des poissons et des requins, et gère leurs mouvements et interactions.  
 
@@ -62,7 +62,7 @@ Classe principale qui gère la simulation. Elle initialise le monde, ajoute des 
 
 # creatures.py
 ## Description des classes
-### <ins>Creature</>
+### <ins>Creature
 - La classe de base pour toutes les créatures. Elle contient les attributs communs à toutes les créatures.
 
 #### Attributs
@@ -74,7 +74,7 @@ Classe principale qui gère la simulation. Elle initialise le monde, ajoute des 
 
 - __init__(self, coordinate: tuple[int]) : Initialise une nouvelle créature avec les coordonnées spécifiées.
 
-### Fish
+### <ins>Fish
 - Une sous-classe de Creature représentant un poisson.
 
 #### Méthodes
@@ -83,7 +83,7 @@ Classe principale qui gère la simulation. Elle initialise le monde, ajoute des 
 Initialise un nouveau poisson avec les coordonnées spécifiées.  
 - __repr__(self) -> str : Retourne une représentation textuelle de l'objet Fish.
 
-### Shark
+### <ins>Shark
 - Une sous-classe de Creature représentant un requin.  
 
 #### Attributs
