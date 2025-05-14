@@ -30,12 +30,13 @@ Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Sté
 - fichier : main.py  
     - lancer le programme avec ce fichier.  
 
-# Description des classes
-- WatorWorld
+# Wator_world.py
+## Description des classes
+- **WatorWorld**
 
 Classe principale qui gère la simulation. Elle initialise le monde, ajoute des poissons et des requins, et gère leurs mouvements et interactions.  
 
-## Attributs  
+### Attributs  
 
 - world_map : Une liste 2D représentant la carte du monde.
 - school_of_fish : Une liste de tous les poissons dans le monde.
@@ -47,7 +48,7 @@ Classe principale qui gère la simulation. Elle initialise le monde, ajoute des 
 - dead_fish : Le nombre de poissons morts.
 - dead_shark : Le nombre de requins morts.
 
-## Méthodes
+### Méthodes
 
 - __init__(self, dim_map_x, dim_map_y, number_of_fish, number_of_shark,CONST_FISH_MATURITY=3, CONST_SHARK_MATURITY=10, CONST_SHARK_INITIAL_ENERGY=5) :  
     - Initialise le monde avec les dimensions, le nombre de poissons et de requins spécifiés.
@@ -58,6 +59,41 @@ Classe principale qui gère la simulation. Elle initialise le monde, ajoute des 
 - move_fishes(self) : Déplace tous les poissons.
 - iterate(self) : Exécute un cycle de la simulation.
 - display_affichage(self) : Affiche l'état actuel du monde.
+
+# creatures.py
+## Description des classes
+- **Creature**
+
+La classe de base pour toutes les créatures. Elle contient les attributs communs à toutes les créatures.
+### Attributs
+
+- coordinate : Un tuple représentant les coordonnées (x, y) de la créature.
+- age : L'âge de la créature, initialisé à 0.
+
+### Méthodes
+
+- __init__(self, coordinate: tuple[int]) : Initialise une nouvelle créature avec les coordonnées spécifiées.
+
+- **Fish**
+
+Une sous-classe de Creature représentant un poisson.
+## Méthodes
+
+__init__(self, coordinate: tuple[int]) : Initialise un nouveau poisson avec les coordonnées spécifiées.
+__repr__(self) -> str : Retourne une représentation textuelle de l'objet Fish.
+
+- **Shark**
+
+Une sous-classe de Creature représentant un requin.  
+
+### Attributs
+
+energy : L'énergie initiale du requin.
+
+### Méthodes
+
+__init__(self, coordinate: tuple[int], initial_energy) : Initialise un nouveau requin avec les coordonnées et l'énergie initiale spécifiées.
+__repr__(self) -> str : Retourne une représentation textuelle de l'objet Shark.
 
 
 ## Installation
