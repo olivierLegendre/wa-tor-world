@@ -23,11 +23,10 @@ class WatorWorld():
     __CONST_FISH = 1
     __CONST_SHARK = 2
 
-
     #marge de déplacement pour les créatures
     __RANGE_MOVEMENT = 3
 
-    def __init__(self, dim_map_x, dim_map_y, number_of_fish, number_of_shark, CONST_FISH_MATURITY=3, CONST_SHARK_MATURITY=7,  CONST_SHARK_INITIAL_ENERGY=5):
+    def __init__(self, dim_map_x, dim_map_y, number_of_fish, number_of_shark, CONST_FISH_MATURITY=3, CONST_SHARK_MATURITY=10,  CONST_SHARK_INITIAL_ENERGY=5):
         """Initializer of WatorWorld object
 
         Args:
@@ -65,7 +64,6 @@ class WatorWorld():
         """Initialize world map at the dimension x-axis & y-axis with water
         """
         self.world_map = [[self.__CONST_WATER for _ in range(self.__dim_map_x)] for _ in range(self.__dim_map_y)]
-
 
     def add_creatures_to_world_map(self, number_of_fish: int, number_of_shark: int) -> None:
         """Populate world map of creatures
@@ -272,6 +270,7 @@ class WatorWorld():
                 self.dead_fish = self.dead_fish + 1
                 self.nb_fish = self.nb_fish - 1
 
+                
 #region creature
     def move_to_destination(self, creature: creatures.Creature, current_position: tuple[int,int], futur_position: tuple[int,int]) -> None:
         """Creature's movement on her futur coordinate
@@ -437,32 +436,38 @@ class WatorWorld():
         self.move_fishes()
 
     def display_affichage(self):
-        for y in self.world_map:
-            for const in y:
-                if const == self.__CONST_WATER:
-                    print(termcolor.colored("~", "blue"), end=" ")
-                elif const == self.__CONST_FISH:
-                    print(termcolor.colored("1", "white"), end=" ")
-                elif const == self.__CONST_SHARK:
-                    print(termcolor.colored("2", "red"), end=" ")
+        for i in self.world_map:
+            for j in i:
+                if j == self.__CONST_WATER:
+                    print(termcolor.colored("~", "blue"),end=" ")
+                elif j == self.__CONST_FISH:
+                    print("🐠",end=" ")
+                elif j == self.__CONST_SHARK:
+                    print("🦈",end=" ")
+            print()
         print()
             
 def main():
-    my_world_map = WatorWorld(3, 3, 3, 1)
-    for i in my_world_map.world_map :
-        for j in i :         
-            print(f"{j}", end =" ") 
-        print()   
-    print()
+    my_world_map = WatorWorld(40, 40, 100, 50, 2, 15, 7)
+    #my_world_map.display_affichage()
 
-    #nb d'iteration
-    for i in range(20):  
+
+    while True :
         my_world_map.iterate()
-        for i in my_world_map.world_map :
-            for j in i :         
-                print(f"{j}", end =" ") 
-            print()   
-        print()
+        my_world_map.display_affichage()
+        print("=" * 120)
+    #     # print(iteration)
+    #     # iteration +=1
+    #     # input("")
+    
+    # nb d'iteration
+    # for _ in range(10):  
+    #     my_world_map.iterate()
+    #     for i in my_world_map.world_map:
+    #         for j in i:
+    #             print(f"{j}", end=" ")
+    #         print()
+    #     print()
 
     # for _ in range(3): 
     #     my_world_map.iterate()
@@ -470,4 +475,4 @@ def main():
     #     my_world_map.display_affichage()
 
 if __name__ == "__main__":
-    main()
+        main()
