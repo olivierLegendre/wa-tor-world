@@ -3,6 +3,7 @@ import pygame
 from pygame.locals import *
 import history
 import wator_world as ww
+import pygame_gui as pyg
 # import pygame_view as pyv
 
 
@@ -18,7 +19,10 @@ class WaterWorldWindow():
         self.set_surface()
         self.create_sea_visual(0)
     
-    def set_surface(self):
+    def set_surface(self) -> None:
+        """
+        Create the surface and blit (add) it to the surface of the game
+        """
         self.water_world_surface = pygame.Surface((self.size_x, self.size_y))
         App.screen.blit(self.water_world_surface, (100, 200))
         
@@ -57,7 +61,9 @@ class WaterWorldWindow():
                     # print(f"shark at position {y}, {x}")
                     self.create_creature_at_position("shark", y, x, creature_size)
     
-    def draw(self):
+    def draw(self) -> None:
+        """everything added to nodes must have a draw method
+        """
         # pygame.draw.rect(App.screen, "blue", self.ww_rect)
         App.screen.blit(self.water_world_surface, self.ww_rect)
         
@@ -67,26 +73,40 @@ class Water_world_Statistics():
     size_x = const_water_world_statistics_size[0]
     size_y = const_water_world_statistics_size[1]
     
-    def __init__(self,  water_world_history: object):
+    def __init__(self, water_world_history: object) -> None:
     
         self.ww_statistics_rect = pygame.Rect(1100, 200, self.size_x, self.size_y)
         self.water_world_history = water_world_history
         self.set_surface()
         self.get_graph(0)
     
-    def set_surface(self):
+    def set_surface(self) -> None:
+        """_summary_
+        """
         self.water_world_statistics_surface = pygame.Surface((self.size_x, self.size_y))
         App.screen.blit(self.water_world_statistics_surface, (1100, 200))
 
-    def get_graph(self, generation):
+    def get_graph(self, generation: int) -> None:
+        """_summary_
+
+        Args:
+            generation (int): _description_
+        """
         print(f"generation a dessiner {generation}")
         self.water_world_history.get_graph(generation)
         
-    def get_graph_live(self, generation):
+    def get_graph_live(self, generation: int) -> None:
+        """_summary_
+
+        Args:
+            generation (int): _description_
+        """
         print(f"generation a dessiner {generation}")
         self.water_world_history.get_graph_live(generation)
     
-    def draw(self):
+    def draw(self) -> None:
+        """everything added to nodes must have a draw method
+        """
         # print("je dois dessiner mon graph")
         # pygame.draw.rect(App.screen, "blue", self.ww_statistics_rect)
         self.water_world_statistics_surface.fill("white")
@@ -97,7 +117,7 @@ class Water_world_Statistics():
 
 class Text:
     """Create a text object."""
-    def __init__(self, text, pos, **options):
+    def __init__(self, text, pos, **options) -> None:
         self.text = text
         self.pos = pos
 
@@ -108,19 +128,29 @@ class Text:
         self.set_font()
         self.render()
 
-    def set_font(self):
+    def set_font(self) -> None:
         """Set the Font object from name and size."""
         self.font = pygame.font.Font(self.fontname, self.fontsize)
 
-    def render(self):
+    def render(self) -> None:
         """Render the text into an image."""
         self.img = self.font.render(self.text, True, self.fontcolor)
         self.rect = self.img.get_rect()
         self.rect.topleft = self.pos
 
-    def draw(self):
+    def draw(self) -> None:
         """Draw the text image to the screen."""
         App.screen.blit(self.img, self.rect)
+
+
+class Ui_elements(pyg.elements.ui_button.UIButton):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+    def draw(self) -> None:
+        """everything added to nodes must have a draw method
+        """
+        pass
 
 
 class Scene:
@@ -161,10 +191,14 @@ class Scene:
             App.screen.blit(self.img, (0, 0))
         # self.enter()
     
-    def draw(self):
+    def draw(self) -> None:
         """Draw all objects in the scene."""
-        print(f"dans draw {self.id} {self.bg}")
-        App.screen.fill(self.bg)
+        if self.file != '':
+            App.screen.blit(self.img, (0, 0))
+        else:
+            print("dailleurs")
+            App.screen.fill(self.bg)
+            
         for node in self.nodes:
             node.draw()
         pygame.display.flip()
@@ -186,6 +220,7 @@ class App:
         self.flags = RESIZABLE
         self.rect = pygame.Rect(0, 0, self.CONST_APP_WINDOW_SIZE_X, self.CONST_APP_WINDOW_SIZE_Y)
         App.screen = pygame.display.set_mode(self.rect.size, self.flags)
+        App.manager = pyg.UIManager((self.CONST_APP_WINDOW_SIZE_X, self.CONST_APP_WINDOW_SIZE_Y))
         # App.screen = pygame.display.set_mode(self.CONST_APP_WINDOW_SIZE, self.flags)
         # App.text_title = Text('Pygame App', pos=(20, 20))
         
@@ -202,13 +237,15 @@ class App:
         App.scenes = list()
         App.running = True
 
-    def run(self):
+    def run(self) -> None:
         """Run the main event loop."""
         scene_index = 2
         generation = 0
         clock = pygame.time.Clock()
+        tick = 10
         time_pass = False
         while App.running:
+            time_delta = clock.tick(tick)/1000.0
             print(f"generation {generation}")
             for event in pygame.event.get():
                 if event.type == QUIT:
@@ -231,10 +268,14 @@ class App:
                         time_pass = False
                     if self.retour_text.rect.collidepoint(event.pos):
                         scene_index -= 1
+                        
+                App.manager.process_events(event)
+            self.manager.update(time_delta)
+            
             if time_pass:
                 if generation < (self.www.water_world_history.generations) - 1:
                     generation += 1
-            clock.tick(10)    
+            clock.tick(tick)    
             self.www.create_sea_visual(generation)
             self.wws.get_graph(generation)
             # self.wws.get_graph_live(generation)
@@ -243,13 +284,14 @@ class App:
             # App.screen.fill(pygame.Color('gray'))
             App.scene = App.scenes[scene_index]
             App.scene.draw()
+            self.manager.draw_ui(App.screen)
             
             
             pygame.display.update()
 
         pygame.quit()
         
-    def add_shortcuts(self):
+    def add_shortcuts(self) -> None:
         self.shortcuts = {
             (K_x, KMOD_LMETA): 'print("cmd+X")',
             (K_x, KMOD_LALT): 'print("alt+X")',
@@ -280,7 +322,7 @@ class App:
             (103, 4352): 'self.toggle_frame()',
         }
         
-    def do_shortcut(self, event):
+    def do_shortcut(self, event) -> None:
         """Find the the key/mod combination in the dictionary and execute the cmd."""
         k = event.key
         m = event.mod
@@ -288,18 +330,18 @@ class App:
         if (k, m) in self.french_shortcuts:
             exec(self.french_shortcuts[k, m])
             
-    def toggle_fullscreen(self):
+    def toggle_fullscreen(self) -> None:
         """Toggle between full screen and windowed screen."""
         print("fullscreen")
         self.flags ^= FULLSCREEN
         pygame.display.set_mode((0, 0), self.flags)
 
-    def toggle_resizable(self):
+    def toggle_resizable(self) -> None:
         """Toggle between resizable and fixed-size window."""
         self.flags ^= RESIZABLE
         pygame.display.set_mode(self.rect.size, self.flags)
 
-    def toggle_frame(self):
+    def toggle_frame(self) -> None:
         """Toggle between frame and noframe window."""
         self.flags ^= NOFRAME
         pygame.display.set_mode(self.rect.size, self.flags)
@@ -316,24 +358,31 @@ class wator_display(App):
         self.load()
         
         
-    def add_display_parameter(self, scene_main_screen):
+    def add_display_parameter(self, scene_main_screen: Scene):
         scene_main_screen.nodes.append(Text('Parametres de la simulation : ', pos=(20, 20)))
         parameter_simulation = self.history.get_parameters_simulation()
         print(parameter_simulation)
         pass
     
-    def load(self):
+    def load(self) -> None:
         scene_intro = Scene(caption='Intro')
         scene_intro.nodes.append(Text('Scene 0', pos=(20, 20)))
         scene_intro.nodes.append(Text('Introduction screen the app', pos=(20, 50)))
 
-        scene_option = Scene(bg=pygame.Color('yellow'), caption='Options')
+        # scene_option = Scene(bg=pygame.Color('yellow'), caption='Options')
+        scene_option = Scene(img_folder='background', file='EMMAS-HEROTemplate_-Jaws.png', caption='Options')
         scene_option.nodes.append(Text('Scene 1', pos=(20, 20)))
         scene_option.nodes.append(Text('Option screen of the app', pos=(20, 50)))
+        # hello_button = pyg.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Say Hello',manager=App.manager)
+        
+        # hello_button = pyg.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Say Hello',manager=App.manager)
+        # hello_maison = Ui_elements(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Say Hello',manager=App.manager)
+        # print(f"type button : {type(hello_maison)}")
+        # scene_option.nodes.append(Ui_elements(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Say Hello',manager=App.manager))
         
         # scene_main_screen = Scene(bg=pygame.Color(153, 153, 0), caption='Main')
-        scene_main_screen = Scene(bg=("light blue"), caption='Main')
-        # scene_main_screen = Scene(img_folder='background', file='shark.jpg', caption='shark')
+        # scene_main_screen = Scene(bg=("light blue"), caption='Main')
+        scene_main_screen = Scene(img_folder='background', file='shark.jpg', caption='shark')
         self.start_text = Text('Restart', pos=(100, 1050))
         self.play_text = Text('Play', pos=(300, 1050))
         self.stop_text = Text('Stop', pos=(500, 1050))

@@ -8,12 +8,16 @@ class water_world_db():
     def __init__(self):
         self.connection_db()
 
-    def connection_db(self):
+    def connection_db(self) -> None:
+        """_summary_
+        """
         with sqlite3.connect("wator_world.db") as connection:
             self.connection = connection
             self.cursor = connection.cursor()
         
-    def create_tables(self):
+    def create_tables(self) -> None:
+        """_summary_
+        """
         #create file wator_world.db s'il n'existe pas
         file_path = "wator_world.db"
 
@@ -27,7 +31,7 @@ class water_world_db():
         self.create_water_world_statistics_table()
         self.create_water_world_map_table()
 
-    def create_water_world_table(self):
+    def create_water_world_table(self) -> None:
         self.cursor.execute("""
                             CREATE TABLE IF NOT EXISTS water_world (
                                 water_world_id INTEGER PRIMARY KEY,
@@ -40,7 +44,7 @@ class water_world_db():
                             )
                             """)
         
-    def create_water_world_statistics_table(self):
+    def create_water_world_statistics_table(self) -> None:
         self.cursor.execute("""
                             CREATE TABLE IF NOT EXISTS Water_world_statistics(
                                 water_world_statistics_id INTEGER PRIMARY KEY,
@@ -57,7 +61,7 @@ class water_world_db():
                             )
                             """)
         
-    def create_water_world_map_table(self):
+    def create_water_world_map_table(self) -> None:
         self.cursor.execute("""
                             CREATE TABLE IF NOT EXISTS Water_world_map (
                                 water_world_map_id INTEGER PRIMARY KEY, 
@@ -69,8 +73,7 @@ class water_world_db():
                             )
                             """)
     
-    
-    def get_water_world_id(self, name):
+    def get_water_world_id(self, name: str) -> int | None:
         request_select = """
             SELECT water_world_id FROM Water_world
             WHERE water_world_name = ?
@@ -86,7 +89,7 @@ class water_world_db():
             result.fetchall()
             return None
         
-    def insert_water_world(self, name, water_world):
+    def insert_water_world(self, name: str, water_world: object) -> int:
         ww = water_world
         request_insert = """
             INSERT OR IGNORE INTO Water_world (water_world_name, nb_fishes, nb_sharks, fish_maturity, shark_maturity, shark_initial_energy)
@@ -110,14 +113,14 @@ class water_world_db():
         # get the id of the last inserted row
         return self.cursor.lastrowid
 
-    def show_water_worlds(self):
+    def show_water_worlds(self) -> None:
         request = """
             SELECT * FROM Water_world
         """
         result = self.cursor.execute(request)
         print(result.fetchall())
         
-    def get_water_world_id_by_name(self, name):
+    def get_water_world_id_by_name(self, name: int) -> int | None:
         request = """
             SELECT water_world_id FROM Water_world
             WHERE water_world_name = ?
@@ -130,10 +133,10 @@ class water_world_db():
         else:
             return fetch[0][0]
         
-    def play_request(self, request):
+    def play_request(self, request: str) -> None:
         self.cursor.execute(request)
         
-    def insert_map(self, water_world, water_world_id, generation):
+    def insert_map(self, water_world: object, water_world_id: int, generation: int) -> int:
         request = """
             INSERT OR IGNORE INTO Water_world_map(chronon, map, water_world_id)
             VALUES (?, ?, ?)
@@ -151,7 +154,7 @@ class water_world_db():
         # get the id of the last inserted row
         return self.cursor.lastrowid
     
-    def insert_statistics(self, water_world, water_world_id, generation):
+    def insert_statistics(self, water_world: object, water_world_id: int, generation: int) -> int:
         request = """
             INSERT OR IGNORE INTO Water_world_statistics(chronon,
                                         nb_fish,
@@ -182,7 +185,7 @@ class water_world_db():
         # get the id of the last inserted row
         return self.cursor.lastrowid
     
-    def get_map(self, water_world_id, generation):
+    def get_map(self, water_world_id: int, generation: int) -> list:
         request = """
             SELECT map FROM Water_world_map
             WHERE water_world_id = ?
@@ -194,7 +197,7 @@ class water_world_db():
         # print(map)
         return map
     
-    def get_statistics(self, water_world_id, generation):
+    def get_statistics(self, water_world_id: int, generation: int) -> list:
         request = """
             SELECT chronon, nb_fish, nb_shark, birth_fish, birth_shark, dead_fish, dead_shark
             FROM Water_world_statistics
@@ -214,7 +217,7 @@ class water_world_db():
         # print(statistics)
         return statistics
     
-    def count_generation(self,water_world_id):
+    def count_generation(self,water_world_id: int) -> int:
         request = """
             SELECT count(chronon)
             FROM Water_world_statistics
@@ -225,7 +228,7 @@ class water_world_db():
         nb_generations = result[0]
         return nb_generations
     
-    def get_simulation_parameters(self, water_world_id):
+    def get_simulation_parameters(self, water_world_id: int) -> list:
         request = """
             SELECT *
             FROM Water_world
