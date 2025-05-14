@@ -185,12 +185,14 @@ class WatorWorld():
             self.move_to_prey(shark, current_position, destination_position)
             #Verify energy shark
             if not self.is_shark_still_alive(shark):
-                self.kill_shark
+                self.kill_shark(shark.coordinate)
         else:
             for i, shark_in_world_map in enumerate(self.school_of_shark):
                 if shark_in_world_map.coordinate == shark.coordinate:
-                    shark_in_world_map.energy -= 1
-                    shark_in_world_map.age += 1
+                    shark_in_world_map.energy = shark_in_world_map.energy - 1
+                    shark_in_world_map.age = shark_in_world_map.age + 1
+            if not self.is_shark_still_alive(shark):
+                self.kill_shark(shark.coordinate)
 
     def move_to_prey(self, shark: creatures.Shark, current_position: tuple[int,int], destination_position: tuple[int,int]) -> bool:
         """Shark's movement on its prey
@@ -211,10 +213,8 @@ class WatorWorld():
         for i, shark_in_world_map in enumerate(self.school_of_shark):
             if shark_in_world_map.coordinate == current_position:
                 shark_in_world_map.coordinate = destination_position
-                shark_in_world_map.energy -= 1
-                shark_in_world_map.age += 1
-                shark.energy -= 1
-                shark.age += 1
+                shark_in_world_map.energy = shark_in_world_map.energy - 1
+                shark_in_world_map.age = shark_in_world_map.age + 1
         #Create baby shark if the shark is mature
         if self.is_creature_mature(shark):
             self.make_baby_creature(current_position,shark)
@@ -233,8 +233,8 @@ class WatorWorld():
         if index is not None:
             fish_killed = self.school_of_fish.pop(index)   
             if fish_killed:
-                shark.energy = self.__CONST_SHARK_INITIAL_ENERGY
-                self.dead_fish += 1
+                shark.energy = self.CONST_SHARK_INITIAL_ENERGY
+                self.dead_fish = self.dead_fish + 1
 
     def is_shark_still_alive(self, shark) -> bool:
         """Vérify if the shark have enough energy
@@ -257,9 +257,10 @@ class WatorWorld():
             bool: condition if the shark is delete
         """
         #update list
+        index = None
         for i, shark in enumerate(self.school_of_shark):
             if shark.coordinate == shark_position:
-                index = i
+                index = i 
         self.school_of_shark.pop(index)
         #update world map
         self.set_param_to_position(self.__CONST_WATER, shark_position)
@@ -294,7 +295,7 @@ class WatorWorld():
         else:
             for i, fish_in_world_map in enumerate(self.school_of_fish):
                 if fish_in_world_map.coordinate == fish.coordinate:
-                    fish_in_world_map.age += 1
+                    fish_in_world_map.age = fish_in_world_map.age + 1
 
     def move_to_destination(self, fish: creatures.Fish, current_position: tuple[int,int], water_position: tuple[int,int]) -> None:
         """Fish's movement on its water coordinate
@@ -313,8 +314,7 @@ class WatorWorld():
         for i, fish_in_world_map in enumerate(self.school_of_fish):
             if fish_in_world_map.coordinate == current_position:
                 fish_in_world_map.coordinate = water_position
-                fish_in_world_map.age += 1
-                fish.age += 1
+                fish_in_world_map.age = fish_in_world_map.age + 1
         #Create baby fish if the fish is mature
         if self.is_creature_mature(fish):
             self.make_baby_creature(current_position, fish) 
@@ -421,16 +421,16 @@ class WatorWorld():
             self.school_of_fish.append(creatures.Fish(current_position))
             #Update world map coordinate
             self.set_param_to_position(self.__CONST_FISH, current_position)
-            self.nb_fish += 1
-            self.birth_fish += 1
+            self.nb_fish = self.nb_fish + 1
+            self.birth_fish = self.birth_fish + 1
         #if creature is Shark
         elif isinstance(creature_dad, creatures.Shark):
             #Create new shark and add to the list school_of_shark
-            self.school_of_shark.append(creatures.Shark(current_position, self.__CONST_SHARK_INITIAL_ENERGY))
+            self.school_of_shark.append(creatures.Shark(current_position, self.CONST_SHARK_INITIAL_ENERGY))
             #Update world map coordinate
             self.set_param_to_position(self.__CONST_SHARK, current_position)
-            self.nb_shark += 1
-            self.birth_shark += 1
+            self.nb_shark = self.nb_shark + 1
+            self.birth_shark = self.birth_shark + 1
 
     def is_creature_mature(self, creature: creatures.Creature) -> bool:
         """Verify if the creature is mature
@@ -444,11 +444,11 @@ class WatorWorld():
         #if creature is Fish
         if isinstance(creature, creatures.Fish):
             fish_age = creature.age
-            return fish_age % self.__CONST_FISH_MATURITY == 0 if not fish_age == 0 else False
+            return fish_age % self.CONST_FISH_MATURITY == 0 if not fish_age == 0 else False
         #if creature is Shark
         elif isinstance(creature, creatures.Shark):
             shark_age = creature.age
-            return shark_age % self.__CONST_SHARK_MATURITY == 0 if not shark_age == 0 else False
+            return shark_age % self.CONST_SHARK_MATURITY == 0 if not shark_age == 0 else False
 
 #region display
     def set_param_to_position(self, param: int, position: tuple[int]) -> None:
@@ -486,7 +486,7 @@ def main():
     print()
     
     #nb d'iteration
-    for _ in range(5):  
+    for _ in range(8):  
         my_world_map.iterate()
         for i in my_world_map.world_map:
             for j in i:
