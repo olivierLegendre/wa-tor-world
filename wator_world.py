@@ -235,6 +235,7 @@ class WatorWorld():
             if fish_killed:
                 shark.energy = self.CONST_SHARK_INITIAL_ENERGY
                 self.dead_fish = self.dead_fish + 1
+                self.nb_fish = self.nb_fish - 1
 
     def is_shark_still_alive(self, shark) -> bool:
         """Vérify if the shark have enough energy
@@ -264,6 +265,8 @@ class WatorWorld():
         self.school_of_shark.pop(index)
         #update world map
         self.set_param_to_position(self.__CONST_WATER, shark_position)
+        self.nb_shark = self.nb_shark - 1
+        self.dead_shark = self.dead_shark + 1
 
 #region fish
     def move_fishes(self):
@@ -484,7 +487,12 @@ def main():
             print(f"{j}", end =" ") 
         print()   
     print()
-    
+    print(f"my_world_map.nb_fish= {my_world_map.nb_fish}") 
+    print(f"my_world_map.nb_shark= {my_world_map.nb_shark}")
+    print(f"my_world_map.birth_fish= {my_world_map.birth_fish}")
+    print(f"my_world_map.birth_shark= {my_world_map.birth_shark}")
+    print(f"my_world_map.dead_fish= {my_world_map.dead_fish}")
+    print(f"my_world_map.dead_shark= {my_world_map.dead_shark}")
     #nb d'iteration
     for _ in range(8):  
         my_world_map.iterate()
@@ -493,6 +501,12 @@ def main():
                 print(f"{j}", end=" ")
             print()
         print()
+        print(f"my_world_map.nb_fish= {my_world_map.nb_fish}") 
+        print(f"my_world_map.nb_shark= {my_world_map.nb_shark}")
+        print(f"my_world_map.birth_fish= {my_world_map.birth_fish}")
+        print(f"my_world_map.birth_shark= {my_world_map.birth_shark}")
+        print(f"my_world_map.dead_fish= {my_world_map.dead_fish}")
+        print(f"my_world_map.dead_shark= {my_world_map.dead_shark}")
 
     # for _ in range(3): 
     #     my_world_map.iterate()
