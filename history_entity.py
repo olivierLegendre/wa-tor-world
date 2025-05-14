@@ -224,7 +224,17 @@ class water_world_db():
         result = result.fetchone()
         nb_generations = result[0]
         return nb_generations
-
+    
+    def get_simulation_parameters(self, water_world_id):
+        request = """
+            SELECT *
+            FROM Water_world
+            WHERE water_world_id = ?
+        """
+        result = self.cursor.execute(request, (water_world_id,))
+        parameters = result.fetchall()
+        return parameters
+        
 def main():
     ww_db = water_world_db()
     # ww_db.create_water_world_table()

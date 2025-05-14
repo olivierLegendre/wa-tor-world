@@ -81,13 +81,17 @@ class Water_world_Statistics():
     def get_graph(self, generation):
         print(f"generation a dessiner {generation}")
         self.water_world_history.get_graph(generation)
+        
+    def get_graph_live(self, generation):
+        print(f"generation a dessiner {generation}")
+        self.water_world_history.get_graph_live(generation)
     
     def draw(self):
         # print("je dois dessiner mon graph")
         # pygame.draw.rect(App.screen, "blue", self.ww_statistics_rect)
         self.water_world_statistics_surface.fill("white")
-        img_stat = pygame.image.load("water_world_graph.jpg")
-        self.water_world_statistics_surface.blit(img_stat, (0,0))
+        img_stat = pygame.image.load("water_world_graph.png")
+        self.water_world_statistics_surface.blit(img_stat, (-30,-80))
         App.screen.blit(self.water_world_statistics_surface, self.ww_statistics_rect)
         
 
@@ -134,13 +138,32 @@ class Scene:
         Scene.id += 1
         self.nodes = []
         self.bg = Scene.bg
+        self.file = ''
+        self.img_folder = ''
         
         [setattr(self, key_arg, value_arg) for key_arg, value_arg in kwargs.items()]
+        
+        # for key, value in kwargs.items():
+        #     print(f" options : {key} {value}")
         # print(f"dans init {self.id} {self.bg}")
         
+        # self.file = Scene.options['file']
+        
+        
+
+        if self.file != '':
+            img = self.img_folder+"/"+self.file if self.img_folder != '' else self.file
+            # print(f"img : {img}")
+            self.img = pygame.image.load(img).convert()
+            # imp = pygame.image.load("C:\\Users\\DELL\\Downloads\\gfg.png").convert()
+            size = App.screen.get_size()
+            self.img = pygame.transform.smoothscale(self.img, size)
+            App.screen.blit(self.img, (0, 0))
+        # self.enter()
+    
     def draw(self):
         """Draw all objects in the scene."""
-        # print(f"dans draw {self.id} {self.bg}")
+        print(f"dans draw {self.id} {self.bg}")
         App.screen.fill(self.bg)
         for node in self.nodes:
             node.draw()
@@ -165,8 +188,18 @@ class App:
         App.screen = pygame.display.set_mode(self.rect.size, self.flags)
         # App.screen = pygame.display.set_mode(self.CONST_APP_WINDOW_SIZE, self.flags)
         # App.text_title = Text('Pygame App', pos=(20, 20))
-        App.scenes = list()
         
+        # img = "background/shark.jpg"
+        # # print(f"img : {img}")
+        # self.img = pygame.image.load(img).convert()
+        # # imp = pygame.image.load("C:\\Users\\DELL\\Downloads\\gfg.png").convert()
+        # # size = App.screen.get_size()
+        # # self.img = pygame.transform.smoothscale(self.img, size)
+        # print(f"img {self.img}")
+        # App.screen.blit(self.img, (0, 0))
+        # print(f"screen : {repr(App.screen)}")
+        
+        App.scenes = list()
         App.running = True
 
     def run(self):
@@ -191,16 +224,20 @@ class App:
                         generation = 0
                         self.www.create_sea_visual(generation)
                         self.wws.get_graph(generation)
+                        # self.wws.get_graph_live(generation)
                     if self.play_text.rect.collidepoint(event.pos):
                         time_pass = True
                     if self.stop_text.rect.collidepoint(event.pos):
                         time_pass = False
+                    if self.retour_text.rect.collidepoint(event.pos):
+                        scene_index -= 1
             if time_pass:
                 if generation < (self.www.water_world_history.generations) - 1:
                     generation += 1
             clock.tick(10)    
             self.www.create_sea_visual(generation)
             self.wws.get_graph(generation)
+            # self.wws.get_graph_live(generation)
             # self.wws.draw()
                     
             # App.screen.fill(pygame.Color('gray'))
@@ -267,6 +304,7 @@ class App:
         self.flags ^= NOFRAME
         pygame.display.set_mode(self.rect.size, self.flags)
 
+
 class wator_display(App):
     def __init__(self, history):
         super().__init__()
@@ -278,7 +316,10 @@ class wator_display(App):
         self.load()
         
         
-    def display_parameter_on_main_scene(self):
+    def add_display_parameter(self, scene_main_screen):
+        scene_main_screen.nodes.append(Text('Parametres de la simulation : ', pos=(20, 20)))
+        parameter_simulation = self.history.get_parameters_simulation()
+        print(parameter_simulation)
         pass
     
     def load(self):
@@ -290,17 +331,22 @@ class wator_display(App):
         scene_option.nodes.append(Text('Scene 1', pos=(20, 20)))
         scene_option.nodes.append(Text('Option screen of the app', pos=(20, 50)))
         
-        scene_main_screen = Scene(bg=pygame.Color(153, 153, 0), caption='Main')
+        # scene_main_screen = Scene(bg=pygame.Color(153, 153, 0), caption='Main')
+        scene_main_screen = Scene(bg=("light blue"), caption='Main')
+        # scene_main_screen = Scene(img_folder='background', file='shark.jpg', caption='shark')
         self.start_text = Text('Restart', pos=(100, 1050))
         self.play_text = Text('Play', pos=(300, 1050))
         self.stop_text = Text('Stop', pos=(500, 1050))
-        scene_main_screen.nodes.append(Text('Parametres de la simulation : ', pos=(20, 20)))
+        self.retour_text = Text('Retour', pos=(2000, 20))
+        # scene_main_screen.nodes.append(Text('Parametres de la simulation : ', pos=(20, 20)))
+        self.add_display_parameter(scene_main_screen)
         scene_main_screen.nodes.append(Text('Wa-tor simulation', pos=(100, 100)))
         scene_main_screen.nodes.append(Text('Wa-tor statistics', pos=(1100, 100)))
 
         scene_main_screen.nodes.append(self.start_text)
         scene_main_screen.nodes.append(self.play_text)
         scene_main_screen.nodes.append(self.stop_text)
+        scene_main_screen.nodes.append(self.retour_text)
         
         scene_main_screen.nodes.append(self.water_world_window)
         scene_main_screen.nodes.append(self.water_world_statistics)

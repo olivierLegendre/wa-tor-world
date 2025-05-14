@@ -38,6 +38,9 @@ class History():
         
     def get_number_of_generations(self):
         return self.entity.count_generation(self.world_id)
+    
+    def get_parameters_simulation(self):
+        return self.entity.get_simulation_parameters(self.world_id)
         
     def save_generation(self):
         self.entity.insert_map(self.world, self.world_id, self.generations)
@@ -66,7 +69,6 @@ class History():
         statistcs_df = statistcs_df.transpose()
   
         return statistcs_df
-    
         
     def display_graph(self):
         sns.set_theme()
@@ -82,23 +84,27 @@ class History():
     def get_line_plot(self, data):
         statistcs_df = pd.DataFrame(data)
         statistcs_df = statistcs_df.transpose()
-        water_world_plot = sns.lineplot(x='chronon', y='nb_fish', data=statistcs_df)
-        water_world_plot = sns.lineplot(x='chronon', y='nb_shark', data=statistcs_df)
-        water_world_plot = sns.lineplot(x='chronon', y='birth_fish', data=statistcs_df)
-        water_world_plot = sns.lineplot(x='chronon', y='birth_shark', data=statistcs_df)
-        water_world_plot = sns.lineplot(x='chronon', y='dead_fish', data=statistcs_df)
-        water_world_plot = sns.lineplot(x='chronon', y='dead_shark', data=statistcs_df)
+        water_world_plot = sns.lineplot(x='chronon', y='nb_fish', data=statistcs_df, label="Nb Fish")
+        water_world_plot = sns.lineplot(x='chronon', y='nb_shark', data=statistcs_df, label="Nb Shark")
+        # water_world_plot = sns.lineplot(x='chronon', y='birth_fish', data=statistcs_df, label="Birth Fish")
+        # water_world_plot = sns.lineplot(x='chronon', y='birth_shark', data=statistcs_df, label="Birth Shark")
+        # water_world_plot = sns.lineplot(x='chronon', y='dead_fish', data=statistcs_df, label="Dead Fish")
+        # water_world_plot = sns.lineplot(x='chronon', y='dead_shark', data=statistcs_df, label="Dead Shark")
+        water_world_plot.legend(title="Creature Info", loc="upper left") 
+        water_world_plot.set(xlabel='chronon', ylabel='')
         water_world_fig = water_world_plot.get_figure()
-        water_world_fig.savefig("water_world_graph.jpg")
+        water_world_fig.set_size_inches(9,9)
+        water_world_fig.savefig("water_world_graph.png")
         water_world_fig.clf()
         
     def get_graph_live(self, generation):
         sns.set_theme()
         sharks_and_fishes = self.get_statistics(generation)
-        self.get_line_plot_live(sharks_and_fishes)
+        print(sharks_and_fishes)
+        self.get_line_plot_live(sharks_and_fishes, generation)
         
-    def get_line_plot_live(self, data):
-        statistcs_df = pd.DataFrame(data)
+    def get_line_plot_live(self, data, generation):
+        statistcs_df = pd.DataFrame(data, index=[generation])
         statistcs_df = statistcs_df.transpose()
         water_world_plot = sns.lineplot(x='chronon', y='nb_fish', data=statistcs_df)
         water_world_plot = sns.lineplot(x='chronon', y='nb_shark', data=statistcs_df)
