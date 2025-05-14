@@ -35,29 +35,29 @@ Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Sté
 
 Classe principale qui gère la simulation. Elle initialise le monde, ajoute des poissons et des requins, et gère leurs mouvements et interactions.  
 
-    ## Attributs
+## Attributs  
 
-    - world_map : Une liste 2D représentant la carte du monde.
-    - school_of_fish : Une liste de tous les poissons dans le monde.
-    - school_of_shark : Une liste de tous les requins dans le monde.
-    - nb_fish : Le nombre de poissons.
-    - nb_shark : Le nombre de requins.
-    - birth_fish : Le nombre de naissances de poissons.
-    - birth_shark : Le nombre de naissances de requins.
-    - dead_fish : Le nombre de poissons morts.
-    - dead_shark : Le nombre de requins morts.
+- world_map : Une liste 2D représentant la carte du monde.
+- school_of_fish : Une liste de tous les poissons dans le monde.
+- school_of_shark : Une liste de tous les requins dans le monde.
+- nb_fish : Le nombre de poissons.
+- nb_shark : Le nombre de requins.
+- birth_fish : Le nombre de naissances de poissons.
+- birth_shark : Le nombre de naissances de requins.
+- dead_fish : Le nombre de poissons morts.
+- dead_shark : Le nombre de requins morts.
 
-    ## Méthodes
+## Méthodes
 
-    - __init__(self, dim_map_x, dim_map_y, number_of_fish, number_of_shark,CONST_FISH_MATURITY=3, CONST_SHARK_MATURITY=10, CONST_SHARK_INITIAL_ENERGY=5) :  
-        - Initialise le monde avec les dimensions et le nombre de poissons et de requins spécifiés.
-    - initialize_world_map(self) : Initialise la carte du monde avec de l'eau.
-    - add_creatures_to_world_map(self, number_of_fish, number_of_shark) : 
-        - Ajoute des poissons et des requins à la carte du monde.
-    - move_sharks(self) : Déplace tous les requins.
-    - move_fishes(self) : Déplace tous les poissons.
-    - iterate(self) : Exécute un cycle de la simulation.
-    - display_affichage(self) : Affiche l'état actuel du monde.
+- __init__(self, dim_map_x, dim_map_y, number_of_fish, number_of_shark,CONST_FISH_MATURITY=3, CONST_SHARK_MATURITY=10, CONST_SHARK_INITIAL_ENERGY=5) :  
+    - Initialise le monde avec les dimensions et le nombre de poissons et de requins spécifiés.
+- initialize_world_map(self) : Initialise la carte du monde avec de l'eau.
+- add_creatures_to_world_map(self, number_of_fish, number_of_shark) : 
+    - Ajoute des poissons et des requins à la carte du monde.
+- move_sharks(self) : Déplace tous les requins.
+- move_fishes(self) : Déplace tous les poissons.
+- iterate(self) : Exécute un cycle de la simulation.
+- display_affichage(self) : Affiche l'état actuel du monde.
 
 
 ## Installation
