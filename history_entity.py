@@ -237,6 +237,15 @@ class water_world_db():
         result = self.cursor.execute(request, (water_world_id,))
         parameters = result.fetchall()
         return parameters
+    
+    def get_saved_simulations(self):
+        request = """
+            SELECT *
+            FROM Water_world
+        """
+        result = self.cursor.execute(request)
+        simulations = result.fetchall()
+        return simulations
         
 def main():
     ww_db = water_world_db()

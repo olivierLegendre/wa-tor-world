@@ -17,7 +17,8 @@ def create_simulation(name: str) -> history:
     """
     water_world = ww.WatorWorld(80, 80, 200, 50, 4, 10, 7)
     water_world_history_entity = he.water_world_db()
-    water_world_history = history.History(name, water_world, water_world_history_entity)
+    water_world_history = history.History(water_world_history_entity)
+    water_world_history = water_world_history.load(name, water_world)
     return water_world_history
 
 
@@ -34,9 +35,14 @@ def run_simulation(nb_iteration: int, world_history: history):
 
 def main():
 
-    water_world_history = create_simulation("simulation_antoine_2")
+    # water_world_history = create_simulation("simulation_antoine_2")
     # print(water_world_history.get_all_statistics())
     
+    # water_world_history.get_saved_simulation()
+    
+    # app = pyv.wator_display(water_world_history)
+    water_world_history_entity = he.water_world_db()
+    water_world_history = history.History(water_world_history_entity)
     app = pyv.wator_display(water_world_history)
     app.run()
 

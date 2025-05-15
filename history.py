@@ -7,12 +7,17 @@ import history_entity as he
 
 
 class History():
-    def __init__(self, simulation_name: str, world: object, entity=he.water_world_db()) -> None:
+    def __init__(self, entity=he.water_world_db()):
+        self.entity = entity
+        
+    
+    
+    def load(self, simulation_name: str, world: object) -> None:
         self.generations = 0
         self.world = world
         self.name = simulation_name
-        self.entity = entity
         self.init()
+        
         
     def init(self) -> None:
         """
@@ -62,6 +67,9 @@ class History():
             list: _description_
         """
         return self.entity.get_simulation_parameters(self.world_id)
+    
+    def get_saved_simulation(self):
+        return self.entity.get_saved_simulations()
         
     def save_generation(self) -> None:
         """save map in water_world_map

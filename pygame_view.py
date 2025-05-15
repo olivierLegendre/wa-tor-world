@@ -3,6 +3,7 @@ import pygame
 from pygame.locals import *
 import history
 import wator_world as ww
+import history_entity as he
 # import pygame_gui as pyg
 # import pygame_view as pyv
 
@@ -196,7 +197,6 @@ class Scene:
         if self.file != '':
             App.screen.blit(self.img, (0, 0))
         else:
-            print("dailleurs")
             App.screen.fill(self.bg)
             
         for node in self.nodes:
@@ -239,7 +239,7 @@ class App:
 
     def run(self) -> None:
         """Run the main event loop."""
-        scene_index = 2
+        scene_index = 1
         generation = 0
         clock = pygame.time.Clock()
         tick = 10
@@ -258,12 +258,31 @@ class App:
                             if event.key == K_LEFT:
                                 pass
                         if event.type == pygame.MOUSEBUTTONDOWN:
+                            if self.load_saved.rect.collidepoint(event.pos):
+                                print(f"simulation {self.load_saved.param}")
+                                simulation = self.load_saved.param
+                                world = ww.WatorWorld(
+                                    80,
+                                    80,
+                                    simulation[2],
+                                    simulation[3],
+                                    simulation[4],
+                                    simulation[5],
+                                    simulation[6],
+                                )
+                                self.history.load(simulation[1], world)
+                                # self.test_function(simulation[1])
+                                self.load_save(simulation[1])
+                                self.load_main_scene()
+                                scene_index = 2
+                                print(simulation[1])
                             pass
                 clock.tick(tick) 
             
             # for the main scene
             if scene_index == 2:
                 print(f"generation {generation}")
+                print(f"index : {scene_index}")
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         App.running = False
@@ -284,6 +303,7 @@ class App:
                         if self.stop_text.rect.collidepoint(event.pos):
                             time_pass = False
                         if self.retour_text.rect.collidepoint(event.pos):
+                            generation = 0
                             scene_index -= 1
                             
                 #     App.manager.process_events(event)
@@ -368,57 +388,46 @@ class wator_display(App):
     def __init__(self, history):
         super().__init__()
         self.history = history
+        self.load()
+        
+    def test_function(self, param):
+        print(param)
+        
+    def load_save(self, name, x=80, y=80, nb_fish=200, nb_shark=50, fish_maturity=4, shark_maturity=10, shark_initial_energy=7):
+        water_world = ww.WatorWorld(x, y, nb_fish, nb_shark, fish_maturity, shark_maturity, shark_initial_energy)
+        # water_world_history_entity = he.water_world_db()
+        # water_world_history = history.History(name, water_world, water_world_history_entity)
+        self.history.load(name, water_world)
+        # self.history = water_world_history
+        self.load_history(self.history)
+        self.load_main_scene()
+        
+    def load_history(self, history):
         self.water_world_window = WaterWorldWindow(history)
         self.water_world_statistics = Water_world_Statistics(history)
         App.www = self.water_world_window
         App.wws = self.water_world_statistics
-        self.load()
         
+    def load_main_scene(self):
+        scene_main_screen = self.scene_main_screen
         
-    def add_display_parameter(self, scene_main_screen: Scene):
-        scene_main_screen.nodes.append(Text('Parametres de la simulation : ', pos=(10, 20), fontsize=50))
+        self.add_display_parameter(scene_main_screen)
+        scene_main_screen.nodes.append(self.water_world_window)
+        scene_main_screen.nodes.append(self.water_world_statistics)
+        App.scenes.append(scene_main_screen)
+        return scene_main_screen
         
-        parameter_simulation = self.history.get_parameters_simulation()
-        parameter_simulation = parameter_simulation[0]
-        nb_fish = parameter_simulation[2]
-        nb_shark = parameter_simulation[3]
-        fish_maturity = parameter_simulation[4]
-        shark_maturity = parameter_simulation[5]
-        shark_initial_energy = parameter_simulation[6]
-        scene_main_screen.nodes.append(Text('Poissons initial : '+str(nb_fish), pos=(530, 40), fontsize=30))
-        scene_main_screen.nodes.append(Text('Requins initial : '+str(nb_shark), pos=(760, 40), fontsize=30))
-        scene_main_screen.nodes.append(Text('Maturité poisson : '+str(fish_maturity), pos=(970, 40), fontsize=30))
-        scene_main_screen.nodes.append(Text('Maturité requin : '+str(shark_maturity), pos=(1180, 40), fontsize=30))
-        scene_main_screen.nodes.append(Text('Energie initial requin : '+str(shark_initial_energy), pos=(1400, 40), fontsize=30))
-        
-        # print(parameter_simulation)
-        pass
-    
-    def load(self) -> None:
-        scene_intro = Scene(caption='Intro')
-        scene_intro.nodes.append(Text('Scene 0', pos=(20, 20)))
-        scene_intro.nodes.append(Text('Introduction screen the app', pos=(20, 50)))
-
-        # scene_option = Scene(bg=pygame.Color('yellow'), caption='Options')
-        scene_option = Scene(img_folder='background', file='EMMAS-HEROTemplate_-Jaws.png', caption='Options')
-        scene_option.nodes.append(Text('Scene 1', pos=(20, 20)))
-        scene_option.nodes.append(Text('Option screen of the app', pos=(20, 50)))
-        # hello_button = pyg.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Say Hello',manager=App.manager)
-        
-        # hello_button = pyg.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Say Hello',manager=App.manager)
-        # hello_maison = Ui_elements(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Say Hello',manager=App.manager)
-        # print(f"type button : {type(hello_maison)}")
-        # scene_option.nodes.append(Ui_elements(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Say Hello',manager=App.manager))
-        
+    def load_initial_main_scene(self):
         # scene_main_screen = Scene(bg=pygame.Color(153, 153, 0), caption='Main')
         # scene_main_screen = Scene(bg=("light blue"), caption='Main')
         scene_main_screen = Scene(img_folder='background', file='shark.jpg', caption='shark')
+        self.scene_main_screen = scene_main_screen
         self.start_text = Text('Restart', pos=(100, 1050))
         self.play_text = Text('Play', pos=(300, 1050))
         self.stop_text = Text('Stop', pos=(500, 1050))
         self.retour_text = Text('Retour', pos=(2000, 20))
         # scene_main_screen.nodes.append(Text('Parametres de la simulation : ', pos=(20, 20)))
-        self.add_display_parameter(scene_main_screen)
+        
         scene_main_screen.nodes.append(Text('Wa-tor simulation', pos=(100, 100)))
         scene_main_screen.nodes.append(Text('Wa-tor statistics', pos=(1100, 100)))
 
@@ -427,16 +436,91 @@ class wator_display(App):
         scene_main_screen.nodes.append(self.stop_text)
         scene_main_screen.nodes.append(self.retour_text)
         
-        scene_main_screen.nodes.append(self.water_world_window)
-        scene_main_screen.nodes.append(self.water_world_statistics)
+        return scene_main_screen
         
+    def add_display_parameter(self, scene: Scene):
+        scene.nodes.append(Text('Parametres de la simulation : ', pos=(10, 20), fontsize=50))
         
-        App.scenes.append(scene_intro)
-        App.scenes.append(scene_option)
-        App.scenes.append(scene_main_screen)
+        parameter_simulation = self.history.get_parameters_simulation()
+        parameter_simulation = parameter_simulation[0]
+        nb_fish = parameter_simulation[2]
+        nb_shark = parameter_simulation[3]
+        fish_maturity = parameter_simulation[4]
+        shark_maturity = parameter_simulation[5]
+        shark_initial_energy = parameter_simulation[6]
+        scene.nodes.append(Text('Poissons initial : '+str(nb_fish), pos=(530, 40), fontsize=30))
+        scene.nodes.append(Text('Requins initial : '+str(nb_shark), pos=(760, 40), fontsize=30))
+        scene.nodes.append(Text('Maturité poisson : '+str(fish_maturity), pos=(970, 40), fontsize=30))
+        scene.nodes.append(Text('Maturité requin : '+str(shark_maturity), pos=(1180, 40), fontsize=30))
+        scene.nodes.append(Text('Energie initial requin : '+str(shark_initial_energy), pos=(1400, 40), fontsize=30))
+        
+    def saved_simulation(self, scene):
+        height = 200
+        simulations = self.history.get_saved_simulation()
+        for simulation in simulations:
+            # simulation_1 = simulations[0]
+            name = simulation[1]
+            nb_fish = simulation[2]
+            nb_shark = simulation[3]
+            fish_maturity = simulation[4]
+            shark_maturity = simulation[5]
+            shark_initial_energy = simulation[6]
+            name_button = "load_saved_"+str(simulation[0])
+            self.load_saved = Text('Name : '+str(name), pos=(80, height-10), fontsize=50, param=simulation)
+            scene.nodes.append(self.load_saved)
+            scene.nodes.append(Text('Poissons initial : '+str(nb_fish), pos=(680, height), fontsize=30))
+            scene.nodes.append(Text('Requins initial : '+str(nb_shark), pos=(910, height), fontsize=30))
+            scene.nodes.append(Text('Maturité poisson : '+str(fish_maturity), pos=(1120, height), fontsize=30))
+            scene.nodes.append(Text('Maturité requin : '+str(shark_maturity), pos=(1330, height), fontsize=30))
+            scene.nodes.append(Text('Energie initial requin : '+str(shark_initial_energy), pos=(1550, height), fontsize=30))
+            scene.nodes.append(Text('Delete', pos=(1900, height-10), fontsize=50))
+            height = height +50
+        # for simulation in simulations:
+        
+    def load_scene_intro(self):
+        scene_intro = Scene(caption='Intro')
+        scene_intro.nodes.append(Text('Scene 0', pos=(20, 20)))
+        scene_intro.nodes.append(Text('Introduction screen the app', pos=(20, 50)))
+        return scene_intro
+            
+    def load_scene_simulations(self):
+        scene_simulations = Scene(img_folder='background', file='EMMAS-HEROTemplate_-Jaws.png', caption='Simulations')
+        scene_simulations.nodes.append(Text('Scene 1', pos=(20, 20)))
+        scene_simulations.nodes.append(Text('Option screen of the app', pos=(20, 50)))
+        self.saved_simulation(scene_simulations)
+        return scene_simulations
+
+    
+    def load(self) -> None:
+        # scene_intro = Scene(caption='Intro')
+        # scene_intro.nodes.append(Text('Scene 0', pos=(20, 20)))
+        # scene_intro.nodes.append(Text('Introduction screen the app', pos=(20, 50)))
+        scene_intro = self.load_scene_intro()
+
+        # scene_option = Scene(bg=pygame.Color('yellow'), caption='Options')
+        
+        # scene_simulations = Scene(img_folder='background', file='EMMAS-HEROTemplate_-Jaws.png', caption='Simulations')
+        # scene_simulations.nodes.append(Text('Scene 1', pos=(20, 20)))
+        # scene_simulations.nodes.append(Text('Option screen of the app', pos=(20, 50)))
+        # self.saved_simulation(scene_simulations)
+        scene_simulations = self.load_scene_simulations()
+        scene_main_screen = self.load_initial_main_scene()
+        
+        # hello_button = pyg.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Say Hello',manager=App.manager)
+        
+        # hello_button = pyg.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Say Hello',manager=App.manager)
+        # hello_maison = Ui_elements(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Say Hello',manager=App.manager)
+        # print(f"type button : {type(hello_maison)}")
+        # scene_simulations.nodes.append(Ui_elements(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Say Hello',manager=App.manager))
 
         
-        App.scene = App.scenes[2]
+        App.scenes.append(scene_intro)
+        App.scenes.append(scene_simulations)
+        App.scenes.append(scene_main_screen)
+        
+
+        
+        App.scene = App.scenes[1]
 
 def main():
     pass
