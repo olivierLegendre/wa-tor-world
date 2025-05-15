@@ -208,7 +208,7 @@ class Scene:
 
 
 class App:
-    CONST_APP_WINDOW_SIZE = tuple([2200, 1200])
+    CONST_APP_WINDOW_SIZE = tuple([1900, 1200])
     CONST_APP_WINDOW_SIZE_X = CONST_APP_WINDOW_SIZE[0] 
     CONST_APP_WINDOW_SIZE_Y = CONST_APP_WINDOW_SIZE[1]
     """Create a single-window app with multiple scenes."""
@@ -245,41 +245,58 @@ class App:
         tick = 10
         time_pass = False
         while App.running:
-            time_delta = clock.tick(tick)/1000.0
-            print(f"generation {generation}")
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    App.running = False
-                if event.type == KEYDOWN:
-                    self.do_shortcut(event)
-                    if event.key in [K_SPACE, K_RIGHT]:
-                        pass
-                    if event.key == K_LEFT:
-                        pass
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.start_text.rect.collidepoint(event.pos):
-                        generation = 0
-                        self.www.create_sea_visual(generation)
-                        self.wws.get_graph(generation)
-                        # self.wws.get_graph_live(generation)
-                    if self.play_text.rect.collidepoint(event.pos):
-                        time_pass = True
-                    if self.stop_text.rect.collidepoint(event.pos):
-                        time_pass = False
-                    if self.retour_text.rect.collidepoint(event.pos):
-                        scene_index -= 1
-                        
-                App.manager.process_events(event)
-            self.manager.update(time_delta)
+            # time_delta = clock.tick(tick)/1000.0
+            #for the loading scene 
+            if scene_index == 1:
+                for event in pygame.event.get():
+                        if event.type == QUIT:
+                            App.running = False
+                        if event.type == KEYDOWN:
+                            self.do_shortcut(event)
+                            if event.key in [K_SPACE, K_RIGHT]:
+                                pass
+                            if event.key == K_LEFT:
+                                pass
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            pass
+                clock.tick(tick) 
             
-            if time_pass:
-                if generation < (self.www.water_world_history.generations) - 1:
-                    generation += 1
-            clock.tick(tick)    
-            self.www.create_sea_visual(generation)
-            self.wws.get_graph(generation)
-            # self.wws.get_graph_live(generation)
-            # self.wws.draw()
+            # for the main scene
+            if scene_index == 2:
+                print(f"generation {generation}")
+                for event in pygame.event.get():
+                    if event.type == QUIT:
+                        App.running = False
+                    if event.type == KEYDOWN:
+                        self.do_shortcut(event)
+                        if event.key in [K_SPACE, K_RIGHT]:
+                            pass
+                        if event.key == K_LEFT:
+                            pass
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if self.start_text.rect.collidepoint(event.pos):
+                            generation = 0
+                            self.www.create_sea_visual(generation)
+                            self.wws.get_graph(generation)
+                            # self.wws.get_graph_live(generation)
+                        if self.play_text.rect.collidepoint(event.pos):
+                            time_pass = True
+                        if self.stop_text.rect.collidepoint(event.pos):
+                            time_pass = False
+                        if self.retour_text.rect.collidepoint(event.pos):
+                            scene_index -= 1
+                            
+                #     App.manager.process_events(event)
+                # self.manager.update(time_delta)
+                
+                if time_pass:
+                    if generation < (self.www.water_world_history.generations) - 1:
+                        generation += 1
+                clock.tick(tick)    
+                self.www.create_sea_visual(generation)
+                self.wws.get_graph(generation)
+                # self.wws.get_graph_live(generation)
+                # self.wws.draw()
                     
             # App.screen.fill(pygame.Color('gray'))
             App.scene = App.scenes[scene_index]
@@ -361,6 +378,12 @@ class wator_display(App):
     def add_display_parameter(self, scene_main_screen: Scene):
         scene_main_screen.nodes.append(Text('Parametres de la simulation : ', pos=(20, 20)))
         parameter_simulation = self.history.get_parameters_simulation()
+        # nb_fish = parameter_simulation[2]
+        # nb_shark = parameter_simulation[3]
+        # fish_maturity = parameter_simulation[4]
+        # shark_maturity = parameter_simulation[5]
+        # shark_initial_energy = parameter_simulation[6]
+        
         print(parameter_simulation)
         pass
     
