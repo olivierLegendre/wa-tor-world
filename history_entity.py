@@ -328,6 +328,8 @@ def main():
     # git filter-branch --force --index-filter \
     # 'git rm --cached --ignore-unmatch wator_world.db' \
     # --prune-empty --tag-name-filter cat -- --all
+    
+    # git push origin --force --all
 
 if __name__ == '__main__':
-    main()
+    main()git push origin --force --all
