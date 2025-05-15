@@ -17,7 +17,10 @@ La simulation affichera une représentation visuelle de l'état du monde, où :
 ## Déroulement du projet
 Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Stéphane Muller.
 - Phase 1 : 2 jours de réflexion sur l'architecture du code
-- Phase 2 : Répartition des méthodes à faire par chacun
+- Phase 2 : Répartition des méthodes à faire par chacun  
+    - Stéphane : gestion de l'initialisation, des poissons et affichage console  
+    - Augustin : gestion des requins et poissons
+    - Olivier  : gestion de l'affichage pygame, historisation
 - Phase 3 : Elaboration du code en vérification sur GitHub
 
 ## Prérequis

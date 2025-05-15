@@ -444,7 +444,7 @@ class WatorWorld():
         print()
             
 def main():
-    my_world_map = WatorWorld(40, 40, 100, 50, 2, 10, 7)
+    my_world_map = WatorWorld(40, 40, 100, 50, 2, 15, 7)
     #my_world_map.display_affichage()
     chronon_circle = 0
     print()
