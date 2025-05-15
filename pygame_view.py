@@ -258,25 +258,45 @@ class App:
                             if event.key == K_LEFT:
                                 pass
                         if event.type == pygame.MOUSEBUTTONDOWN:
-                            if self.load_saved.rect.collidepoint(event.pos):
-                                print(f"simulation {self.load_saved.param}")
-                                simulation = self.load_saved.param
-                                world = ww.WatorWorld(
-                                    80,
-                                    80,
-                                    simulation[2],
-                                    simulation[3],
-                                    simulation[4],
-                                    simulation[5],
-                                    simulation[6],
-                                )
-                                self.history.load(simulation[1], world)
-                                # self.test_function(simulation[1])
-                                self.load_save(simulation[1])
-                                self.load_main_scene()
-                                scene_index = 2
-                                print(simulation[1])
-                            pass
+                            for simulation, text in self.simulations_dict.items():
+                                print(f"dan boucle simulation : {simulation} et text : {text}")
+                                print(f"text param : {text.param}")
+                                if text.rect.collidepoint(event.pos):
+                                    simulation_param = text.param
+                                    world = ww.WatorWorld(
+                                        80,
+                                        80,
+                                        simulation_param[2],
+                                        simulation_param[3],
+                                        simulation_param[4],
+                                        simulation_param[5],
+                                        simulation_param[6],
+                                    )
+                                    self.history.load(simulation_param[1], world)
+                                    # self.test_function(simulation_param[1])
+                                    self.load_save(simulation_param[1])
+                                    self.load_main_scene()
+                                    scene_index = 2
+                                    print(simulation_param[1])
+                            # if self.load_saved_1.rect.collidepoint(event.pos):
+                            #     print(f"simulation {self.load_saved_1.param}")
+                            #     simulation = self.load_saved_1.param
+                            #     world = ww.WatorWorld(
+                            #         80,
+                            #         80,
+                            #         simulation[2],
+                            #         simulation[3],
+                            #         simulation[4],
+                            #         simulation[5],
+                            #         simulation[6],
+                            #     )
+                            #     self.history.load(simulation[1], world)
+                            #     # self.test_function(simulation[1])
+                            #     self.load_save(simulation[1])
+                            #     self.load_main_scene()
+                            #     scene_index = 2
+                            #     print(simulation[1])
+                            # pass
                 clock.tick(tick) 
             
             # for the main scene
@@ -456,6 +476,7 @@ class wator_display(App):
         
     def saved_simulation(self, scene):
         height = 200
+        simulations_dict = dict()
         simulations = self.history.get_saved_simulation()
         for simulation in simulations:
             # simulation_1 = simulations[0]
@@ -466,8 +487,9 @@ class wator_display(App):
             shark_maturity = simulation[5]
             shark_initial_energy = simulation[6]
             name_button = "load_saved_"+str(simulation[0])
-            self.load_saved = Text('Name : '+str(name), pos=(80, height-10), fontsize=50, param=simulation)
-            scene.nodes.append(self.load_saved)
+            # setattr(self, name_button, Text('Name : '+str(name), pos=(80, height-10), fontsize=50, param=simulation))
+            # self.load_saved = Text('Name : '+str(name), pos=(80, height-10), fontsize=50, param=simulation)
+            simulations_dict[name_button] = Text('Name : '+str(name), pos=(80, height-10), fontsize=50, param=simulation)
             scene.nodes.append(Text('Poissons initial : '+str(nb_fish), pos=(680, height), fontsize=30))
             scene.nodes.append(Text('Requins initial : '+str(nb_shark), pos=(910, height), fontsize=30))
             scene.nodes.append(Text('Maturité poisson : '+str(fish_maturity), pos=(1120, height), fontsize=30))
@@ -475,6 +497,16 @@ class wator_display(App):
             scene.nodes.append(Text('Energie initial requin : '+str(shark_initial_energy), pos=(1550, height), fontsize=30))
             scene.nodes.append(Text('Delete', pos=(1900, height-10), fontsize=50))
             height = height +50
+            
+        self.simulations_dict = simulations_dict
+            
+        for key, text in simulations_dict.items():
+            setattr(self, key, text)
+            var = locals()['key']
+            attr = getattr(self, key)
+            # print(f"var : {var}")
+            # print(f"attribute :  {attr}")
+            scene.nodes.append(attr)
         # for simulation in simulations:
         
     def load_scene_intro(self):
