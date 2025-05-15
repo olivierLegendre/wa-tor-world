@@ -3,7 +3,6 @@ import pygame
 from pygame.locals import *
 # import history
 import wator_world as ww
-import history_entity as he
 import random
 import os
 
@@ -13,7 +12,7 @@ class WaterWorldWindow():
     size_x = const_water_world_window_size[0]
     size_y = const_water_world_window_size[1]
     
-    def __init__(self,  water_world_history: object):
+    def __init__(self,  water_world_history: object) -> None:
         
         self.ww_rect = pygame.Rect(100, 200, self.size_x, self.size_y)
         self.water_world_history = water_world_history
@@ -79,31 +78,32 @@ class Water_world_Statistics():
         self.get_graph(0)
     
     def set_surface(self) -> None:
-        """_summary_
+        """create a big rectangle for the statistics to be displayed
+            and blit it to the app screen
         """
         self.water_world_statistics_surface = pygame.Surface((self.size_x, self.size_y))
         App.screen.blit(self.water_world_statistics_surface, (1100, 200))
 
     def get_graph(self, generation: int, display_nb_born=False, display_nb_death=False )-> None:
-        """_summary_
+        """call the history to generate a graphique 
 
         Args:
             generation (int): _description_
         """
-        print(f"generation a dessiner {generation}")
         self.water_world_history.get_graph(generation, display_nb_born, display_nb_death)
         
     def get_graph_live(self, generation: int) -> None:
-        """_summary_
+        """try to get a graph with an open buffer
+            not implemented yet
 
         Args:
             generation (int): _description_
         """
-        print(f"generation a dessiner {generation}")
         self.water_world_history.get_graph_live(generation)
     
     def draw(self) -> None:
         """everything added to nodes must have a draw method
+            we create an png of the graphic for every generation
         """
         self.water_world_statistics_surface.fill("white")
         img_stat = pygame.image.load("water_world_graph.png")
@@ -113,13 +113,14 @@ class Water_world_Statistics():
 
 class Text:
     """Create a text object."""
-    def __init__(self, text, pos, **options) -> None:
+    def __init__(self, text: str, pos: tuple, **options) -> None:
         self.text = text
         self.pos = pos
 
         self.fontname = None
         self.fontsize = 72
         self.fontcolor = pygame.Color('black')
+        #set every parameter to self
         [setattr(self, key_arg, value_arg) for key_arg, value_arg in options.items()]
         self.set_font()
         self.render()
@@ -205,7 +206,9 @@ class App:
         App.running = True
 
     def run(self) -> None:
-        """Run the main event loop."""
+        """
+        Run the main event loop
+        """
         scene_index = 0
         generation = 0
         clock = pygame.time.Clock()
@@ -214,6 +217,7 @@ class App:
         display_nb_born = False
         display_nb_death = False
         while App.running:
+            #introduction scene
             if scene_index == 0:
                 for event in pygame.event.get():
                         if event.type == QUIT:
@@ -227,6 +231,7 @@ class App:
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             if self.enter_button.rect.collidepoint(event.pos):
                                 scene_index = 1
+            # simulation selection scene
             if scene_index == 1:
                 for event in pygame.event.get():
                         if event.type == QUIT:
@@ -241,7 +246,6 @@ class App:
                             for _, text in self.simulations_dict.items():
                                 if text.rect.collidepoint(event.pos):
                                     simulation_param = text.param
-                                    print(f"mes params : {simulation_param}")
                                     world = ww.WatorWorld(
                                         80,
                                         80,
@@ -265,9 +269,8 @@ class App:
                                     self.load_main_scene()
                                     App.screen.fill("blue")
                                     scene_index = 2
+            #main scene
             if scene_index == 2:
-                print(f"generation {generation}")
-                print(f"index : {scene_index}")
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         App.running = False
@@ -317,6 +320,10 @@ class App:
         pygame.quit()
         
     def add_shortcuts(self) -> None:
+        """
+            add som keyboard shortcuts
+            english and franch keyboards
+        """
         self.shortcuts = {
             (K_x, KMOD_LMETA): 'print("cmd+X")',
             (K_x, KMOD_LALT): 'print("alt+X")',
@@ -343,6 +350,7 @@ class App:
             (120, 4097): 'print("shift+X")',
             (120, 4160 + 4352): 'print("ctrl+alt+X")',
             (102, 4352): 'self.toggle_fullscreen()',
+            (102, 4160): 'self.toggle_fullscreen()',
             (114, 4352): 'self.toggle_resizable()',
             (103, 4352): 'self.toggle_frame()',
         }
@@ -351,13 +359,11 @@ class App:
         """Find the the key/mod combination in the dictionary and execute the cmd."""
         k = event.key
         m = event.mod
-        # print(k)
         if (k, m) in self.french_shortcuts:
             exec(self.french_shortcuts[k, m])
             
     def toggle_fullscreen(self) -> None:
         """Toggle between full screen and windowed screen."""
-        print("fullscreen")
         self.flags ^= FULLSCREEN
         pygame.display.set_mode((0, 0), self.flags)
 
@@ -373,29 +379,55 @@ class App:
 
 
 class wator_display(App):
+    """
+    main app
+    """
     def __init__(self, history):
+        """
+        load an empty history 
+        and the intro and selection sumulation scenes
+        """
         super().__init__()
         self.history = history
         self.load_scenes()
         
-    def test_function(self, param):
-        print(param)
-        
-    def load_save(self, name, x=80, y=80, nb_fish=200, nb_shark=50, fish_maturity=4, shark_maturity=10, shark_initial_energy=7):
+    def load_save(self, name: str, x=80, y=80, nb_fish=200, nb_shark=50, fish_maturity=4, shark_maturity=10, shark_initial_energy=7):
+        """
+            load a water world into history
+            and create the main scene, append it to the other scenes
+        Args:
+            name (str): wator_world simulation name
+            x (int, optional): _description_. Defaults to 80.
+            y (int, optional): _description_. Defaults to 80.
+            nb_fish (int, optional): _description_. Defaults to 200.
+            nb_shark (int, optional): _description_. Defaults to 50.
+            fish_maturity (int, optional): _description_. Defaults to 4.
+            shark_maturity (int, optional): _description_. Defaults to 10.
+            shark_initial_energy (int, optional): _description_. Defaults to 7.
+        """
         water_world = ww.WatorWorld(x, y, nb_fish, nb_shark, fish_maturity, shark_maturity, shark_initial_energy)
-        print(f"dans load _save water_world: {water_world}")
         self.history.load(name, water_world)
-        print(f"dans load _save history: {self.history}")
         self.load_history(self.history)
         self.load_main_scene()
         
-    def load_history(self, history):
+    def load_history(self, history: object) -> None:
+        """with an history, create a water_world_window and a water_world_statistics
+            and append them to the App
+
+        Args:
+            history (History): _description_
+        """
         self.water_world_window = WaterWorldWindow(history)
         self.water_world_statistics = Water_world_Statistics(history)
         App.www = self.water_world_window
         App.wws = self.water_world_statistics
         
-    def load_main_scene(self):
+    def load_main_scene(self) -> Scene:
+        """create the dynamic components of the main scene
+
+        Returns:
+            Scene_main_screen: the main scene of the app
+        """
         scene_main_screen = self.scene_main_screen
         
         self.add_display_parameter(scene_main_screen)
@@ -404,7 +436,12 @@ class wator_display(App):
         App.scenes.append(scene_main_screen)
         return scene_main_screen
         
-    def load_initial_main_scene(self):
+    def load_initial_main_scene(self) -> Scene:
+        """reate the static components of the main scene
+
+        Returns:
+            Scene: the main scene of the app_description_
+        """
         scene_main_screen = Scene(img_folder='background', file='shark.jpg', caption='shark')
         self.scene_main_screen = scene_main_screen
         self.start_text = Text('Restart', pos=(200, 1050))
@@ -430,9 +467,14 @@ class wator_display(App):
         
         return scene_main_screen
         
-    def add_display_parameter(self, scene: Scene):
+    def add_display_parameter(self, scene: Scene) -> None:
+        """Create a bar with the parameters of the simulation
+            append it to the main scene
+
+        Args:
+            scene (Scene): main scene
+        """
         scene.nodes.append(Text('Parametres de la simulation : ', pos=(10, 20), fontsize=50))
-        
         parameter_simulation = self.history.get_parameters_simulation()
         parameter_simulation = parameter_simulation[0]
         nb_fish = parameter_simulation[2]
@@ -446,7 +488,13 @@ class wator_display(App):
         scene.nodes.append(Text('Maturité requin : '+str(shark_maturity), pos=(1180, 40), fontsize=30))
         scene.nodes.append(Text('Energie initial requin : '+str(shark_initial_energy), pos=(1400, 40), fontsize=30))
         
-    def saved_simulation(self, scene):
+    def saved_simulation(self, scene: Scene) -> None:
+        """ Create a list of simulation on the second scene
+            You can load every simulation and go the main screen
+
+        Args:
+            scene (Scene): simulation selection screen
+        """ 
         height = 250
         simulations_dict = dict()
         simulations = self.history.get_saved_simulation()
@@ -474,13 +522,23 @@ class wator_display(App):
             attr = getattr(self, key)
             scene.nodes.append(attr)
         
-    def load_scene_intro(self):
+    def load_scene_intro(self) -> Scene:
+        """Load the introduction scene
+
+        Returns:
+            Scene: introduction scene
+        """
         scene_intro = Scene(img_folder='background', file='watorworld.png', caption='Intor')
         self.enter_button = Text('Bienvenue sur le projet ', pos=(600, 400), fontsize=120, fontcolor="white")
         scene_intro.nodes.append(self.enter_button)
         return scene_intro
             
-    def load_scene_simulations(self):
+    def load_scene_simulations(self) -> Scene:
+        """_Load the simulation selection scene
+
+        Returns:
+            Scene: simulation selection scene
+        """
         easter_egg = random.randrange(1, 5)
         if easter_egg == 1:
             scene_simulations = Scene(img_folder='background', file='kevin.png', caption='Simulations')
@@ -492,6 +550,9 @@ class wator_display(App):
 
     
     def load_scenes(self) -> None:
+        """
+        load all the static scene at the start of the app
+        """
         scene_intro = self.load_scene_intro()
         scene_simulations = self.load_scene_simulations()
         scene_main_screen = self.load_initial_main_scene()

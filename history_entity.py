@@ -330,5 +330,11 @@ def main():
     # ww_db.play_request(request)
     pass
 
+    """command to rewrite wator_world.db out of existence
+    """
+    # git filter-branch --force --index-filter \
+    # 'git rm --cached --ignore-unmatch wator_world.db' \
+    # --prune-empty --tag-name-filter cat -- --all
+
 if __name__ == '__main__':
     main()
