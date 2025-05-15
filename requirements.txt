@@ -16,6 +16,8 @@ PyQt5-Qt5==5.15.16
 PyQt5_sip==12.17.0
 python-dateutil==2.9.0.post0
 python-i18n==0.3.9
+pyparsing==3.2.3
+python-dateutil==2.9.0.post0
 pytz==2025.2
 seaborn==0.13.2
 six==1.17.0
