@@ -96,7 +96,7 @@ def main():
     
     """create a simulation
     """
-    # create_and_run_simulation("stephane", 500)
+    # create_and_run_simulation("antoine", 500, 200, 30, 3, 8, 4)
 
     
     """run pygame app

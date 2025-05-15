@@ -50,6 +50,7 @@ Affichage Mode console:
 Affichage Mode graphique:
 - fichier : app.py  
     - exécuter le programme avec ce fichier.  
+    - vous pouvez creer une simulation avec create_and_run_simulation ou lancer le programme avec run_app
 
 # Wator_world.py
 ## Description des classes
