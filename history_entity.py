@@ -253,14 +253,16 @@ def main():
     # ww_db.create_water_world_table()
     # ww_db.create_water_world_statistics_table()
     # ww_db.create_water_world_map_table()
-    mon_monde = ww.WatorWorld(20, 20, 10, 1)
+    # mon_monde = ww.WatorWorld(20, 20, 10, 1)
     # print(mon_monde.world_map)
     # print(mon_monde.nb_fish)
     # ww_db.create_tables()
     
-    # request = """
-    # DROP TABLE water_world_map"""
-    # ww_db.play_request(request)
+    request = """
+    DELETE FROM water_world_map
+    WHERE water_world_id = 6
+    """
+    ww_db.play_request(request)
 
     # last_row = ww_db.insert_water_world('simulation_1', mon_monde)
     # print(f"row modifié : {last_row}")

@@ -13,6 +13,7 @@ class History():
     
     
     def load(self, simulation_name: str, world: object) -> None:
+        print("dans load")
         self.generations = 0
         self.world = world
         self.name = simulation_name
@@ -20,6 +21,7 @@ class History():
         
         
     def init(self) -> None:
+        print("dans init")
         """
         create an history object and save data in db
         create tables water_world, water_world_map and water_world_statistics if not already created
@@ -130,15 +132,7 @@ class History():
         statistcs_df = statistcs_df.transpose()
 
         return statistcs_df
-        
-    # def display_graph(self) -> None:
-    #     """_summary_
-    #     """
-    #     sns.set_theme()
-    #     sharks_and_fishes = self.get_pandas_statistics()
-    #     self.get_line_plot(sharks_and_fishes)
 
-        
     def get_graph(self, generation: int, display_nb_born=False, display_nb_death=False) -> None:
         """ 
         return a graph displayed in pygame
