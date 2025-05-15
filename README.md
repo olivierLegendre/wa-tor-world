@@ -13,11 +13,17 @@ La simulation affichera une représentation visuelle de l'état du monde, où :
 - Comportements de reproduction et de prédation.
 - Mouvement aléatoire des créatures.
 - Affichage visuel de l'état du monde.
+- Statistiques en temps réel sur les populations de poissons et de requins.
+- Contrôles pour démarrer, arrêter et réinitialiser la simulation.
+- Affichage des paramètres de la simulation.
 
 ## Déroulement du projet
 Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Stéphane Muller.
 - Phase 1 : 2 jours de réflexion sur l'architecture du code
-- Phase 2 : Répartition des méthodes à faire par chacun
+- Phase 2 : Répartition des méthodes à faire par chacun  
+    - Stéphane : gestion de l'initialisation, des poissons et affichage console  
+    - Augustin : gestion des requins et poissons
+    - Olivier  : gestion de l'affichage pygame, historisation
 - Phase 3 : Elaboration du code en vérification sur GitHub
 
 ## Prérequis
@@ -114,9 +120,29 @@ Initialise un nouveau requin avec les coordonnées et l'énergie initiale spéci
 - __repr__(self) -> str : Retourne une représentation textuelle de l'objet Shark.
 
 
-# history.py
-Crée un historique et l'ajoute à la base de donnée
+# app.py
+    - import pygame_view as pyv
+    - import wator_world as ww
+    - import history
+    - import history_entity as he
 
+# history.py
+- Gestion de l'historique des simulations.
+- Sauvegarde et récupération des cartes et des statistiques de l'écosystème.
+- Visualisation des statistiques avec des graphiques.
+- Utilisation de Pandas et Seaborn pour l'analyse et la visualisation des données.
+
+# history_entity.py
+- Création et gestion de tables pour stocker les données de simulation.
+- Insertion et récupération de données sur les populations de poissons et de requins.
+- Gestion des cartes de l'écosystème pour chaque génération.
+- Statistiques sur les naissances et les décès de poissons et de requins.
+
+# pygame_view.py
+- Visualisation d'un écosystème marin avec des poissons (en vert) et des requins (en rouge).
+- Statistiques en temps réel sur les populations de poissons et de requins.
+- Contrôles pour démarrer, arrêter et réinitialiser la simulation.
+- Affichage des paramètres de la simulation.
 
 
 

@@ -427,7 +427,7 @@ class WatorWorld():
         self.move_sharks()
         self.move_fishes()
 
-    def display_affichage(self):
+    def display(self):
         print(f"   🐠   Nombre:{self.nb_fish:<5}| Naissance: {self.birth_fish:<5}| Mort: {self.dead_fish}")
         print(f"   🦈   Nombre:{self.nb_shark:<5}| Naissance: {self.birth_shark:<5}| Mort: {self.dead_shark}")
         print()
@@ -444,8 +444,8 @@ class WatorWorld():
         print()
             
 def main():
-    my_world_map = WatorWorld(40, 40, 100, 50, 2, 10, 7)
-    #my_world_map.display_affichage()
+    my_world_map = WatorWorld(40, 40, 100, 50, 2, 15, 7)
+    #my_world_map.display()
     chronon_circle = 0
     print()
     print(f"Chronon = {chronon_circle}")
@@ -456,27 +456,9 @@ def main():
         chronon_circle += 1
         print(f"Chronon = {chronon_circle}")
         print()
-        my_world_map.display_affichage()
+        my_world_map.display()
         print("=" * 120)
         time.sleep(0.5)
-        
-    #     # print(iteration)
-    #     # iteration +=1
-    #     # input("")
-    
-    # nb d'iteration
-    # for _ in range(10):  
-    #     my_world_map.iterate()
-    #     for i in my_world_map.world_map:
-    #         for j in i:
-    #             print(f"{j}", end=" ")
-    #         print()
-    #     print()
-
-    # for _ in range(3): 
-    #     my_world_map.iterate()
-    #     print()
-    #     my_world_map.display_world()
 
 if __name__ == "__main__":
         main()
