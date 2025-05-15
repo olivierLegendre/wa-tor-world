@@ -8,12 +8,24 @@ import history_entity as he
 
 class History():
     def __init__(self, entity=he.water_world_db()):
+        """create an empty history
+            and bind the entity to it
+        Args:
+            entity (water_world_db): . Defaults to he.water_world_db().
+        """
         self.entity = entity
         
     
     
     def load(self, simulation_name: str, world: object) -> None:
-        print("dans load")
+        """loading an empty history
+            with a wator_world
+            a name
+
+        Args:
+            simulation_name (str): _description_
+            world (water_): _description_
+        """
         self.generations = 0
         self.world = world
         self.name = simulation_name
@@ -21,7 +33,6 @@ class History():
         
         
     def init(self) -> None:
-        print("dans init")
         """
         create an history object and save data in db
         create tables water_world, water_world_map and water_world_statistics if not already created
@@ -55,10 +66,9 @@ class History():
         self.save_generation()
         
     def get_number_of_generations(self) -> int:
-        """_summary_
-
+        """
         Returns:
-            int: _description_
+            int: the number of generation of a simulation
         """
         return self.entity.count_generation(self.world_id)
     
@@ -70,7 +80,12 @@ class History():
         """
         return self.entity.get_simulation_parameters(self.world_id)
     
-    def get_saved_simulation(self):
+    def get_saved_simulation(self)-> list:
+        """Return the 10 firsts simulations
+
+        Returns:
+            list: _description_
+        """
         return self.entity.get_saved_simulations()
         
     def save_generation(self) -> None:
@@ -149,17 +164,14 @@ class History():
         Args:
             a pandas dataframe
         """
-        print(f" dans get plot line : {display_nb_born}, {display_nb_death}")
         statistcs_df = pd.DataFrame(data)
         statistcs_df = statistcs_df.transpose()
         water_world_plot = sns.lineplot(x='chronon', y='nb_fish', data=statistcs_df, label="Nb Fish")
         water_world_plot = sns.lineplot(x='chronon', y='nb_shark', data=statistcs_df, label="Nb Shark")
         if display_nb_born:
-            print("j'ajoute les naissances")
             water_world_plot = sns.lineplot(x='chronon', y='birth_fish', data=statistcs_df, label="Birth Fish")
             water_world_plot = sns.lineplot(x='chronon', y='birth_shark', data=statistcs_df, label="Birth Shark")
         if display_nb_death:
-            print("j'ajoute les morts")
             water_world_plot = sns.lineplot(x='chronon', y='dead_fish', data=statistcs_df, label="Dead Fish")
             water_world_plot = sns.lineplot(x='chronon', y='dead_shark', data=statistcs_df, label="Dead Shark")
         water_world_plot.legend(title="Creature Info", loc="upper left") 
@@ -177,7 +189,6 @@ class History():
         """
         sns.set_theme()
         sharks_and_fishes = self.get_statistics(generation)
-        print(sharks_and_fishes)
         self.get_line_plot_live(sharks_and_fishes, generation)
         
     def get_line_plot_live(self, data, generation):
