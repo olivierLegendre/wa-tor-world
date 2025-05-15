@@ -23,11 +23,21 @@ Le projet a été mené à bien par Olivier Legendre, Augustin Dendeviel et Sté
 ## Prérequis
 
 - Python 3.12.3
-- Bibliothèque `termcolor` pour l'affichage en couleur.
+- Bibliothèque termcolor pandas seaborn pygame matplolib sqlite3
+
+## Installation
+
+1. Clonez le dépôt ou téléchargez le code source.
+2. Assurez-vous d'avoir Python installé sur votre machine.
+3. Installez les bibliothèques en exécutant la commande suivante :
+
+```bash
+pip install termcolor pandas seaborn pygame matplolib sqlite3  
+```
 
 ## Guide d'utilisation :
 
-- fichier : main.py  
+- fichier : app.py  
     - lancer le programme avec ce fichier.  
 
 # Wator_world.py
@@ -98,14 +108,21 @@ Initialise un nouveau poisson avec les coordonnées spécifiées.
 Initialise un nouveau requin avec les coordonnées et l'énergie initiale spécifiées.  
 - __repr__(self) -> str : Retourne une représentation textuelle de l'objet Shark.
 
+# app.py
+## Description des fonctions
+### <ins>creature_simulation
+### <ins>run_simulation
+### <ins>main
 
-## Installation
 
-1. Clonez le dépôt ou téléchargez le code source.
-2. Assurez-vous d'avoir Python installé sur votre machine.
-3. Installez la bibliothèque `termcolor` en exécutant la commande suivante :
+# history.py
+## Description des classes
+### <ins>History
+### <ins>run_simulation
+### <ins>main
 
-```bash
-pip install termcolor
+
+
+
 
 
