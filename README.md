@@ -37,6 +37,11 @@ pip install termcolor pandas seaborn pygame matplolib sqlite3
 
 ## Guide d'utilisation :
 
+Mode console:  
+- fichier : wator_world.py  
+    - lancer le programme avec ce fichier. 
+
+Mode graphique:
 - fichier : app.py  
     - lancer le programme avec ce fichier.  
 
@@ -110,16 +115,15 @@ Initialise un nouveau requin avec les coordonnées et l'énergie initiale spéci
 
 # app.py
 ## Description des fonctions
-### <ins>creature_simulation
+### <ins>create_simulation
+- Crée la simulation 
 ### <ins>run_simulation
+- insert des itérations 
 ### <ins>main
 
 
 # history.py
-## Description des classes
-### <ins>History
-### <ins>run_simulation
-### <ins>main
+Crée un historique et l'ajoute à la base de donnée
 
 
 

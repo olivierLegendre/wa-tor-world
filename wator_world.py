@@ -2,6 +2,7 @@ import creatures
 import random
 import termcolor
 from termcolor import colored, cprint
+import time
 
 #region Class
 class WatorWorld():
@@ -435,6 +436,10 @@ class WatorWorld():
         self.move_fishes()
 
     def display_affichage(self):
+        print(f"   🐠   Nombre:{self.nb_fish:<5}| Naissance: {self.birth_fish:<5}| Mort: {self.dead_fish}")
+        print(f"   🦈   Nombre:{self.nb_shark:<5}| Naissance: {self.birth_shark:<5}| Mort: {self.dead_shark}")
+        print()
+
         for i in self.world_map:
             for j in i:
                 if j == self.__CONST_WATER:
@@ -447,13 +452,22 @@ class WatorWorld():
         print()
             
 def main():
-    my_world_map = WatorWorld(40, 40, 100, 50, 2, 15, 7)
+    my_world_map = WatorWorld(40, 40, 100, 50, 2, 10, 7)
     #my_world_map.display_affichage()
+    chronon_circle = 0
+    print()
+    print(f"Chronon = {chronon_circle}")
+    print()
 
     while True :
         my_world_map.iterate()
+        chronon_circle += 1
+        print(f"Chronon = {chronon_circle}")
+        print()
         my_world_map.display_affichage()
         print("=" * 120)
+        time.sleep(0.5)
+        
     #     # print(iteration)
     #     # iteration +=1
     #     # input("")
