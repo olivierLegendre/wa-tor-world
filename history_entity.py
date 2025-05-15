@@ -242,6 +242,7 @@ class water_world_db():
         request = """
             SELECT *
             FROM Water_world
+            LIMIT 10
         """
         result = self.cursor.execute(request)
         simulations = result.fetchall()

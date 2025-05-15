@@ -5,6 +5,7 @@ import history
 import wator_world as ww
 import history_entity as he
 import random
+import os
 # import pygame_gui as pyg
 # import pygame_view as pyv
 
@@ -217,8 +218,18 @@ class App:
         """Initialize pygame and the application."""
 
         pygame.init()
+        App.my_music = pygame.mixer
+        App.my_music.init()
         self.add_shortcuts()
         self.flags = RESIZABLE
+        
+        self.tu_dum = App.my_music.Sound(os.path.join('sound', 'jaws-theme.mp3'))
+        ambiant_music = App.my_music.music.load(os.path.join('sound', 'jaws-theme.mp3'))
+        # App.my_music.Sound.play(self.tu_dum)
+        App.my_music.music.play(-1)
+        
+        
+        # App.my_music.unpause()
         self.rect = pygame.Rect(0, 0, self.CONST_APP_WINDOW_SIZE_X, self.CONST_APP_WINDOW_SIZE_Y)
         App.screen = pygame.display.set_mode(self.rect.size, self.flags)
         # App.manager = pyg.UIManager((self.CONST_APP_WINDOW_SIZE_X, self.CONST_APP_WINDOW_SIZE_Y))
@@ -310,6 +321,9 @@ class App:
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if self.start_text.rect.collidepoint(event.pos):
                             generation = 0
+                            # pygame.mixer.Sound.play(self.tu_dum)
+                            # pygame.mixer.music.play(-1)
+                            
                             self.www.create_sea_visual(generation)
                             self.wws.get_graph(generation, display_nb_born, display_nb_death)
                             # self.wws.get_graph_live(generation)
@@ -329,10 +343,8 @@ class App:
                             if tick < 1:
                                 tick = 1
                         if self.display_born_creatures_text.rect.collidepoint(event.pos):
-                            print("je devrais reagir")
                             display_nb_born = True if display_nb_born is False else False
                         if self.display_dead_creatures_text.rect.collidepoint(event.pos):
-                            print("ici aussi")
                             display_nb_death = True if display_nb_death is False else False
                             
                 #     App.manager.process_events(event)
