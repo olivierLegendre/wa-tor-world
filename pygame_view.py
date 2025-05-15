@@ -3,7 +3,7 @@ import pygame
 from pygame.locals import *
 import history
 import wator_world as ww
-import pygame_gui as pyg
+# import pygame_gui as pyg
 # import pygame_view as pyv
 
 
@@ -143,14 +143,14 @@ class Text:
         App.screen.blit(self.img, self.rect)
 
 
-class Ui_elements(pyg.elements.ui_button.UIButton):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+# class Ui_elements(pyg.elements.ui_button.UIButton):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
         
-    def draw(self) -> None:
-        """everything added to nodes must have a draw method
-        """
-        pass
+#     def draw(self) -> None:
+#         """everything added to nodes must have a draw method
+#         """
+#         pass
 
 
 class Scene:
@@ -208,7 +208,7 @@ class Scene:
 
 
 class App:
-    CONST_APP_WINDOW_SIZE = tuple([1900, 1200])
+    CONST_APP_WINDOW_SIZE = tuple([2200, 1200])
     CONST_APP_WINDOW_SIZE_X = CONST_APP_WINDOW_SIZE[0] 
     CONST_APP_WINDOW_SIZE_Y = CONST_APP_WINDOW_SIZE[1]
     """Create a single-window app with multiple scenes."""
@@ -220,7 +220,7 @@ class App:
         self.flags = RESIZABLE
         self.rect = pygame.Rect(0, 0, self.CONST_APP_WINDOW_SIZE_X, self.CONST_APP_WINDOW_SIZE_Y)
         App.screen = pygame.display.set_mode(self.rect.size, self.flags)
-        App.manager = pyg.UIManager((self.CONST_APP_WINDOW_SIZE_X, self.CONST_APP_WINDOW_SIZE_Y))
+        # App.manager = pyg.UIManager((self.CONST_APP_WINDOW_SIZE_X, self.CONST_APP_WINDOW_SIZE_Y))
         # App.screen = pygame.display.set_mode(self.CONST_APP_WINDOW_SIZE, self.flags)
         # App.text_title = Text('Pygame App', pos=(20, 20))
         
@@ -301,7 +301,7 @@ class App:
             # App.screen.fill(pygame.Color('gray'))
             App.scene = App.scenes[scene_index]
             App.scene.draw()
-            self.manager.draw_ui(App.screen)
+            # self.manager.draw_ui(App.screen)
             
             
             pygame.display.update()
@@ -376,15 +376,22 @@ class wator_display(App):
         
         
     def add_display_parameter(self, scene_main_screen: Scene):
-        scene_main_screen.nodes.append(Text('Parametres de la simulation : ', pos=(20, 20)))
-        parameter_simulation = self.history.get_parameters_simulation()
-        # nb_fish = parameter_simulation[2]
-        # nb_shark = parameter_simulation[3]
-        # fish_maturity = parameter_simulation[4]
-        # shark_maturity = parameter_simulation[5]
-        # shark_initial_energy = parameter_simulation[6]
+        scene_main_screen.nodes.append(Text('Parametres de la simulation : ', pos=(10, 20), fontsize=50))
         
-        print(parameter_simulation)
+        parameter_simulation = self.history.get_parameters_simulation()
+        parameter_simulation = parameter_simulation[0]
+        nb_fish = parameter_simulation[2]
+        nb_shark = parameter_simulation[3]
+        fish_maturity = parameter_simulation[4]
+        shark_maturity = parameter_simulation[5]
+        shark_initial_energy = parameter_simulation[6]
+        scene_main_screen.nodes.append(Text('Poissons initial : '+str(nb_fish), pos=(530, 40), fontsize=30))
+        scene_main_screen.nodes.append(Text('Requins initial : '+str(nb_shark), pos=(760, 40), fontsize=30))
+        scene_main_screen.nodes.append(Text('Maturité poisson : '+str(fish_maturity), pos=(970, 40), fontsize=30))
+        scene_main_screen.nodes.append(Text('Maturité requin : '+str(shark_maturity), pos=(1180, 40), fontsize=30))
+        scene_main_screen.nodes.append(Text('Energie initial requin : '+str(shark_initial_energy), pos=(1400, 40), fontsize=30))
+        
+        # print(parameter_simulation)
         pass
     
     def load(self) -> None:
