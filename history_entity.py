@@ -332,4 +332,4 @@ def main():
     # git push origin --force --all
 
 if __name__ == '__main__':
-    main()git push origin --force --all
+    main()
