@@ -459,24 +459,6 @@ def main():
         my_world_map.display_affichage()
         print("=" * 120)
         time.sleep(0.5)
-        
-    #     # print(iteration)
-    #     # iteration +=1
-    #     # input("")
-    
-    # nb d'iteration
-    # for _ in range(10):  
-    #     my_world_map.iterate()
-    #     for i in my_world_map.world_map:
-    #         for j in i:
-    #             print(f"{j}", end=" ")
-    #         print()
-    #     print()
-
-    # for _ in range(3): 
-    #     my_world_map.iterate()
-    #     print()
-    #     my_world_map.display_world()
 
 if __name__ == "__main__":
         main()
