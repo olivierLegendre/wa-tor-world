@@ -121,10 +121,10 @@ Initialise un nouveau requin avec les coordonnées et l'énergie initiale spéci
 
 
 # app.py
-    - import pygame_view as pyv
-    - import wator_world as ww
-    - import history
-    - import history_entity as he
+- import pygame_view as pyv
+- import wator_world as ww
+- import history
+- import history_entity as he
 
 # history.py
 - Gestion de l'historique des simulations.
