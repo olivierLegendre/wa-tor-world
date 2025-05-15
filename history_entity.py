@@ -126,12 +126,9 @@ class water_world_db():
                             ww.CONST_SHARK_INITIAL_ENERGY,
                             )
         
-        # print(values_to_insert)
         self.cursor.execute(request_insert, values_to_insert)
         self.cursor.fetchall()
         self.connection.commit()
-
-        # get the id of the last inserted row
         return self.cursor.lastrowid
 
     def show_water_worlds(self) -> None:
@@ -190,11 +187,8 @@ class water_world_db():
                             water_world_id,
                             )
         
-        # print(values_to_insert)
         self.cursor.execute(request, values_to_insert)
         self.connection.commit()
-
-        # get the id of the last inserted row
         return self.cursor.lastrowid
     
     def insert_statistics(self, water_world: object, water_world_id: int, generation: int) -> int:
@@ -276,7 +270,6 @@ class water_world_db():
         statistics["birth_shark"] = result[4]
         statistics["dead_fish"] = result[5]
         statistics["dead_shark"] = result[6]
-        # print(statistics)
         return statistics
     
     def count_generation(self,water_world_id: int) -> int:
