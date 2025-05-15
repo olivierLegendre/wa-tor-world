@@ -4,6 +4,7 @@ from pygame.locals import *
 import history
 import wator_world as ww
 import history_entity as he
+import random
 # import pygame_gui as pyg
 # import pygame_view as pyv
 
@@ -87,14 +88,14 @@ class Water_world_Statistics():
         self.water_world_statistics_surface = pygame.Surface((self.size_x, self.size_y))
         App.screen.blit(self.water_world_statistics_surface, (1100, 200))
 
-    def get_graph(self, generation: int) -> None:
+    def get_graph(self, generation: int, display_nb_born=False, display_nb_death=False )-> None:
         """_summary_
 
         Args:
             generation (int): _description_
         """
         print(f"generation a dessiner {generation}")
-        self.water_world_history.get_graph(generation)
+        self.water_world_history.get_graph(generation, display_nb_born, display_nb_death)
         
     def get_graph_live(self, generation: int) -> None:
         """_summary_
@@ -244,6 +245,8 @@ class App:
         clock = pygame.time.Clock()
         tick = 10
         time_pass = False
+        display_nb_born = False
+        display_nb_death = False
         while App.running:
             # time_delta = clock.tick(tick)/1000.0
             #for the loading scene 
@@ -287,6 +290,7 @@ class App:
                                     # self.test_function(simulation_param[1])
                                     self.load_save(simulation_param[1])
                                     self.load_main_scene()
+                                    App.screen.fill("blue")
                                     scene_index = 2
                 # clock.tick(tick) 
             
@@ -307,7 +311,7 @@ class App:
                         if self.start_text.rect.collidepoint(event.pos):
                             generation = 0
                             self.www.create_sea_visual(generation)
-                            self.wws.get_graph(generation)
+                            self.wws.get_graph(generation, display_nb_born, display_nb_death)
                             # self.wws.get_graph_live(generation)
                         if self.play_text.rect.collidepoint(event.pos):
                             time_pass = True
@@ -316,6 +320,20 @@ class App:
                         if self.retour_text.rect.collidepoint(event.pos):
                             generation = 0
                             scene_index -= 1
+                        if self.fast_text.rect.collidepoint(event.pos):
+                            tick = tick + 3
+                            if tick > 30:
+                                tick = 30
+                        if self.slow_text.rect.collidepoint(event.pos):
+                            tick = tick - 3
+                            if tick < 1:
+                                tick = 1
+                        if self.display_born_creatures_text.rect.collidepoint(event.pos):
+                            print("je devrais reagir")
+                            display_nb_born = True if display_nb_born is False else False
+                        if self.display_dead_creatures_text.rect.collidepoint(event.pos):
+                            print("ici aussi")
+                            display_nb_death = True if display_nb_death is False else False
                             
                 #     App.manager.process_events(event)
                 # self.manager.update(time_delta)
@@ -325,7 +343,7 @@ class App:
                         generation += 1
                 clock.tick(tick)    
                 self.www.create_sea_visual(generation)
-                self.wws.get_graph(generation)
+                self.wws.get_graph(generation, display_nb_born, display_nb_death)
                 # self.wws.get_graph_live(generation)
                 # self.wws.draw()
                     
@@ -433,10 +451,14 @@ class wator_display(App):
         # scene_main_screen = Scene(bg=("light blue"), caption='Main')
         scene_main_screen = Scene(img_folder='background', file='shark.jpg', caption='shark')
         self.scene_main_screen = scene_main_screen
-        self.start_text = Text('Restart', pos=(100, 1050))
-        self.play_text = Text('Play', pos=(300, 1050))
-        self.stop_text = Text('Stop', pos=(500, 1050))
+        self.start_text = Text('Restart', pos=(200, 1050))
+        self.play_text = Text('Play', pos=(420, 1050))
+        self.stop_text = Text('Stop', pos=(560, 1050))
+        self.fast_text = Text('Faster', pos=(200, 1150))
+        self.slow_text = Text('Slower', pos=(560, 1150))
         self.retour_text = Text('Retour', pos=(2000, 20))
+        self.display_born_creatures_text = Text('Afficher les nouveaux nés', pos=(1930, 230), fontsize=30)
+        self.display_dead_creatures_text = Text('Afficher les nouveaux nés', pos=(1930, 330), fontsize=30)
         # scene_main_screen.nodes.append(Text('Parametres de la simulation : ', pos=(20, 20)))
         
         scene_main_screen.nodes.append(Text('Wa-tor simulation', pos=(100, 100)))
@@ -445,7 +467,11 @@ class wator_display(App):
         scene_main_screen.nodes.append(self.start_text)
         scene_main_screen.nodes.append(self.play_text)
         scene_main_screen.nodes.append(self.stop_text)
+        scene_main_screen.nodes.append(self.fast_text)
+        scene_main_screen.nodes.append(self.slow_text)
         scene_main_screen.nodes.append(self.retour_text)
+        scene_main_screen.nodes.append(self.display_born_creatures_text)
+        scene_main_screen.nodes.append(self.display_dead_creatures_text)
         
         return scene_main_screen
         
@@ -466,7 +492,7 @@ class wator_display(App):
         scene.nodes.append(Text('Energie initial requin : '+str(shark_initial_energy), pos=(1400, 40), fontsize=30))
         
     def saved_simulation(self, scene):
-        height = 200
+        height = 250
         simulations_dict = dict()
         simulations = self.history.get_saved_simulation()
         for simulation in simulations:
@@ -509,7 +535,12 @@ class wator_display(App):
         return scene_intro
             
     def load_scene_simulations(self):
-        scene_simulations = Scene(img_folder='background', file='EMMAS-HEROTemplate_-Jaws.png', caption='Simulations')
+        easter_egg = random.randrange(1, 5)
+        if easter_egg == 1:
+            scene_simulations = Scene(img_folder='background', file='kevin.png', caption='Simulations')
+        else: 
+            scene_simulations = Scene(img_folder='background', file='EMMAS-HEROTemplate_-Jaws.png', caption='Simulations')
+        
         # scene_simulations.nodes.append(Text('Scene 1', pos=(20, 20)))
         scene_simulations.nodes.append(Text('Chargez une simulation', pos=(20, 50)))
         self.saved_simulation(scene_simulations)

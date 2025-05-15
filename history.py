@@ -139,7 +139,7 @@ class History():
     #     self.get_line_plot(sharks_and_fishes)
 
         
-    def get_graph(self, generation: int) -> None:
+    def get_graph(self, generation: int, display_nb_born=False, display_nb_death=False) -> None:
         """ 
         return a graph displayed in pygame
         called every iteration
@@ -148,21 +148,26 @@ class History():
         """
         sns.set_theme()
         sharks_and_fishes = self.get_all_statistics(generation)
-        self.get_line_plot(sharks_and_fishes)
+        self.get_line_plot(sharks_and_fishes, display_nb_born, display_nb_death)
 
-    def get_line_plot(self, data) -> None:
+    def get_line_plot(self, data, display_nb_born=False, display_nb_death=False) -> None:
         """generate a line plot from the data of a simulation
         Args:
             a pandas dataframe
         """
+        print(f" dans get plot line : {display_nb_born}, {display_nb_death}")
         statistcs_df = pd.DataFrame(data)
         statistcs_df = statistcs_df.transpose()
         water_world_plot = sns.lineplot(x='chronon', y='nb_fish', data=statistcs_df, label="Nb Fish")
         water_world_plot = sns.lineplot(x='chronon', y='nb_shark', data=statistcs_df, label="Nb Shark")
-        # water_world_plot = sns.lineplot(x='chronon', y='birth_fish', data=statistcs_df, label="Birth Fish")
-        # water_world_plot = sns.lineplot(x='chronon', y='birth_shark', data=statistcs_df, label="Birth Shark")
-        # water_world_plot = sns.lineplot(x='chronon', y='dead_fish', data=statistcs_df, label="Dead Fish")
-        # water_world_plot = sns.lineplot(x='chronon', y='dead_shark', data=statistcs_df, label="Dead Shark")
+        if display_nb_born:
+            print("j'ajoute les naissances")
+            water_world_plot = sns.lineplot(x='chronon', y='birth_fish', data=statistcs_df, label="Birth Fish")
+            water_world_plot = sns.lineplot(x='chronon', y='birth_shark', data=statistcs_df, label="Birth Shark")
+        if display_nb_death:
+            print("j'ajoute les morts")
+            water_world_plot = sns.lineplot(x='chronon', y='dead_fish', data=statistcs_df, label="Dead Fish")
+            water_world_plot = sns.lineplot(x='chronon', y='dead_shark', data=statistcs_df, label="Dead Shark")
         water_world_plot.legend(title="Creature Info", loc="upper left") 
         water_world_plot.set(xlabel='chronon', ylabel='')
         water_world_fig = water_world_plot.get_figure()
